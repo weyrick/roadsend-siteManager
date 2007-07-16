@@ -371,7 +371,7 @@ class ngMenuItem extends SM_object {
      * @param $num (int) the element to retrieve the child from
      * @return (object) ngMenuItem, or NULL
      */
-    function &getChild($num) {
+    function getChild($num) {
         if (isset($this->childList[$num])) {
             return $this->childList[$num]; 
         }
@@ -424,7 +424,7 @@ class ngMenuItem extends SM_object {
      * return a reference to my parent item
      * @return (object) ngMenuItem
      */
-    function &getParent() {
+    function getParent() {
         return $this->parent;
     }
 
@@ -432,7 +432,7 @@ class ngMenuItem extends SM_object {
      * traverse forward through the tree
      * @param $checkChildren (bool) used in the recursion of finding a match (don't touch)
      */
-    function &traverse($checkChildren=true) {
+    function traverse($checkChildren=true) {
         
         // try to get first child
         if ($checkChildren && isset($this->childList[0])) {
@@ -466,7 +466,7 @@ class ngMenuItem extends SM_object {
      * @param $id (string) the ID to fetch
      * @return (object) ngMenuItem requeted, or NULL if not found
      */
-    function &getItem($id) {
+    function getItem($id) {
 
         if ($id == $this->id) {
             return $this;
@@ -495,7 +495,7 @@ class ngMenuItem extends SM_object {
      * @param $id (string) optional ID to associate with this item
      * @return (object: ngMenuItem) the newly created child
      */
-    function &addLinkItem($text, $link, $id='') {
+    function addLinkItem($text, $link, $id='') {
         $class = get_class($this);
         $newChild = new $class($this, $text, $id);
         $newChild->setLink($link);
@@ -508,7 +508,7 @@ class ngMenuItem extends SM_object {
      * @param $id (string) optional ID to associate with this item
      * @return (object: ngMenuItem) the newly created child
      */
-    function &addItem($text, $id='') {
+    function addItem($text, $id='') {
         $class = get_class($this);
         $newChild = new $class($this, $text, $id);
         $this->addChild($newChild);        
@@ -669,7 +669,7 @@ class ngMenu extends SM_module {
                                  have to exist before adding the child (just before display)
      * @return (object: ngMenuItem) the newly created item
      */
-    function &addItem($text, $id='', $parentID=NULL) {
+    function addItem($text, $id='', $parentID=NULL) {
 
         if ($parentID != NULL) {
             // try to find parent
@@ -704,7 +704,7 @@ class ngMenu extends SM_module {
                                  have to exist before adding the child (just before display)
      * @return (object: ngMenuItem) the newly created item
      */
-    function &addLinkItem($text, $link, $id='', $parentID=NULL) {
+    function addLinkItem($text, $link, $id='', $parentID=NULL) {
 
         if ($parentID != NULL) {
             // try to find parent
@@ -739,7 +739,7 @@ class ngMenu extends SM_module {
      * @param $id (string) the ID to fetch
      * @return (object: ngMenuItem) the requested item, or NULL if not found
      */
-    function &getItem($id) {
+    function getItem($id) {
         return $this->rootItem->getItem($id);
     }
 

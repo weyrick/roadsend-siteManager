@@ -321,7 +321,7 @@ class SM_smartForm extends SM_object {
      * @param string $templateFile the template file to load. will search template file path.
      * @return SM_layoutTemplate the newly loaded template
      */
-    function &loadTemplate($templateFile) {
+    function loadTemplate($templateFile) {
 
         global $SM_siteManager;
 
@@ -336,7 +336,7 @@ class SM_smartForm extends SM_object {
      * return the current SM_layoutTemplate to be used for SmartForm output
      * @return SM_layoutTemplate current layout template     
      */
-    function &getTemplate() {
+    function getTemplate() {
         return $this->template;
     }
 
@@ -396,7 +396,7 @@ class SM_smartForm extends SM_object {
     * @param string $iA input entity alignment
     * @return SM_inputEntity input entity created
     */
-    function &add($varName, $title, $type, $req=false, $val='', $args=NULL, $lay=SF_LAYOUT_UNDEFINED, $tA='LEFT', $iA='LEFT') {
+    function add($varName, $title, $type, $req=false, $val='', $args=NULL, $lay=SF_LAYOUT_UNDEFINED, $tA='LEFT', $iA='LEFT') {
                                    
         // don't allow the same variable twice
         if (isset($this->entityList[$varName])) {
@@ -477,7 +477,7 @@ class SM_smartForm extends SM_object {
       * @param array $args optional arguments to set to configure the filter
       * @return SM_entityFilter newly created filter, or NULL on error
       */
-    function &addFilter($varName, $fType, $bMsg='', $args=NULL) {
+    function addFilter($varName, $fType, $bMsg='', $args=NULL) {
 
         if (!isset($this->entityList[$varName])) {
             $this->debugLog("addFilter: variable not found for filter add: $varName");
@@ -1318,7 +1318,7 @@ class SM_smartForm extends SM_object {
      * @param string $varName form variable to retrieve
      * @return SM_formEntity reference to SM_formEntity object, or NULL if not found
      */
-    function &getFormEntity($varName) {
+    function getFormEntity($varName) {
 
         // sanity
         if (!isset($this->entityList[$varName])) {
@@ -1345,7 +1345,7 @@ class SM_smartForm extends SM_object {
      * @param string $varName form variable to retrieve
      * @return SM_inputTypeEntity reference to SM_inputTypeEntity object requested, or NULL if not found
      */
-    function &getEntity($varName) {
+    function getEntity($varName) {
         
         // sanity
         if (!isset($this->entityList[$varName]->inputEntity)) {

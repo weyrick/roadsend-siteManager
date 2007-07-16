@@ -77,7 +77,7 @@ class SM_dbEditorAction extends SM_object {
      * object that has this object
      *
      */
-    function &getDbEditor() {
+    function getDbEditor() {
         return $this->dbEditor;
     }
 

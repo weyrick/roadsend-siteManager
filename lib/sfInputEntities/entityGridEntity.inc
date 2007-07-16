@@ -326,7 +326,7 @@ class entityGridEntity extends SM_inputTypeEntity {
      * @param string $entityTypeOverride setting an entity type here overrides the column entity type for this location
      * @return SM_entityGridEntity a reference to the newly created entity, for further customization
      */
-    function &addRowEntity($rowID, $colID, $defaultVal='', $required=false, $entityTypeOverride=NULL) {
+    function addRowEntity($rowID, $colID, $defaultVal='', $required=false, $entityTypeOverride=NULL) {
 
         // need column
         if (empty($this->colList[$colID])) {

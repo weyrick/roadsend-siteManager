@@ -278,7 +278,7 @@ END_JSCRIPT;
      * @param string $templateName the template to load. should be in template GCS path
      * @return SM_layoutTemplate the loaded template
      */
-    function &setTemplate($templateName) {
+    function setTemplate($templateName) {
         
         global $SM_siteManager;
 

@@ -192,7 +192,7 @@ class SM_codePlate extends SM_layoutTemplate {
      *                             file name, specify it here
      * @return SM_module the loaded module
      */
-    function &loadModule($moduleFile, $areaName='',$moduleName='') {
+    function loadModule($moduleFile, $areaName='',$moduleName='') {
 
         global $SM_siteManager;
 
@@ -216,7 +216,7 @@ class SM_codePlate extends SM_layoutTemplate {
      * @param string $areaName add this template to an area of the codePlate's template
      * @return SM_layoutTemplate the loaded template
      */
-    function &loadTemplate($templateFile, $areaName='') {
+    function loadTemplate($templateFile, $areaName='') {
 
         global $SM_siteManager;
 
@@ -240,7 +240,7 @@ class SM_codePlate extends SM_layoutTemplate {
      * @param string $areaName add this codePlate to an area of my template
      * @return SM_codePlate the loaded codePlate
      */
-    function &loadCodePlate($codePlateFile, $areaName='') {
+    function loadCodePlate($codePlateFile, $areaName='') {
 
         global $SM_siteManager;
 

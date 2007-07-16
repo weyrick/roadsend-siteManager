@@ -298,7 +298,7 @@ class SM_dbGui extends SM_abstractDbEditor {
      * get a table def entity so you can modify it
      * @param $entity (string) the entity varname
      */
-    function &getEntity($entity) {
+    function getEntity($entity) {
         $this->getTableFormat();
         if (!isset($this->tableDef[$entity])) {
             return false;

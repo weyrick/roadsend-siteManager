@@ -184,7 +184,7 @@ class SM_siteManagerRoot extends SM_object {
      * @param bool $fatalFNF when true, if the file wasn't found, will exit with SM_fatalErrorPage
      * @return SM_module reference to new module, or null if not loaded
      */
-    function &loadModule($moduleFile, $moduleName='', $fatalFNF=true) {
+    function loadModule($moduleFile, $moduleName='', $fatalFNF=true) {
         
         // did they specify a path?
         if ( (strstr($moduleFile, '/')) || (strstr($moduleFile, '\\')) )  {
@@ -257,7 +257,7 @@ class SM_siteManagerRoot extends SM_object {
      * @param const $type either SM_TEMPLATE or SM_CODEPLATE
      * @return SM_layoutTempalte layout template object
      */
-    function &rootTemplate($fName, $type=SM_UNKNOWN) {
+    function rootTemplate($fName, $type=SM_UNKNOWN) {
 
         // if type is unknown use extension
         if ($type == SM_UNKNOWN) {
@@ -327,7 +327,7 @@ class SM_siteManagerRoot extends SM_object {
      * @param bool $fatalFNF when true, if the file wasn't found, will exit with SM_fatalErrorPage
      * @return SM_codePlate reference to new SM_codePlate, or null if not loaded
      */
-    function &loadCodePlate($cpFile, $cpName='',$fatalFNF=true) {
+    function loadCodePlate($cpFile, $cpName='',$fatalFNF=true) {
         
         // did they specify a path?
         if ( (strstr($cpFile, '/')) || (strstr($cpFile, '\\')) )  {

@@ -13,11 +13,12 @@ foreach ($argv as $name) {
     while ($str = fgets($fp)) {
 
         $line = $str;        
-        $line = str_replace('=&','=',$line);
-        $line = str_replace('fetchRow','fetch',$line);
-        $line = str_replace('->free()',' = null',$line);
-        $line = str_replace('MDB2::isError','empty',$line);
-        $line = str_replace('DB::isError','empty',$line);
+        $line = str_replace('=','=',$line);
+        $line = str_replace('fetch','fetch',$line);
+        $line = str_replace(' = null',' = null',$line);
+        $line = str_replace('empty','empty',$line);
+        $line = str_replace('empty','empty',$line);
+        $line = str_replace('function &','function ',$line);
         
         fwrite($op, $line);
         

@@ -165,7 +165,7 @@ class SM_formEntity extends SM_object {
      * @param string $vName override variable name to something besides the one for this form entity
      *
      */
-    function &loadEntity($eClass, $req=false, $vName='') {
+    function loadEntity($eClass, $req=false, $vName='') {
 
         if ($vName == '')
             $vName = $this->varName;

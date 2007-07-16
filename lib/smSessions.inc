@@ -896,7 +896,7 @@ class SM_session extends SM_object {
      * return a reference to the current memberSystem object
      * @return SM_memberSystem member system object
      */
-    function &getMemberSystem() {
+    function getMemberSystem() {
         return $this->memberSystem;
     }
     

@@ -332,7 +332,7 @@ class SM_module extends SM_object {
      *                             file name, specify it here
      * @return SM_module the loaded module
      */
-    function &useModule($rID, $moduleFile='', $moduleName='') {
+    function useModule($rID, $moduleFile='', $moduleName='') {
         
         // sanity
         if (isset($this->resourceList[$rID]))
@@ -363,7 +363,7 @@ class SM_module extends SM_object {
      * @param string $templateFile the template file to load (.tpt file)
      * @return SM_layoutTemplate the loaded template
      */
-    function &useTemplate($rID, $templateFile='') {
+    function useTemplate($rID, $templateFile='') {
 
         // sanity
         if (isset($this->resourceList[$rID]))
@@ -394,7 +394,7 @@ class SM_module extends SM_object {
      * @param string $codePlateFile the codeplate to load
      * @return SM_codePlate the loaded codePlate
      */
-    function &useCodePlate($rID, $codePlateFile='') {
+    function useCodePlate($rID, $codePlateFile='') {
 
         // sanity
         if (isset($this->resourceList[$rID]))
@@ -424,7 +424,7 @@ class SM_module extends SM_object {
      * @param string $rID resource ID to associate with this resource     
      * @return SM_smartForm a new smartForm
      */
-    function &useSmartForm($rID) {
+    function useSmartForm($rID) {
 
         // sanity
         if (isset($this->resourceList[$rID]))
@@ -459,7 +459,7 @@ class SM_module extends SM_object {
      * return a resource for use in moduleThink() that was loaded in moduleConfig()
      * @param string $rID the resource ID assigned when the resource was loaded
      */
-    function &getResource($rID) {
+    function getResource($rID) {
 
         if (!isset($this->resourceList[$rID])) {
             $this->debugLog("getResource: resource ID $rID wasn't defined");
@@ -478,7 +478,7 @@ class SM_module extends SM_object {
      *                             file name, specify it here
      * @return SM_module the loaded module, or NULL if fatalFNF is false and it wasn't found
      */
-    function &loadModule($moduleFile, $moduleName='', $fatalFNF=true) {
+    function loadModule($moduleFile, $moduleName='', $fatalFNF=true) {
 
         global $SM_siteManager;
 
@@ -496,7 +496,7 @@ class SM_module extends SM_object {
     * @param bool $fatalFNF when true, if the file wasn't found, will exit with SM_fatalErrorPage
     * @return SM_layoutTemplate the loaded template, or NULL if fatalFNF=false and it wasn't found
     */
-   function &loadTemplate($templateFile, $fatalFNF=true) {
+   function loadTemplate($templateFile, $fatalFNF=true) {
 
        global $SM_siteManager;
 
@@ -514,7 +514,7 @@ class SM_module extends SM_object {
     * @param string $codePlateFile the template to load
     * @return SM_codePlate the loaded codePlate, or NULL if fatalFNF=false and it wasn't found
     */
-   function &loadCodePlate($codePlateFile, $fatalFNF=true) {
+   function loadCodePlate($codePlateFile, $fatalFNF=true) {
 
        global $SM_siteManager;
 
@@ -594,7 +594,7 @@ class SM_module extends SM_object {
      * Create a new SmartForm for use in this module
      * @return SM_smartForm reference to a new SmartForm object
      */
-    function &newSmartForm() {
+    function newSmartForm() {
                
         // make sure smartForm component loaded
         SM_loadComponent('SM_smartForm');

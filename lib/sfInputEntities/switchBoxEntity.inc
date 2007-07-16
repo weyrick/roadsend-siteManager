@@ -181,7 +181,7 @@ class switchBoxEntity extends SM_inputTypeEntity {
      * @param string $templateName name of template file to load
      * @return SM_layoutTemplate
      */
-    function &loadTemplate($templateName) {
+    function loadTemplate($templateName) {
 
         global $SM_siteManager;
 

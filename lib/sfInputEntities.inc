@@ -250,7 +250,7 @@ class SM_inputTypeEntity extends SM_object {
       * @param string $msg message to output if filter fails
       * @param   $varName sometimes an entity will want to override the variable name (see dateEntity)
       */
-    function &addFilter($fType, $msg='', $varName='') {
+    function addFilter($fType, $msg='', $varName='') {
 
         if ($varName == '')
             $varName = $this->varName;
