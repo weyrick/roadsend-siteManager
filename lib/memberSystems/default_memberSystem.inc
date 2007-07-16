@@ -109,7 +109,7 @@ class SM_memberSystem_default extends SM_memberSystem {
         $rh = $this->dbHL[$this->dbID]->query($SQL);
         $this->dbErrorCheck($rh);
 
-        $rr = $rh->fetchRow();
+        $rr = $rh->fetch();
 
         // if $rr has data, it's a good session
         if ($rr) {
@@ -430,12 +430,12 @@ class SM_memberSystem_default extends SM_memberSystem {
 
         // issue query
         $rh = $this->dbHL[$this->dbID]->query($SQL);
-        if (MDB2::isError($rh)) {
+        if (empty($rh)) {
             // possibly they had an old cookie session set, ignore
             return;
         }
 
-        $rr = $rh->fetchRow();
+        $rr = $rh->fetch();
         if ($rr) {
 
             // good, check TTL

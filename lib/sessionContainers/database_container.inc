@@ -257,13 +257,13 @@ class SM_sessionContainer_database extends SM_sessionContainer {
         }
 
         $rh = $this->dbHL[$this->dbID]->query($SQL);
-        if (MDB2::isError($rh)) {
+        if (empty($rh)) {
             // possibly, they have an old cookie for a session ID. ignore.
             return false;
         }
 
         // gather stored persistents
-        while ($rr = $rh->fetchRow()) {            
+        while ($rr = $rh->fetch()) {
 
             $varName = $rr[$keyField];
             $dataVal = $rr[$dataField];
@@ -288,7 +288,7 @@ class SM_sessionContainer_database extends SM_sessionContainer {
 
         }
 
-        $rh->free();
+        $rh = null;
         $this->debugLog("valid session, persistant variables loaded from database");
         
         return true;

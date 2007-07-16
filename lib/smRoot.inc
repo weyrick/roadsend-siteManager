@@ -581,15 +581,8 @@ class SM_siteManagerRoot extends SM_object {
 
         // build a DSN for them if there isn't one
         if (empty($dbSettings['DSN'])) {
-            $dbSettings['DSN'] =        $dbSettings['dbType'].'://'.
-                                        $dbSettings['userName'].':'.
-                                        $dbSettings['passWord'].'@'.
-                                        $dbSettings['hostName'];
-
-            // if database is set, add that in too
-            if (!empty($dbSettings['dataBase'])) {
-                $dbSettings['DSN'] .= '/'.$dbSettings['dataBase'];
-            }
+            var_dump($dbSettings);
+            $this->fatalErrorPage('DSN is required');
         }
 
         // if 'required' flag is set, update dieOnError flag. this lets XML override parameter
@@ -604,7 +597,10 @@ class SM_siteManagerRoot extends SM_object {
 
         // create a PEAR database object
         try {
-            $this->dbHL[$id] = new PDO($dbSettings['DSN'], $dbSettings['persistent']);
+            $this->dbHL[$id] = new PDO($dbSettings['DSN'],
+                                       $dbSettings['userName'],
+                                       $dbSettings['passWord'],
+                                       array(PDO::ATTR_PERSISTENT => $dbSettings['persistent']));
         } catch (PDOException $e) {
             if ($dieOnError) {
                 $this->debugLog($e->getMessage()."<br />\n");

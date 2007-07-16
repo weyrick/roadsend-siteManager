@@ -227,6 +227,8 @@ class SM_siteConfig {
     function getSection($section, $sectionID='',$attr='VALUE') {
 
         $gSection = $this->globalConfig->getSection($section, $sectionID, $attr);
+        if (!is_array($gSection))
+            $gSection = array();
 
         if (isset($this->localConfig)) {
             $sSection = $this->localConfig->getSection($section, $sectionID, $attr);

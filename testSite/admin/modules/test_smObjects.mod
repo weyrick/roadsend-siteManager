@@ -139,16 +139,6 @@ class test_smObjects extends testBase {
                        $actual);
 
         // TEST
-        $myError = new DB_Error();
-        $actual = $this->dbErrorCheck($myError, false);
-        $expect = true;
-        $this->addTest('dbErrorCheck() method', 
-                       'make sure dbErrorCheck() method executes correctly when PEAR DB error is passed',
-                       $expect,
-                       $actual);
-
-
-        // TEST
         $this->addDirective('testKey','testVal');
         $this->addDirective('testKey','TEST VALUE');
         $actual = $this->getDirective('testKey');
