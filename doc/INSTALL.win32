@@ -1,0 +1,64 @@
+/**
+ *
+ * Here are some tips on installing SiteManager on the Windows
+ * Platform, using Apache. Use this in addition to the main
+ * INSTALL doc (which you may want to go over first)
+ *
+ * courtesy of Jim McNeill [Jim.McNeill@BTInternet.COM]
+ *
+ */
+
+1) To solve any confusion over paths I put the siteManager-2.6.0 folder
+outside the apache document root (G:\siteManager-2.6.0), and the testSite
+folder somewhere else again (E:\testSite). Created a virtual root for the
+test site in Apache by the following in httpd.conf:
+
+         Listen 80
+         Listen 3000
+         ....
+         <VirtualHost 127.0.0.1:3000>
+            DocumentRoot "E:/testSite"
+         <Directory "E:/testSite">
+            Options Indexes FollowSymLinks MultiViews
+            AllowOverride None
+            Order allow,deny
+            Allow from all
+         </Directory>
+         DirectoryIndex index.php
+         AccessFileName .htaccess
+         <Files .htaccess>
+            Order allow,deny
+            Deny from all
+         </Files>
+         </VirtualHost>
+
+Not all of that is strictly necessary.
+
+2) In htpd.conf again, I chose to use PHP as an Apache module, so took out
+lines like:
+         #ScriptAlias /php3/ g:/nusphere/apache/php/
+         #ScriptAlias /php/ g:/nusphere/apache/php/
+         #AddType application/x-httpd-php3 .phtml
+         #AddType application/x-httpd-php3 .php3
+         #AddType application/x-httpd-php3 .php
+         #AddType application/x-httpd-php3-source .phps
+         #Action application/x-httpd-php3 /php/php.exe
+
+and added
+
+         LoadModule php4_module c:/php/sapi/php4apache.dll
+         AddType application/x-httpd-php .php
+
+also copied the php4ts.dll file to windows\system32. Using this instead of
+the commented out CGI executable did speed things up considerably.
+
+3)In e:\testSite\admin\common.inc, changed base admin directory from
+"/var/www/testSite/admin/" to "e:/testSite/admin/".
+
+4) In g:\siteManager-2.6.0\config\globalConfig.xsm changed
+         <VAR name="smRoot"      value = "/usr/local/lib/php/siteManager/" /> to
+         <VAR name="smRoot"      value = "g:/siteManager-2.6.0/" />
+
+And that's it. Browsing to 127.0.0.1:3000 brought the site up successfully.
+
+

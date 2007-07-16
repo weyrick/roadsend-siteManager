@@ -1,0 +1,208 @@
+TEST SITE FUNCTIONALITY TEST LIST
+---------------------------------
+
+GCS
+    Global Config
+        Getting Global Variable
+        Getting Global Section
+        Displaying Global Variables
+    Local Config
+        Getting Local Variable
+        Getting Local Section
+    Getting Merge Variables
+    Getting ID List
+    Set Var
+Config Readers
+    Types
+        SMOBJECT
+        SMLANGUAGE
+        SMARTFORM
+        SMCONFIG
+    Cacheing
+    Database Reads
+SM Object
+    Common SM Variables
+        siteConfig
+        dbH
+        dbHL
+        sessionH
+        inVarH
+        errorHandler
+    Localization
+        Loading XML language file
+        Using getText
+        Testing browser provided locale
+    Debug
+        debugLog
+        fatalErrorPage
+        dbErrorCheck
+    Directives
+        Getting
+        Setting
+            w/Overwrite On/Off
+        Loading from XML
+    Serialization
+        Saving
+        Loading    
+    Debug
+        dumpInfo
+        dumpDirectives
+        Class Log
+SM Config
+    Load Site
+    Data Loading / Merging
+    Variable Manipulation
+        Getting
+        Setting
+        Checking Existance
+    Section Manipulation
+        Getting
+        Checking for multiple ID
+        Getting ID list
+        Checking Existance
+Templates
+    SM Tags
+        QuickTags
+        Priority
+        Configuring
+        Resetting
+    Template Load Types
+        From Disk
+        Set From Code
+    Area Manipulation
+        Set Priority
+        Get Area List
+        Get Area Attributes
+        Add Data To Areas
+            Modules
+            Templates
+            CodePlates
+            Text
+    Reset Template
+    Load Cacheing
+CodePlates
+    InVars
+    Resources
+    Data In CodePlates
+        Modules
+        Text
+        Templates
+        CodePlates
+Components
+    Registering
+    Loading        
+InVars
+    Security
+        Specify Type
+        Specify Valid List
+        Required
+    Propagating        
+    Manager
+        getVar
+        getPOST
+        getGET
+        getSessionVar
+        getCookieVar
+Modules
+    InVars
+        Propagating
+        Getting
+        Setting
+    OutVars
+    Resources
+        Templates
+        Modules
+        SmartForms
+        CodePlates
+        User Defined
+    ThinkLists
+    ConfigList
+    Output Directives
+    JavaScript
+    Loading SiteManager Resources
+        Templates
+        Modules
+        CodePlates
+    CanModuleLoad
+    Wrapper Methods
+        HLink
+        ULink
+    SmartForms
+    Styles
+        Getting
+        Settings
+    Debug
+        dumpInfo    
+    Extending
+SM Root
+    Loading Resources
+    Including Resources
+    Finding Resources
+    Starting Database Subsystem
+    Starting Session Subsystem
+    Complete Page
+SmartForms
+    Output Directives
+        Table Directives
+        Required Info        
+    Input Entities
+        Filtered
+        JavaScript
+    Filters
+        JavaScript
+    XML Load
+    Layout Templates
+    Styles
+    Entity Grouping
+        Setting
+    Headers & Footers
+    Manipulating
+        Entities
+            Adding
+            Removing
+            Set Default Value
+        Filters
+            Adding
+            Removing        
+    Hiddens
+    Retrieving Information
+        Number of entities
+        Entity variable name list
+        Entity object
+        Entity type by name
+    Debug
+        dumpFormVars
+        dumpInfo
+Sessions
+    Persistents
+        Getting
+        Settings
+    Session Containers
+        Database
+        File
+        None
+    Keeping Sessions Active
+        Hlink
+        Ulink
+        PUlink
+        formID
+        reloadPage
+        transferToPage
+    Member Subsystem Access
+Member Systems
+    Default
+        Login
+        Logout
+        Timeouts
+        Persistent Member
+        Maintain Tables
+Debug
+    Error Handler
+        Custom
+        DebugLog
+        FatalErrorPage
+        DbErrorCheck
+    Global Error Functions
+        SM_debugLog
+        SM_fatalErrorPage
+        

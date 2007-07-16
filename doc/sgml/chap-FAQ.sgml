@@ -1,0 +1,103 @@
+
+<Chapter>
+<title>Frequently Asked Questions</title>
+
+<qandaset>
+<qandaentry>
+<question>
+<para>
+How did you generate the API documentation from your code comments?
+</para>
+</question>
+<answer>
+<para>
+We used PHPDoc to generate the API documentation. It requires you to
+       comment your code in a particular way, but it's well worth it.
+       You can find this program at: http://phpdocu.sourceforge.net
+</para>
+</answer>
+</qandaentry>
+    
+<qandaentry>
+<question>
+<para>
+Can I install SiteManager if I don't have root access?
+</para>
+</question>
+<answer>
+    
+<para>
+Yes, but you must have access to .htaccess (apache). You can
+       do everything in this file you do normally through the main
+       apache config file, and the main php file. The .htaccess file
+       should be located in your root web document directory.
+</para>
+              
+<para>
+       It should contain the following lines:
+</para>
+
+       
+<para>
+<programlisting>
+
+       # don't allow access to SiteManager files
+       &lt;FilesMatch "\.(inc|tpt|stp|mod|xsm|cpt)$"&gt;
+            Order allow,deny
+            Deny from all
+       &lt;/FilesMatch&gt; 
+       
+       # include SiteManager directory
+       php_value include_path /var/www/users/username/siteManager:/usr/local/lib/php
+       
+</>
+</para>
+       
+<para>
+       Alternatively, you can leave out the php_value include_path statement,
+       and edit siteManager.inc. Edit the $SM_rootDir directory to point to
+       the main SiteManager root directory. If you do this, you don't need
+       to have it in the PHP path.
+</para>
+
+<para>
+       If you do it this way, you will also have to specify the full path to
+       siteManager.inc in your admin/common.inc file
+</para>
+
+</answer>
+</qandaentry>
+
+
+<qandaentry>
+<question>
+<para>
+I'm trying to use the $SM_siteManager class, but I keep getting errors.
+</para>
+</question>
+
+<answer>
+<para>
+Make sure it's declared as global. Remember, PHP requires you to declare
+       globals variables inside of functions and classes. It doesn't automatically
+       give you access to all global variables. Since SM_siteManager is global,
+       if you're in a function or a function within a class, you must declare it
+       global before gaining access to it:
+</para>
+
+<para>
+<programlisting>
+
+       // declare SM_siteManager global       
+       global $SM_siteManager;
+       
+</>
+</para>
+</answer>
+</qandaentry>      
+
+       
+</qandaset>
+
+</Chapter>
+

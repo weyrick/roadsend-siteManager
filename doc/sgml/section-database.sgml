@@ -1,0 +1,150 @@
+
+<section>
+<title>Database Connectivity</title>
+
+
+<para>
+    Database connectivity in SiteManager uses the PEAR database abstraction 
+    library (http://pear.php.net). This keeps the interface to the database routines the same, while 
+    allowing multiple database engines to power the site.
+</para>
+
+<para>
+    Connecting to a database should be done through the <varname>$SM_siteManager</> variable.
+    Doing it this way allows other parts of the SiteManager system (modules,
+    SmartForms, input entities, etc) to be database aware.
+</para>
+    
+<para>
+    Starting the database system using the database settings found in the Global
+    Config System is a simple matter of calling <filename>$SM_siteManager->dbConnect()</>
+    in your sites <filename>common.inc</>. See <filename>skeletonSite/admin/common.inc</> for an example.    
+</para>
+    
+<para>
+    Once connected, you may directly access the PEAR database object using
+    <varname>$SM_siteManager->dbH</>, which points to the default database
+    connection.
+</para>
+    
+<para>
+    You rarely directly access <varname>$SM_siteManager->dbH</>, however, since most of the database work is done 
+    inside of modules. See the Module section on how to make a module database 
+    aware.
+</para>
+
+<section>
+<title>Database Connection Settings</title>
+        
+<para>
+    The settings that may be defined in the config files are:
+</para>
+
+<para>
+<programlisting>
+    
+        &lt;SECTION name="db" id="default"&gt;
+            &lt;VAR name="dbType"      value = "mysql"     /&gt;
+            &lt;VAR name="persistent"  value = "true"      /&gt;
+            &lt;VAR name="userName"    value = "userName"  /&gt;
+            &lt;VAR name="passWord"    value = "passWord"  /&gt;
+            &lt;VAR name="hostName"    value = "hostName"  /&gt;            
+            &lt;VAR name="dataBase"    value = "dataBaseName"  /&gt;
+            &lt;VAR name="DSN"         value = "mysql://userName:passWord@hostName/dataBaseName" /&gt;
+        &lt;/SECTION&gt;
+
+
+</programlisting>
+</para>
+
+<para>
+    This may be defined in EITHER the <filename>globalConfig.xsm</> or per site in 
+    <filename>localConfig.xsm</>
+</para>
+    
+<para>
+    Note that you can define either (userName, passWord, hostName, dataBase) OR use 
+    DSN. If DSN is available, it will always use that.
+</para>
+
+<para>
+    The 'id' tag lets SiteManager know which database connection this is. For information
+    on multiple database connections, see the section below.
+</para>
+
+<para>
+    dbType should match up to one of the valid PEAR database types. See the 
+    PEAR DB documentation for more information on that.
+</para>
+
+<para>
+    For more help with the PEAR Database layer, see <ulink url="http://pear.php.net">http://pear.php.net</ulink> or 
+    <filename>/usr/local/lib/php/DB.php</> and <filename>/usr/local/lib/php/DB/*</>
+</para>
+
+</section> <!-- end configuration section -->
+
+<section>
+<title>Multiple Database Connections</title>
+
+<para>
+SiteManager allows you to setup an arbitrary number of database connections for use in your site.
+This is accomplished by having multiple "db" SECTIONs in your <filename>localConfig.xsm</> file, each
+with a different 'id'. For example:
+
+
+<programlisting>
+    
+        &lt;SECTION name="db" id="default"&gt;        
+            &lt;VAR name="defaultConnection"   value="true" /&gt;
+            &lt;VAR name="dbType"      value = "mysql"     /&gt;
+            &lt;VAR name="persistent"  value = "true"      /&gt;
+            &lt;VAR name="DSN"         value = "mysql://userName:passWord@hostName" /&gt;
+        &lt;/SECTION&gt;
+
+
+        &lt;SECTION name="db" id="secondary"&gt;
+            &lt;VAR name="dbType"      value = "mysql"     /&gt;
+            &lt;VAR name="persistent"  value = "true"      /&gt;
+            &lt;VAR name="DSN"         value = "mysql://userName:passWord@otherHost" /&gt;
+        &lt;/SECTION&gt;
+
+</programlisting>
+
+</para>
+
+<para>
+
+This would create two database connections, one identified as 'default' and the other identified
+as 'secondary'.
+
+</para>
+
+<para>
+Normally, most SiteManager objects access the database connection through their <varname>$dbH</> variable, which
+they inherit from the SM_object base class. This variable always points to the 'default' database connection. To access
+a connection with a different id, use the <varname>$dbHL</> hash. The key to this hash is the 'id' specified in
+the config file. For example:
+
+
+<programlisting>
+
+        $SQL = "SELECT * FROM testTable";
+        $rh = $this->dbHL['secondary']->query($SQL);
+        if (DB::isError($rh)) {
+            SM_debugLog($SQL,$this);
+            SM_fatalErrorPage("There was a problem with the query!");
+        }
+        while ($rr = $rh->fetchRow()) {
+            $this->say($rr['firstName'].'&lt;br&gt;');
+        }
+        $rh->free();
+
+</programlisting>
+
+</para>
+
+</section>
+
+</section> <!-- end database section -->
+

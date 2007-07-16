@@ -1,0 +1,48 @@
+
+/*********************************************************************
+ *  Roadsend SiteManager
+ *  Copyright (c) 2001-2006 Roadsend, Inc.(http://www.roadsend.com)
+ **********************************************************************
+ *
+ * This source file is subject to version 1.0 of the Roadsend Public
+ * License, that is bundled with this package in the file 
+ * LICENSE, and is available through the world wide web at 
+ * http://www.roadsend.com/license/rpl1.txt
+ *
+ **********************************************************************
+ * Author(s):    Shannon Weyrick (weyrick@roadsend.com)
+ *               Jonathan Michel (pym@roadsend.com)
+ *            
+ */
+
+
+------------
+INTRODUCTION
+------------
+
+1)
+SiteManager is an Open Source Web Application Framework for PHP 
+Developers with an extendable system of modules and templates, 
+a library of integrated functions, and SmartForms.
+
+2)
+SiteManager is an Open Source Web Application Framework for PHP 
+Developers that includes a framework for code modules and layout
+templates, database connectivity, SmartForms and other 
+tools for web developers. All parts of the system are integrated 
+through our object oriented libraries that allow for easy 
+expandability and maintenance.
+
+
+------------
+INSTALLATION
+------------
+
+See the INSTALL file in the doc/ directory
+
+Detailed documentation can be found in the SiteMamager manual and
+API reference, both of which are a seperate download.
+See http://www.phpsitemanager.com/ for more information. 
+    
+
+

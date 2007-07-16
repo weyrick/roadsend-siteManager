@@ -1,0 +1,180 @@
+
+<section>
+<title>SiteManager Global Variables</title>
+
+<para>
+
+    The following are global variables and objects setup and used by 
+    SiteManager. Remember that since they are global, PHP requires that
+    you declare them as such within functions and class methods.
+</>
+    
+<variablelist>
+<varlistentry><term><varname>
+    $SM_siteManager
+    </></term>
+<listitem>
+<para>    
+        The root SiteManager object. Use this class for high level control of
+        the site, such as starting the Database and Session systems, Loading a Module,
+        or Loading the Root Template. You will use this object frequently throughout
+        your SiteManager site. 
+        </para>
+</listitem>
+</varlistentry>
+</variablelist>
+
+<variablelist>
+<varlistentry><term><varname>
+    $SM_siteID
+    </></term>
+<listitem>
+<para>    
+        This is the unique 'site ID' for your project. It should be defined in 
+        <filename>admin/common.inc</>. It is used for configuration and debug purposes.
+        It is arbitrary, but all capital by convention. It can only contain letters and numbers, 
+        and can not contain white space. An example siteID is 'TESTSITE'. 
+</para>        
+</listitem>
+</varlistentry>
+</variablelist>
+    
+
+<variablelist>
+<varlistentry><term><varname>
+    $SM_siteName
+    </></term>
+<listitem>
+<para>    
+        This is the 'site name' for your project. It is arbitrary free-text,
+        used for debugging purposes. It may contain white space.
+        
+        An example $SM_siteName is 'Test Site 1'
+</para>        
+</listitem>
+</varlistentry>
+</variablelist>
+
+
+
+<variablelist>
+<varlistentry><term><varname>
+    $SM_sessionVars (deprecated in 2.4)
+    </></term>
+<listitem>        
+<para>        
+        This string is now deprecated. Use <function>SM_session::getSessionVars()</> instead, which will
+        return the latest string of GET parameters that may be added to a URL link to keep the session
+        alive.
+</para>        
+</listitem>
+</varlistentry>
+</variablelist>
+
+
+    
+<variablelist>
+<varlistentry><term><varname>
+    $SM_debugOutput
+    </></term>
+<listitem>
+<para>    
+        An array with debug information. Each time a call to SM_debugLog is 
+        made, and new item is added to the array. You shouldn't need to access this
+        array directly. See the ERROR HANDLING section for more information.
+</para>        
+<para>
+        Note that in 2.4 the structure of this array has changed! See the UPGRADE NOTES for more information.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+
+        
+<variablelist>
+<varlistentry><term><varname>
+    $SM_rootDir
+    </></term>
+<listitem>
+<para>    
+        If you don't want to - or can't - place the SiteManager directory
+        into the PHP include path, you can set this variable in <filename>siteManager.inc</>.
+        Point it to the main SiteManager root directory, and SiteManager will be able
+        to find it's library files.
+</para>        
+</listitem>
+</varlistentry>
+</variablelist>
+
+<variablelist>
+<varlistentry><term><varname>
+    $SM_develState
+    </></term>
+<listitem>
+<para>    
+    The current value (true or false) of the <varname>develState</> flag from the GCS variable "debug" SECTION of
+    the GCS. Use this flag in an if block when you want debug information to show up only when the develState flag
+    is on. This is useful for limiting the amount of debug information that shows up on a production server.
+</para>        
+</listitem>
+</varlistentry>
+</variablelist>
+
+<variablelist>
+<varlistentry><term><varname>
+    $SM_defaultLocale
+    </></term>
+<listitem>
+<para>    
+    The current value of the <varname>defaultLocale</> variable from the GCS variable "localization" SECTION
+    the GCS. It determines the site wide default locale.
+</para>        
+</listitem>
+</varlistentry>
+</variablelist>
+
+
+<variablelist>
+<varlistentry><term><varname>
+    $SM_clientLocale
+    </></term>
+<listitem>
+<para>    
+    A string (or possibly an array of strings) of the values retrieved from the HTTP_ACCEPT_LANGUAGE server variable. It will
+    contain a list of locale's the current client is using. It can used to determine which language should be used for output, for example.
+    It is automatically used by the getText() method of SM_object to determine the default language.
+</para>        
+</listitem>
+</varlistentry>
+</variablelist>
+
+
+<variablelist>
+<varlistentry><term><varname>
+    $SM_debug
+    </></term>
+<listitem>
+<para>    
+    If <varname>debugOnVar</> is true in the GCS, and this variable is set to (int) 1, SiteManager will generate
+    debug output before the main page output. See the Error Handling and Debugging section for more information.
+</para>        
+</listitem>
+</varlistentry>
+</variablelist>
+
+
+<variablelist>
+<varlistentry><term><varname>
+    $SM_debugLevel
+    </></term>
+<listitem>
+<para>        
+    Current debug level, used to determine verbosity of the debug log. 
+    See the Error Handling and Debugging section for more information.
+</para>        
+</listitem>
+</varlistentry>
+</variablelist>
+
+</section> <!-- end global variables section -->
+

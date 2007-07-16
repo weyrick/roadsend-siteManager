@@ -1,0 +1,18 @@
+
+<!-- subTemplate.tpt -->
+<TABLE>
+<TR BGCOLOR="gray">
+  <TD>
+  SUB TEMPLATE AREA ONE<BR>
+  <SM TYPE="area" NAME="areaOne">
+  </TD>
+</TR>  
+<TR BGCOLOR="white">
+  <TD>  
+  SUB TEMPLATE AREA TWO<BR>
+  <SM TYPE="area" NAME="areaTwo">
+  </TD>
+</TR>
+</TABLE>
+
+

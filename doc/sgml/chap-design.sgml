@@ -1,0 +1,521 @@
+
+<Chapter>
+<title>Designing a SiteManager Site By Example</title>
+
+
+<para>
+    The first part of the manual was designed to familiarize you with the basics of
+    SiteManager. This chapter is designed as a starting point for learning how to design
+    a templated and modular web site with Roadsend PHP SiteManager. In this chapter,
+    we'll go through the design steps necessary to create a SiteManager site, as well as
+    plan out the design of a simple fictional website.
+</para>
+
+<para>
+    Our fictional site is the Roadsend Car Dealership. It will require a system for keeping track of
+    current inventory that users will be able to browse. Administrators of the site must have a way
+    to maintain the inventory online, through administrative forms. There will also be a feedback system, 
+    allowing users to ask questions online.
+</para>
+
+<para>
+        We'll begin by breaking down the design of the site into the following steps:
+</para>
+
+
+<para>
+<orderedlist numeration="arabic">
+
+
+<listitem><para>
+Assess the site needs
+</para></listitem>
+
+<listitem><para>
+Determine separation of layout from content
+</para></listitem>
+
+<listitem><para>
+Determine method of splitting dynamic content into modules
+</para></listitem>
+
+<listitem><para>
+Create a Site Plan: a consistent framework for the site
+</para></listitem>
+
+<listitem><para>
+Implement site: build up Templates, CodePlates and Modules
+</para></listitem>
+
+</orderedlist>
+</para>
+
+<!-- begin section: -->
+<section>
+<title>Assess Site Needs</title>
+<para>
+The first stage involves some planning to answer a few basic questions that will help us 
+design the rest of the site:
+</para>
+
+<formalpara>
+<title>
+Functionality of Site
+</title>
+<para>
+Perhaps the most important aspect of this phase is to figure out exactly what functionality the site will
+have. You can start with the front page - what will show up there? What options will the user have? Will there be
+a news page? Does it pull from a database? Do you want an articles section or a poll? Will you need a search engine
+or shopping cart? Before answering the following questions, make sure you have a good idea of what functionality
+you will need to implement in your site.
+</para>
+</formalpara>
+
+
+
+<!-- -->
+
+
+<formalpara>
+<title>
+Does the site need a database?
+</title>
+<para>
+Since you're creating a dynamic, modular web site, you'll probably want to use a database of some sort to keep track of
+information or to generate content. If so, you have several things to decide: which database system to use, a schema for
+storing the information, etc. This document doesn't cover these steps (there are other such resources available).
+It assumes you've already taken the steps necessary to setup a database system that will power your web site (or have
+chosen not to use one). If you
+need a place to start, check out MySQL (http://www.mysql.com) or PostgreSQL (http://www.postgresql.org) -- both freely
+available database servers.
+</para>
+</formalpara>
+
+<para>
+If you do <emphasis>not</> use a database, you might be limited in the number of features your site can use. For example,
+the SiteManager Sessions System works best with a database, and the Member System requires it. Also, not using a
+database system limits your sites scalability - although you can always setup database access for your SiteManager site
+at a later date.
+</para>
+
+<para>
+The dealership will require a database. We will need it to store our inventory, feedback information, and 
+administrative member tables. We will use a MySQL database.
+</para>
+
+<!-- -->
+
+<formalpara>
+<title>
+How will the site interact with the user?
+</title>
+<para>
+Will your site simply display information, or will it receive input from the people using your site? If you will be
+receiving input from users, you will be using SmartForms to gather that input. You should decide what information you
+will be gathering -- this will help you with your database table design, as well as give you an idea of how many
+SmartForms you will need to create, and exactly what their functionality will be.
+</para>
+</formalpara>
+
+<para>
+The dealership will have two major, and one minor form. The major forms are the administrative inventory maintenance form, 
+and the user feedback form. The minor form will be a simple form where the user may enter their zip code. The administrative form will 
+be available only to properly authorized members (using the SiteManager member system),
+while the feedback form will be available to everyone (guests). The administrative form will read and write to a database
+table, while the feedback form will only write.
+</para>
+
+<!-- -->
+
+
+<formalpara>
+<title>
+Sessions
+</title>
+<para>
+If you will need to maintain information for clients that access your site, then you will need to use the Session system.
+For example, you might want to use sessions to track visitors by some global ID, or to keep track of preferences they may have set.
+Sessions are most useful when used with a database, as you will be able to store a wider range of information as a session
+variable.
+</para>
+</formalpara>
+
+<para>
+At this point, you need to think about what information you wish to keep persistent within your site. Decide how you will
+store this information (for example, do you want to keep an array of values? a simple string? perhaps a class object?).
+This will help you generate the list of Persistent Variables you will use.
+</para>
+
+<para>
+The dealership will keep one persistent variable: zip code. If the user enters their zip code into the zip code form, the
+value will be kept persistent for that user, and we will attempt to use a cookie so that if the user comes back to the
+site later, we will still know their zip code. The zip code will be used to gauge how far away the user is.
+</para>
+
+<!-- -->
+
+<formalpara>
+<title>
+Member Login System
+</title>
+<para>
+Does your site need a member system? If you wish to have clients "log in" to your site, then the answer is yes. The member system
+is designed to be flexible enough to allow you to store whatever information you need to about the members of your site, and
+allow your modules to know if the current session is a Member or Guest session.
+</para>
+</formalpara>
+
+<para>
+You should decide exactly what information you want to gather from each user - this will help you design your member
+table, and the SmartForms necessary for logging in, creating and updating a user account.
+</para>
+
+<para>
+The dealership will use the member system, but only for administrators. General users will not need to login to the site.
+Administrators who will be maintaining the inventory, however, must have a member entry and must login to use the
+administration forms.
+</para>
+
+<!-- -->
+
+<formalpara>
+<title>
+Client Administration System
+</title>
+<para>
+Often when you design a site for a client, the client needs the ability to maintain their database or otherwise
+update the site themselves. For example, they may need a system for editing and maintaining an online catalog.
+If the site includes this requirement, you will need to build a Client Administration system. This usually involves
+extra modules with SmartForms that are designed for authorized administrators to update the sites content. You may
+also integrate this with the Member Login system, and some form of access control.
+</para>
+</formalpara>
+
+<para>
+As explained previously, this is exactly the system we will be using for the Roadsend Car Dealership.
+</para>
+
+<!-- -->
+
+<formalpara>
+<title>
+Co-brand System
+</title>
+<para>
+Co-brands are a convenient way for one company to offer the functionality from their site to another company.
+This allows two companies to partner, whereby Company A has a functioning website that Company B wishes to use,
+but still make it look (to the user) like they are on Company B's site. With SiteManager, this is a snap since 
+the same modules used in Company A's site can simply be placed in a template that contains the layout for Company B.
+Since the same code module is used in both places, when an update happens to the module (such as a bug fix), 
+it affects all co-brands automatically.
+</para>
+</formalpara>
+
+<para>
+The dealership won't be needing a co-brand system at this point in time. If we need it in the future, we can always
+add it later.
+</para>
+
+<!-- -->
+
+<formalpara>
+<title>
+Multilingual
+</title>
+<para>
+The Internet is a global place, so SiteManager makes it easy to add multiple languages to your site. If you know you will
+need to support multiple languages, you can start planning ID's that will be used to access blocks of text. You will use the
+ID's to access the text from a particular language, instead of hard coding them into your modules. While you can always add
+this support later, if you plan ahead you can avoid rewriting your modules to use ID's instead of hard coded text.
+</para>
+</formalpara>
+
+<para>
+Since the dealership is a local company, we won't be using a multilingual system. Perhaps we'll add it when it becomes
+cost effective to ship cars throughout the country.
+</para>
+
+<!-- -->
+
+
+</section>
+<!-- end section: assess needs-->
+
+<!-- begin section: -->
+<section>
+<title>Determine Separation of Static Layout from Dynamic Content</title>
+<para>
+
+Now that you know a little bit about the direction of your site, you need to
+figure out exactly what will be static and what will be dynamic. This will let you
+know what can be in a template, and what needs to be made into a module.
+
+</para>
+
+
+<formalpara>
+<title>
+Determine static content of site. How many root layouts are there?
+</title>
+<para>
+
+A root template (or layout) is typically a piece of HTML code in which all parts of page that
+will stay the same have been hard coded. Usually this includes, for example, a company logo at the top,
+a certain table layout with columns where data will show up, a footer along the bottom containing 
+copyright information. This content will show up on every page, regardless of what dynamic content shows
+up inside of it.
+</para>
+</formalpara>
+
+<para>
+One site might have several root templates, one for each section of their site that has different content. Perhaps
+one root layout has a three column table, while another has a simple one column with no footer. Within these columns
+we will later place dynamic pieces of code to display different pieces of information.
+</para>
+
+<para>
+The dealership will have one root template. We will display a logo at the top of all pages, and use the company
+colors for displaying text and table background colors. There will be one main column (area) where content will
+show up.
+</para>
+
+<formalpara>
+<title>
+Will templates be needed for modules to load and use?
+</title>
+<para>
+At this point you can also determine if you will be loading templates into your modules. You might do this if 
+you want to keep layout completely external from modules, instead of hard coding your module to output a 
+particular bit of HTML code.
+</para>
+</formalpara>
+
+<para>
+The dealership won't be using this feature for now.
+</para>
+
+<formalpara>
+<title>
+Will templates be needed for the forms on the site?
+</title>
+<para>
+Another way to separate layout from code is by templating your SmartForms. This gives you exact control over
+the layout of the entities in the form. If you have a form that needs to be laid out in any other fashion then
+the default, two column table style, you will need to use a SmartForm template.
+</para>
+</formalpara>
+
+<para>
+The dealership will use SmartForm templates for both the administrative form and the feedback form, since we want
+to have concise control over the placement of the form entities.
+</para>
+
+<formalpara>
+<title>
+Determine dynamic content.
+</title>
+<para>
+
+Now you need to determine which parts of the site are dynamic. These are the parts of the site where the output will
+vary based on user input, database pull, or by some other dynamic means. For example, a News section on a site would
+be pulled from a database. A poll would change based on user input, and previous values stored in a database. 
+
+</para>
+</formalpara>
+
+<para>
+By determining which parts of the site need to be dynamic, you can begin to understand how many modules you will be
+creating to complete the site's functionality.
+</para>
+
+<para>
+On the dealership site, there will be three major pieces of dynamic content that the user will have access to. 
+We want to have a system for displaying a block of text pulled from a database, that can be administered by employees. 
+This will be used for displaying general company information, as well as blocks of text like Directions. We will also have a system
+for displaying the current inventory list, which the user will be able to browse and sort. Finally, we will have the feedback 
+system which will allow the user to send us feedback. 
+</para>
+
+</section>
+<!-- end section: code seperation -->
+
+<!-- begin section: -->
+<section>
+<title>Determine Method of Splitting Dynamic Content Into Modules</title>
+
+<formalpara>
+<title>
+Determine how dynamic content will be broken up into modules.
+</title>
+<para>
+Now that you have an idea of which parts of you site will be dynamic, you need to best figure out how
+you can create those modules in a way that makes the code reusable.
+</para>
+</formalpara>
+
+<para>
+There might be several ways to split up functionality into several modules. The goal is to try and create as much
+reusable code as you can, so that a module created in one circumstance can be reused in another part of the site.
+Try to take each bit of functionality you wrote out in the last section and decide how to break it into code modules.
+Regarding SmartForms, you should figure one module per SmartForm as it's good to have each form in it's own module.
+</para>
+
+<para>
+The dealership will need at least three modules that will be visible by the user: a module for displaying a block of
+text from a database, at least one module for browsing the inventory, and a module for allowing users to send feedback.
+The inventory module might be broken up into several modules, depending on how much functionality is required. We might
+have one "meta-module" that loads different modules depending on how the user is trying to view or sort the inventory.
+In addition to these modules, we'll need modules for the administration system, figuring one per SmartForm.
+</para>
+
+</section>
+<!-- end section: module breakout -->
+
+<!-- begin section: -->
+<section>
+<title>Determine Site Plan</title>
+
+<formalpara>
+<title>
+Create a plan from information gathered so far
+</title>
+<para>
+
+You should now have enough information to put together a plan for the site. You've examined the needs of the site,
+the separation of layout from content, and method of splitting the functionality of your site into reusable modules
+of code. Gather this information together and create a Design Document for the site.
+
+</para>
+</formalpara>
+
+<para>
+In addition to the specific information you've obtained about your site, there are also a few 
+more general practices which may help in creating sites with a clean, consistent framework.
+</para>
+
+<formalpara>
+<title>
+Consistent Variable Names
+</title>
+<para>
+Try to be consistent when using variables names throughout your site. Pick a naming structure and stick to it. For example,
+don't abbreviate "index" to "idx" in one variable, and "indx" in another. If you create several modules that make use of
+an email address, use "$emailAddress" in both modules, not "$email" in one and "$emailAddress" in another.
+</para>
+</formalpara>
+
+<formalpara>
+<title>
+Coding Practices
+</title>
+<para>
+Choose a system of coding practices to follow. For example, indentation style and function/variable naming convention. Choose
+whether you're using tabs or spaces. Be consistent with functions and variable naming, for example functionName or function_name.
+You might want to prefix "private" class variables with an underscore. The actual method you choose isn't important, as long as it
+makes sense to you and you stick to it. For example coding practices, see http://pear.php.net/manual/en/standards.php
+</para>
+</formalpara>
+
+<formalpara>
+<title>
+Directory Layout
+</title>
+<para>
+Try to follow a consistent directory layout. SiteManager includes a pretty rigid directory structure that's meant to be
+consistent across sites and make it easy to find your way to the various SiteManager resources used by the site. You may choose
+to follow this, or create your own - but keep it consistent across all of your SiteManager sites.
+</para>
+</formalpara>
+
+
+<para>
+As this manual isn't a introduction to programming in general, suffice to say there are many ways you can 
+make your programming more efficient by having consistent coding standards. This will save you time and aggravation in the long run.
+</para>
+
+<para>
+Now that you have a complete plan for your site and standards with which to implement it, you can begin coding.
+</para>
+
+</section>
+<!-- end section: site plan -->
+
+<!-- begin section: -->
+<section>
+<title>Implement Site Plan</title>
+<para>
+
+Follow plan to create the required SiteManager resources to finish the site..
+</para>
+
+<para>
+First, create a skeleton SiteManager site by copying the skeletonSite/ directory, or
+using the bin/siteManager script. This will give you a good starting point, since the
+directory structure and config files will be setup for you. You will also have a basic
+template and module ready to go.
+</para>
+
+<section>
+<title>
+Site Configuration
+</title>
+<para>
+
+First, edit the admin/common.inc file. This is first include file loaded by all directive scripts, and is where you 
+will specify such things as the Site ID, SiteName, and the base directory path of the site. It also 
+includes the SiteManager library.
+
+</para>
+
+<para>
+In common.inc are also the calls to start the database and session systems. After editing admin/config/localConfig.xsm
+(in the next step) you may want to come back and uncomment these lines. If you need to include any other library files
+you may have, you can do that in common.inc.
+</para>
+
+<para>
+Next, edit admin/config/localConfig.xsm file. This is the main configuration file for the site. All of the values have descriptions,
+make sure you read through each one and set them up appropriately. Pay attention to the directory paths. If you wish to setup
+database access, you will need to specify database configuration values here.
+</para>
+
+</section>
+<!-- end configuration section -->
+
+
+<section>
+<title>
+Template Design
+</title>
+<para>
+
+Now edit the template placed for you by the skeletonSite (admin/templates/basicTemplate.tpt). 
+Since it's straight HTML, you should be able to get the exact layout desired for your site. Add the static content, such
+as image links and background colors. Then, add the SM tags required by your site. You will
+need at least one SM AREA tag to add dynamic content.
+
+</para>
+</section>
+<!-- end template section -->
+
+<section>
+<title>
+Module Design:
+</title>
+<para>
+
+Look at the sample module in admin/modules/basic.mod. This is a basic module that was added by the skeletonSite. It
+contains a lot of commented out code that will be useful while designing a module. It includes descriptions of how to
+use directives, inVars, styles, databases, and SmartForms in code.
+
+</para>
+</section>
+<!-- end module section -->
+
+
+</section>
+<!-- end section: implement site -->
+
+
+</Chapter>
+

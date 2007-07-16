@@ -1,0 +1,1109 @@
+
+<section>
+<title>Modules</title>
+
+<section>
+<title>Overview</title>
+
+<para>
+    SiteManager Modules are PHP code that extend from the same base class and have a common
+    structure. Their purpose is to be run so that their output is gathered and used 
+    either in a template, CodePlate, or other module.
+</para>
+
+<para>    
+    The base class for all objects is <classname>SM_module</>
+</para>
+
+<para>    
+    Extending this class to create a module gives that object several important
+    features:
+</para>
+
+<orderedlist numeration="arabic">    
+<listitem><para>It allows the new object to be added to a template or codePlate, where it's output
+           will be added into an area of the template</para></listitem>
+<listitem><para>It sets up the object to receive input from SmartForms and other
+           modules</para></listitem>
+<listitem><para>It allows the object to create and use a SmartForm</para></listitem>
+<listitem><para>It allows JavaScript code to be taken from this module and included
+           with the main JavaScript output section of the template this module
+           will show up in</para></listitem>
+<listitem><para>It allows code to use the database and session systems
+           available through SiteManager</para></listitem>
+<listitem><para>It encapsulates a portion of the functionality of the site, such that it
+        may be reusable in other sites</para></listitem>           
+</orderedlist>
+    
+<para>    
+    There is only one required method that must be implemented for the module to 
+    work:
+</para>
+
+<para>    
+    <function>moduleThink()</>       - the "brains" of the module
+</>
+    
+<para>
+    Although not required, generally a module will also implement:
+</para>
+
+<para>    
+    <function>moduleConfig()</>      - configure the module    
+</>
+    
+</section> <!-- end overview -->
+
+<section>
+<title>moduleConfig Method</title>
+
+<para>
+    For a module to be reusable in different contexts, it should be able to 
+    change it's output and/or the way it looks when it outputs on the fly. This 
+    means it needs to be configurable at run time through directive scripts 
+    (pages). Enter the <function>moduleConfig()</> method.
+</para>
+
+<para>
+    One important difference between <function>moduleConfig()</> and <function>moduleThink()</> is that the
+    <function>moduleConfig()</> method is automatically run when a module is loaded through <function>$SM_siteManager->loadModule()</>,
+    and the <function>moduleThink()</> method generally isn't run until <function>$SM_siteManager->completePage()</> is called. This allows
+    the user to re-configure any defaults that were defined in <function>moduleConfig()</> before running the actual module.
+</para>
+
+<para>
+    There are several self-configuration options to be done in <function>moduleConfig()</>. Of 
+    course, the module designer may do any configuration code they need in this 
+    space -- what's important is that this function is executed BEFORE the 
+    <function>moduleThink()</> function.
+</para>
+
+<para>
+    Here is a sample <function>moduleConfig()</> method:
+</para>
+    
+<para>
+<programlisting>
+
+    function moduleConfig() {
+
+        // load base configuration files
+        $this->loadConfig("moduleSettings");    // load some directives from XML file
+
+        // directives
+        // these are defined and overridden by DIRECTIVE SCRIPTS
+        $this->addDirective('tableName','');            // table name to operate on
+        $this->addDirective('maxVisibleSize',30);       // max size of a form element (default)         
+        $this->addDirective('dataField','');            // field to operate with (primary key)
+        $this->addDirective('siteName','Test Site'); // site name
+        
+        // variables this module will use for configuration (these are all made up and arbitrary)
+        // thee are setup by GET and POST vars
+        $this->addInVar('widgetType',0);        // which widget type should we use?
+        $this->addInVar('format','basic');      // which "format" to use
+        
+        // styles we will use in this module
+        $this->addStyle('linkText');            // style used when outputting HTTP links
+        $this->addStyle('baseText');            // style used for plain text
+
+        // use a resource
+        $this->useModule('myMenu','ngMenu');    // load a module resource for later use
+        
+        // if this module requires database functionality, 
+        // check for a proper connection
+        if (!isset($this->dbH)) {
+            SM_fatalErrorPage("this module requires a database connection, which wasn't present!");
+        }
+
+    }  
+
+</programlisting>
+</para>
+
+
+<formalpara><title>Directives</title>
+<para>    
+    Often a module designer wishes to let the user configure how the module 
+    should act, such as whether it should output in a table, whether it should 
+    be run in "advanced" or "basic" mode, whether it should end the script after 
+    a form loads or transfer to another page, etc (all arbitrary examples). 
+    These settings are done through the <varname>$directive</varname> variable and <function>addDirective()</>
+    method.
+</para>
+</formalpara>
+
+<para>
+    Setting a directive involves using the functionality inherited from <classname>SM_object</>. For example,
+    to add a directive to a module:
+</para>
+
+<para>    
+<programlisting>$mod1->addDirective('siteName','Test Site');</>    
+</para>
+
+<para>
+    Setting directives like this is generally done in a directive script, once the module is loaded.
+</para>
+
+<para>
+    
+    To use a directive from within the module code, you may use the 
+    <function>getDirective</> method. For example:
+    
+</para>
+
+<para>
+<programlisting>$this->say("Welcome to ".$this->getDirective['siteName']."!");</>    
+</para>
+    
+<para>    
+    The code above is more reusable than hard-coding:
+</para>
+
+<para>
+<programlisting>$this->say("Welcome to Test Site!");</>    
+</para>
+    
+<para>
+    While this is a simplistic example, hopefully it demonstrates how directives allow others to use the module and 
+    configure it without ever having to look at the internals of the module.
+</para>
+
+<para>
+    In addition to setting directives at run time through directive scripts, you may also use the <function>loadConfig()</> method inherited from <classname>SM_object</>. 
+    It allows you to have an external file that defines directives. If you are going to use 
+    <function>loadConfig()</>, you should call this first in <function>moduleConfig()</>, so that later 
+    <function>addDirective</>s will override those loaded in the external config file.
+</para>
+    
+<para>
+    Using <function>loadConfig()</>, you can setup certain directives that ALL modules should 
+    use -- such as "tableBorder" or other cosmetic options. Then, simply call 
+    <function>loadConfig()</> in each of your modules. This way you only have to define those 
+    options in one place, and when they need to change, you can change them all 
+    in one place. See the <classname>SM_object</> section for more information on <function>loadConfig()</>
+</para>
+
+<tip>
+<para>
+    Directives are different from INVARS (described below) in that they are meant to be 
+    configured and overridden by a programmer who is using the module to create 
+    a page.
+</para>
+</tip>
+
+<formalpara><title>inVars</title>
+<para>
+    If the module is to take any input (ie, from $_POST of 
+    $_GET) it must declare which variables it will be looking for using
+    the method <function>addInVar()</>
+</para>
+
+</formalpara>
+
+<para>
+    inVars are declared for several reasons:
+</para>
+
+<itemizedlist>
+<listitem><para>SiteManager will be able to check the inVar for correct typeness. This allows SiteManager to 
+(for example) make sure the integer variable you're expecting in variable '<varname>foo</>' wasn't actually passed as a string. This is a
+good security measure when you're taking a integer variable that will be used as an index in an SQL query, and you want
+to make sure someone isn't intentionally making the value a string of SQL commands.
+</para></listitem>
+<listitem><para>SiteManager will be able to check for conflicts with other modules in the page. If you happen to be
+using two modules with the same inVar, but they are meant for different uses, SiteManager can warn you
+</para></listitem>
+<listitem><para>SiteManager will be able to keep variables from different modules who weren't designed to work with
+each in tact. This allows you to place modules into a page without the modules worrying about passing variables
+they weren't designed to know about.
+</para></listitem>
+<listitem><para>
+You can access persistent session variables from your module by declaring an inVar with the same name as the declared persistent.
+</para></listitem>
+<listitem><para>
+You can access SmartForm variables passed from your forms in your module.
+</para></listitem>
+
+</itemizedlist>
+    
+<para>
+    For example, if a module is expecting a "widget type" to be passed to it, 
+    through the "widgetType" variable such as:
+</para>
+    
+<para>
+    http://localhost/testScript.php?widgetType=5
+</para>
+    
+<para>
+    then it should declare that it will use this variable in <function>moduleConfig()</>:
+<programlisting>$this->addInVar('widgetType',0,'int');</>
+</para>
+    
+<para>
+    The second parameter is the default value to use, if one wasn't passed to 
+    the script. If this parameter is left blank, the default value is blank.
+</para>
+
+<para>
+    The optional third parameter tells SiteManager that widgetType should be a number. If the script is
+    called and widgetType is set, but it's actually a string value, SiteManager will not let the
+    script load. This is a security measure.
+</para>
+
+<para>
+    Also see the section below about Propagating InVars.
+</para>
+
+<note>
+<para>
+    Variables passed to scripts should <emphasis>NOT</> be accessed directly, as in:    
+    <programlisting>
+    global $widgetType;
+    - or -
+    $HTTP_GET_VARS['widgetType'];
+    </>
+</para>
+</note>
+    
+<para>
+    The example above is <emphasis>incorrect</> - use the <function>getVar()</> function as follows:    
+    <programlisting>$widgetType = $this->getVar('widgetType');</>
+</para>
+    
+<para>
+    Again, using this system lets the module system handle naming conflicts, session variables,
+    and other behind the scenes voodoo.
+</para>
+
+<tip>
+<para>
+    INVARS are different from Directives in that they are meant to be variables 
+    that change based on how the script was accessed, ie they get setup either 
+    through GET or POST variables passed to the script, or through session code.
+</para>
+</tip>
+    
+<formalpara><title>Styles</title>    
+<para>
+    In order to promote re-usability, and module should be able to output itself
+    in a manner that's configurable without touching the internals of the 
+    module.
+</para>
+</formalpara>
+    
+<para>
+    One way to do this is by using CSS Style Sheets when outputting HTML. This 
+    allows a user to use the module and change the way it looks simply by 
+    defining certain style sheet elements in their template. This way, they 
+    never have to touch the module code.
+</para>
+
+<para>
+    All styles to be used in a module should be declared, in much the same way 
+    as INVARS, but with the <function>addStyle()</> method:
+</para>
+    
+<para>
+        <programlisting>
+            $this->addStyle('headingText'); // style used when outputting section headings
+            $this->addStyle('linkText'); // style used when outputting HTTP links
+        </programlisting>
+</para>
+    
+<para>
+    A module has a hash called <varname>$style</>. It contains a key/value pair that links 
+    two properties:
+</para>
+    
+<orderedlist numeration="arabic">    
+<listitem><para>Internally named style sheet element</para></listitem>
+<listitem><para>Externally named style sheet element</para></listitem>
+</orderedlist>
+        
+<para>
+    This is done so that the module can reference a particular style sheet 
+    element name that may change later, when the module is configured. For 
+    example, if the module is to output a text or a link:
+</para>
+    
+<para>
+<programlisting>$this->say('&lt;A HREF="test.php" CLASS="'.$this->getStyle('linkText').'"&gt;Test Link&lt;/A&gt;');</>    
+</para>
+
+
+<para>
+    $this->getStyle and $this->say reference the 'internal' name of the style -- but later on, when the 
+    module is configured, the actual style sheet name it outputs may change. For 
+    example, then the user configures the variable in the Directive Script 
+    (page), they may wish to change "headingText" to be "boldRed", which is what 
+    they have defined in their style sheet:
+</para>
+    
+<para>
+    <programlisting>
+        $mod1->setStyle('headingText','boldRed');
+        $this->say("Section One: Test Information","headingText");
+    </programlisting>
+</para>
+    
+<para>
+When the module is run the following is displayed:
+   &lt;SPAN CLASS="boldRed"&gt;Section One: Test Information"&lt;/SPAN&gt; 
+</para>
+
+
+</section> <!-- end moduleConfig section -->
+
+<section>
+<title>moduleThink Method</title>
+
+
+<para>
+    The required method to implement for a module is called <function>moduleThink()</>. This 
+    method is what gives the module functionality. Here is a simple example:
+</para>
+    
+<para>
+<programlisting>
+
+    function moduleThink() {
+
+        // output what's contained in the directive 'output'
+        $this->say($this->getDirective('output'));
+
+    }
+    
+</programlisting>    
+</para>    
+    
+<para>
+    When this module is run, it will buffer output. <emphasis>NO MODULE SHOULD EVER USE 
+    'echo' or 'print'!</> This is because the module must save it's output for 
+    later when it will be placed into the correct area of the template.
+</para>
+    
+<warning>
+<para>
+    A Module should never 'echo' or 'print' output!
+</para>
+</warning>
+    
+<para>
+    Instead of echoing output, use the method <function>say()</> or <function>saybr()</> that's part of the 
+    <classname>SM_module</> class:
+</para>
+    
+<para><programlisting>$this->saybr("This is module output");</></para>
+    
+<para>
+    <emphasis>DO NOT</> use:
+</para>
+    
+<para><programlisting>echo "This is module output";</></para>
+
+<para>
+    All output in SiteManager is buffered, so you won't see 'echo'ed output unless you have
+    Debugging output turned on. See the Debugging section for more information on that.
+</para>
+
+<para>
+    If you need to call a builtin PHP function that does not return it's results and instead
+    echo's them directly, you will need to use the output bufferring routines to use it correctly
+    from inside of a module. See the <ulink url="http://www.php.net/manual/en/ref.outcontrol.php">PHP documentation</ulink> for more help.
+</para>
+        
+<para>
+    Another (special) method of output is the <function>sayJS()</> function. This is used 
+    for the module to output JavaScript code. It requires it's own function so 
+    that the JavaScript code shows up in the correct JavaScript area of the 
+    template. <function>sayJS()</> works just like <function>say()</>. You do NOT have to include any 
+    &lt;SCRIPT&gt; tags when using sayJS, the module system does this for you.
+    See the Template section for more information on this.
+</para>
+    
+<para>
+    Other than that, the <function>moduleThink()</> code may do anything you'd like. You of 
+    course have the full power of PHP and all it's extensions at your disposal. 
+    Here is a list of SiteManager helper functions that will be useful when 
+    designing modules. See the SiteManager API for more information on each method.
+</para>
+    
+<para>
+<programlisting>
+    <function>$this->say();</>           - use to buffer module output
+    <function>$this->saybr();</>         - use to buffer module output with a &lt;br&gt; tag
+    <function>$this->sayJS();</>         - use to buffer JavaScript output
+    <function>$this->getVar();</>        - use to access a variable declared as an INVAR
+    <function>$this->newSmartForm();</>  - create a new SmartForm for this module (see SmartForm section)
+    <function>$this->getStyle();</>      - retrieve a style sheet element name
+    <function>$this->getText();</>       - use to retrieve language independent text by ID
+    <function>$this->getDirective();</>  - retrieve a directive
+</>    
+</para>
+
+</section> <!-- end moduleThink section -->
+
+<section>
+<title>canModuleLoad Method</title>
+
+<para>
+Sometimes a site designer will want to load and display a module only under certain circumstances - for example, if
+a particular variable was passed to the page. One way to do this is add logic code either to a directive script or a CodePlate
+that decides when to load and add the module to the template.
+</para>
+
+<para>
+It can be more convenient, however, to always load the module in the directive script, and let the module itself decide whether it should
+display itself or not. This is a more portable method, as the module has full access to inVars and session variables, and you won't need to worry
+about adding 'display logic' to every directive script you use this module in.
+</para>
+
+<para>
+For a module to decide not to display, it must implement the <function>canModuleLoad()</> method. If this method exists, it is run <emphasis>after</> moduleConfig, but <emphasis>before</> moduleThink.
+This allows it to be configured through directives, and allows access to declared inVars. 
+</para>
+
+<para>
+The method should return either true or false. If it returns true, the module will run it's <function>moduleThink()</> code as normal. If it returns false,
+the moduleThink code will <emphasis>not</> run, and no output will be displayed by the module.
+</para>
+
+<para>
+Here is an example (module excerpt):
+
+<programlisting>
+
+     /**
+      * configure the module. run before moduleThink
+      */
+    function moduleConfig() {
+
+        // Directives
+        $this->addDirective('tableBorder','1');
+        $this->addDirective('tableBgColor','#eeeeee');
+
+        $this->addInVar('menuID',0,'int');
+
+    }
+
+    /**
+     *
+     * only load if our inVar is set to 8
+     *
+     */
+    function canModuleLoad() {
+
+        return ($this->getVar('menuID') == 8);
+
+    }
+
+</programlisting>
+
+</para>
+
+<para>
+In this example, the module would only display itself if menuID were passed to the script, it was a number, and the value was 8.
+</para>
+
+</section> <!-- end canModuleLoad section -->
+    
+
+<section>
+<title>Database Connectivity</title>
+    
+<para>
+    Accessing the current database session from the module is easy. When you extend the <classname>SM_module</> 
+    class, a class variable called <varname>$dbH</> is available automatically. Either this 
+    variable is NULL, in which case there is no currently available database 
+    connection, or it is a reference to the current default database connection. There 
+    is no need to make a connection by hand in a module.
+</para>
+    
+<para>
+    If your module <emphasis>requires</> access to a database, you should check for 
+    connectivity in <function>moduleConfig</>, using:
+</para>
+
+<para>
+<programlisting>
+
+        // if this module requires database functionality, 
+        // check for a proper connection
+        if (!isset($this->dbH)) {
+            $this->fatalErrorPage("this module requires a database connection, which wasn't present!");
+        }
+        
+</programlisting>    
+</para>
+    
+<para>
+    Then, in <function>moduleThink()</>, you are guaranteed access to the database. You may 
+    use <varname>$this->dbH</> as a normal PEAR Database object. For example:
+</para>
+    
+<para>
+<programlisting>
+
+        $SQL = "SELECT * FROM testTable";
+        $rh = $this->dbH->query($SQL);
+        $this->dbErrorCheck($rh);
+        while ($rr = $rh->fetchRow()) {
+            $this->say($rr['firstName'].'&lt;br&gt;');
+        }
+        $rh->free();
+        
+</>    
+</para>
+
+<para>
+    Note the use of the builtin wrapper method <function>dbErrorCheck</function>. It takes a PEAR database
+    result handle, and checks it for the presence of an error. If one is found, a <function>fatalErrorPage</function>
+    is automatically generated. See the API documentation for more information on it's available options.
+</para>
+
+<para>
+    You've now just written a data aware module that can be used in any 
+    SiteManager system, and on any database system that PEAR supports.
+</para>
+
+<formalpara>
+<title>Multiple Database Connections</title>
+<para>
+SiteManager has the ability to have more than one active database connection. <varname>$this->dbH</> is always 
+a pointer to the 'default' database connection. If you wish to access a database connection handle other than
+the default, you use the <varname>$this->dbHL</> hash, and reference the database ID, such as:
+
+<programlisting>
+
+        $SQL = "SELECT * FROM testTable";
+        $rh = $this->dbHL['secondary']->query($SQL);
+        $this->dbErrorCheck($rh);
+        while ($rr = $rh->fetchRow()) {
+            $this->say($rr['firstName'].'&lt;br&gt;');
+        }
+        $rh->free();
+
+</programlisting>
+
+See the Database Connectivity section for more information on setting up and accessing multiple
+database connections.
+</para>
+</formalpara>
+
+</section> <!-- end database connectivity -->
+
+<section>
+<title>Session Functionality</title>
+
+<para>
+    Much like the database functionality, session functionality is contained 
+    automatically in the variable <varname>$this->sessionH</>
+</para>
+    
+<para>
+    To make your modules "session-aware", you should use the <function>hLink()</> method.
+</para>
+    
+<para>
+    <function>hLink(<parameter>$link, $text, $class='', $extra=''</parameter>)</function>
+</para>
+    
+<para>
+        <function>hLink()</> will make a &lt;A HREF&gt; link to <varname>$link</>, around text <varname>$text</>. It will 
+        use a style of <varname>$class</> (from your <varname>$this->style</> array) if specified. 
+        <varname>$extra</> will place extra text into the &lt;A&gt; tag if you need it (such as 
+        TARGET="")
+</para>
+        
+<para>
+        <function>hLink</> will automatically append the current session variables onto your 
+        link (even if <varname>$link</> contains variables of it's own).
+</para>
+        
+<para>
+    It should be used in the following way:
+</para>
+    
+<para><programlisting>$this->say($this->hLink("newScript.php?user=1","Link To New Script"));</>
+</para>
+        
+<para>
+    Using <function>hLink()</> instead of hard coded <function>$this->say("&lt;A HREF=" </>.. tags will make 
+    your module session-aware.
+</para>
+
+<para>
+    There are other session functions you may use in your modules, such as puLink() which will make
+    your link show up in a JavaScript pop-up window. See the SiteManager API reference for the full list of available
+    methods.
+</para>
+
+<para>
+    Take a look at the <filename>/modules</> directory for some examples of modules.
+</para>
+
+<formalpara>
+<title>Accessing Persistent Variables</title>
+<para>
+To access a variable that has been declared as persistent variables with the session system, simply declare
+an inVar with the same variable name as the persistent variable. Then, use <function>$this->getVar()</> method
+to retrieve it. Using this method, you can access strings, arrays, objects and any other variable you would like
+to keep persistent.
+</para>
+
+</formalpara>
+
+</section> <!-- end session section -->
+
+<section>
+<title>Module Resources</title>
+    
+<para>
+    Inside of the <function>moduleThink()</> method, you can of course use any standard PHP 
+    functions, as well as function libraries you may have written and included. 
+    But another way to increase the reusability of your code is to use other SiteManager resources (templates or
+    other modules, for example) inside of a module.
+</para>
+
+<para>
+    To accomplish this, SiteManager has the concept of module "resources". If you wish to use a SiteManager
+    resource, including a template, module, or codePlate you should declare it's use in the <function>moduleConfig</function>
+    method of the module. Declaring the use of the resource in <function>moduleConfig</function> has the effect of loading and initializing
+    the resource before the module is run. All resources receive a "resource name" when they are declared. The name
+    will be used later in <function>moduleThink</function> when retrieving the resource for use.
+</para>
+    
+
+<para>
+    You should declare resources like so:
+</para>
+
+<para>
+<programlisting>
+ 
+    function moduleConfig() {
+    
+        $mod =& $this->useModule('myModule','ngMenu');
+        $mod->addDirective('spacing','5');
+        $this->useTemplate('myTemplate','template-1');
+        $this->useCodePlate('myCodePlate','codePlate-1');
+       
+    }
+    
+</programlisting>    
+</para>
+
+<para>
+    The first parameter should be a string, which will be the resource name. It will be used later when
+    accessing the resource. The second parameter is the resource file name.
+</para>
+
+<para>
+    When declaring the use of a resource, the resource is actually initialized and returned to the caller so that
+    it may be further configured, as in the case with the <function>useModule</> above.
+</para>
+
+<para>
+    In <function>moduleThink</function>, when you are ready to use the resource, you use the singular 
+    method <function>getResource</function> to access all resources by their resource name:
+    
+
+<programlisting>
+
+    function moduleThink() {
+    
+        $mod =& $this->getResource('myModule');
+        $tpt =& $this->getResource('myTemplate');
+        $cpt =& $this->getResource('myCodePlate');
+        
+        $tpt->addModule($mod, 'areaOne');
+        $cpt->addTemplate($tpt, 'areaTwo');
+        $this->say($cpt->run());        
+
+    }
+    
+</programlisting>
+
+Note that <function>getResource</> always returns a reference.
+
+</para>
+
+<para>
+Finally, in addition to SiteManager resource, you may add your own resource to the module's resource list
+with the <function>addResource</> method:
+
+<programlisting>
+
+    function moduleConfig() {
+
+        $myClass =& new myClass('foo');    
+        $this->addResource('myClass', $myClass);
+
+    }
+    
+    function moduleThink() {
+    
+        $myClass =& $this->getResource('myClass');
+        $myClass->foo();
+
+    }
+
+</programlisting>
+
+</para>
+
+</section> <!-- end modules within modules section -->
+
+<section>
+<title>Extending Your Modules</title>
+
+<para>
+All modules extend the base SM_module class, which gives them a common framework for integrating into
+SiteManager sites. To promote reuse of code, you can also extend your own modules to provide other modules with
+common functionality.
+</para>
+
+<para>
+To do this, you create a normal SiteManager module, but instead of extending SM_module, you will extend
+your new base module (which of course extends SM_module itself).
+
+<programlisting>
+&lt;?
+class testModule extends SM_module {
+
+    function moduleConfig() {
+        // configure module
+    }
+    
+    function moduleThink() {
+        // base think code, possibly blank
+    }
+
+    function extraFunction() {
+        // extra base functionality 
+    }
+
+}
+
+class extendedModule extends testModule {
+
+    function moduleThink() {
+    
+        // override custom base modules think function
+        // call function from base module
+        $this->extraFunction();
+
+    }
+
+}
+?&gt;
+
+</programlisting>
+</para>
+
+<para>
+Normally, however, you wouldn't want to keep both the base module and the extended module in the same
+file. You might put the base module in a file called '<filename>testModule.mod</>' and the extended module in a file
+called '<filename>extendedModule.mod</>' - both in your sites <filename>modules/</> directory.
+</para>
+
+<para>
+Note that when you do this, you must make sure that when you define your extended module, it already knows
+the definition of your base module. You do this through the <varname>$SM_siteManager->includeModule()</> method.
+It will search your current module paths for the base module you specify. Note, however, you must declared $SM_siteManager
+global first.
+</para>
+
+
+<programlisting>
+
+&lt;?
+global $SM_siteManager;
+$SM_siteManager->includeModule('testModule');
+class extendedModule extends testModule {
+
+    function moduleThink() {
+    
+        // override custom base modules think function
+        // call function from base module
+        $this->extraFunction();
+
+    }
+
+}
+?&gt;
+</programlisting>
+
+<para>
+You can now call <varname>$SM_siteManager->loadModule()</> on your extended module in the normal way.
+</para>
+
+</section> <!-- end extending modules section -->
+
+<section>
+<title>preThinkList and postThinkList</title>
+
+<para>
+A common way to use extended modules is to create a base module that defines how the module 
+will look once it's output is complete (ie, by wrapping it in a table of some sort), and then extending
+that module every time you would like the functionality of a module to wrapped in the same table. 
+</para>
+
+<para>
+This is common in Portal systems, for example, where all the modules might be in a common table layout: a table header the 
+same color, a title in the header, and button in the header for "closing" that module.
+</para>
+
+<para>
+One way to do this is create a module with two extra methods: <function>moduleHeader()</> and <function>moduleFooter()</>. The header would contain
+the code to output the top of the common TABLE, the footer would contain the code to close it.
+</para>
+
+<para>
+If you extended this module, you could then call <function>$this->moduleHeader()</> at the start of your <function>moduleThink()</>, and <function>$this->moduleFooter()</> 
+at the end. This would wrap the output of your extended module in the table from the base module, keeping the two separate which
+will aid maintenance and modularity.
+</para>
+
+<para>
+However, the module designer who is extending the base module is still required to know which methods to call at the start and end of
+his <function>moduleThink()</> to make the module output correctly. If the designer of the extended module is not the same as the designer of the base module,
+it might not be clear which methods he is to use.
+</para>
+
+<para>
+To solve this problem, SiteManager allows the designer of the base module to have certain class methods run automatically when
+the module is extended. In the above example, the designer of the base module would have <function>moduleHeader()</> run automatically before <function>moduleThink()</>,
+and <function>moduleFooter()</> run automatically AFTER <function>moduleThink()</>. This allows the designer of the extended module to not have to call them at all,
+and therefore not have to worry about which methods he needs to call the make his extended module output properly.
+</para>
+
+<para>
+SiteManager handles this through two arrays: <varname>preThinkList</> and <varname>postThinkList</>. They are simply an array of strings. The values
+of the strings should be the function names to run before and after <function>moduleThink()</> (respectively). The functions do not take
+arguments, and will be run in the order they were added to the array. You can add as many functions to each list as you would like.
+</para>
+
+<para>
+Here is an example of a base module that illustrates the example above:
+
+<programlisting>
+
+
+/**
+ * a base module. extends base SM_module class.
+ *
+ */
+class baseMod extends SM_module {
+     
+     /**
+      * configure the module. run before moduleThink
+      */
+    function moduleConfig() {
+
+        // configure which methods will be run automatically
+        $this->preThinkList[] = 'moduleHeader';
+        $this->postThinkList[] = 'moduleFooter';
+
+    }
+
+     /**
+      * this function contains the core functionality entry point for the module.
+      */
+    function moduleThink() {
+    
+
+        // virtual - this will be written by the extending module designer
+
+    }
+
+    // this function will run automatically before moduleThink()
+    // the designer of the extended module need not call it directly    
+    function moduleHeader() {
+
+        // notice you can use directives here that may be setup by the extended module
+        $this->say("&lt;TABLE BORDER=1&gt;&lt;TR&gt;&lt;TD ALIGN=CENTER&gt;{$this->directive['title']}&lt;/TD&gt;&lt;/TR&gt;&lt;TD&gt;");
+
+    }
+    
+    // this function will run automatically after moduleThink()
+    // the designer of the extended module need not call it directly    
+    function moduleFooter() {
+
+        $this->say("&lt;/TD&gt;&lt;/TR&gt;&lt;/TABLE&gt;");
+
+    }
+
+}
+
+</programlisting>
+
+and here is the extended class
+
+<programlisting>
+
+
+/**
+ * an extended module. extends baseMod class.
+ *
+ */
+
+// include base module
+global $SM_siteManager;
+$SM_siteManager->includeModule('baseMod');
+
+class extendedMod extends baseMod {
+     
+     /**
+      * configure the module. run before moduleThink
+      */
+    function moduleConfig() {
+
+        // configure
+        parent::moduleConfig();
+
+        // other configuration here...
+        $this->directive['title'] = 'Extended Module Test';
+
+    }
+
+    /**
+     * this function contains the core functionality entry point for the module.
+     */
+    function moduleThink() {        
+
+        $this->saybr("This output is being displayed by the extended module. It is wrapped in a table generated by the base module");
+        $this->saybr("The generation of the table was done automatically through preThinkList and postThinkList methods");
+
+    }
+    
+}
+
+</programlisting>
+
+
+</para>
+
+</section>
+
+
+<section>
+<title>InVar Propagation (read-write inVars)</title>
+
+<para>
+    While designing modules you may find it necessary to have not only "read-only" type inVars, where your module is
+    simply reading a value that was passed to the script, but also "read-write" type inVars, where you want your
+    module to not only read the current value of a variable, but make that value available to other modules on the
+    current page.
+</para>
+
+<para>
+Propagated inVars were designed so that modules placed together on a page that weren't designed to work together 
+still function correctly. The best way to illustrate this is by example.
+</para>
+
+<para>
+Say you have three modules on a page. The first one is a menu, the second is a text viewer. When you click on an item in the menu, it displays some text in the viewer on the right. The viewer module declares an inVar called "id". When you click on a menu item, it reloads the page with the proper "id" set which the textViewer uses to display the correct content.
+</para>
+ 
+<para>
+Now, the third module isn't related to the modules above. It's a login box with a SmartForm. Since it's a SmartForm it has to reload itself, which means it will post to PHP_SELF.
+</para>
+ 
+<para>
+So lets say someone comes to this page, and selects an item in the menu, with id=5. Now, once they do that, they decide to login, so they type in their username and password in the third module, and hit submit.
+</para>
+ 
+<para>
+Now here's the trouble. They had previously clicked on a menu item, which set 'id' to 5. But the login module doesn't know anything about "id", it wasn't built to use it, and therefore wouldn't have added it as a hidden on it's own. So once they click submit, the 'id' variable would have been erased, and the user would no longer be on the page they selected from the menu. Lets say they typed the wrong password, so the page reloads a couple times. It would be nice if 'id' stayed 5 the whole time because the SmartForm added a hidden for the 'id' variable, even though the login module doesn't know anything about it.
+</para>
+ 
+<para>
+This is what propagated (ie, "read-write") inVars do. The login SmartForm will automatically add a hidden called 'id' and set it to 5, because it knew that another module on the same page was using this inVar.
+</para>
+
+<para>
+There is a configuration variable '<varname>propagateInVarDefault</>' in the 'flags' section of the GCS. This determines the default settings of
+when inVars will propagate. If this is set to false, you must explicitly set which inVars to propagate. If this is set to true, all inVars will propagate
+by default and you must explicitly tell SiteManager which NOT to propagate. You most likely want to keep the default setting of <emphasis>not</> propagating
+by default, and only turning on propagation for specific variables that should.
+</para>
+
+<para>
+You can also turn set inVar propagation either for a whole module, or on an inVar by inVar basis. Consult the Module section or the API docs for more information.
+</para>
+
+</section>
+
+<section>
+<title>Multilingual Support</title>
+
+<para>
+Because the Internet is a global network, your sites (and modules) need the ability to display in multiple languages. SiteManager
+handles this by allowing you to define and load an XML language description file.
+</para>
+
+<para>
+The language XML file format is described in Appendix B. Once you have a language file defined, you load it into your
+module with the <function>loadLanguage()</> method, which is inherited from <classname>SM_object</>. This method will search your "locale" paths.
+It may be called in either <function>moduleConfig()</> or <function>moduleThink()</>.
+</para>
+
+<para>
+After loading your language definitions, you use the <function>getText()</> method to retrieve your text in the desired language,
+by the ID defined in the language file.
+</para>
+
+<para>
+If you don't specify which language getText() should use, it will default to either 1) the preferred language of the current
+user on the site 2) the default for the site 3) the default for the module. To define a default for the module, add a directive
+'<varname>defaultLocale</>' in the <function>moduleConfig()</> section of your site. 
+</para>
+
+<para>
+Once you have retrieved it, you may then <function>say()</> the text as normal.
+</para>
+
+<para>
+<programlisting>
+
+        $this->loadLanguage('testSite.lang');
+        
+        $bText = $this->getText('text1');         // browser detected language
+
+        $eText = $this->getText('text1','en_US'); // test specification of English
+        $dText = $this->getText('text1','da_DK'); // test specification of danish
+
+        $this->saybr("English: $eText");
+        $this->saybr("Danish: $dText");
+        
+</programlisting>
+
+</para>
+
+<para>
+See the Internationalization Support section of <classname>SM_object</> and Appendix B for more information.
+</para>
+
+</section> <!-- end language independence section -->
+
+<section>
+    <title>Module Design Tips</title>
+    
+    <itemizedlist>    
+    <listitem><para><function>moduleThink()</> should never <function>exit</>, unless it's a fatal error (and even then, call <function>SM_fatalErrorPage()</>) or your transferring to another script.</para></listitem>
+     <listitem><para>if calling <function>header("Location: http://sampleUrl.com")</>, from within <function>moduleThink()</>, make sure you <function>exit()</>; afterwords</para></listitem>
+     <listitem><para>don't use <function>echo</> or <function>print</> to output text for your module, use <function>$this->say()</> or <function>$this->saybr()</></para></listitem>
+     <listitem><para>use <function>$this->hLink()</> for A HREF links to make your module 
+          "session-aware"</para></listitem>
+     <listitem><para>make use of directives instead of hard coding configuration values into your module, so they can be configured later</para></listitem>     
+     <listitem><para>make use of <function>loadLanguage()</> and <function>getText()</> methods to add language independence to your modules</para></listitem>
+     <listitem><para>make use of module resources</para></listitem>
+    </itemizedlist>
+
+</section>
+
+</section> <!-- end module section -->
+

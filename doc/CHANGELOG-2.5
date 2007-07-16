@@ -1,0 +1,116 @@
+2.5.4 Changes [2.6.0 final] (release 2/19/06)
+--------------------------------------
+- NEW: new extended tag syntax. "allowExtendedTags" must be true in the config.
+       the format is <SM TYPE="tagname">some data can go here</SM>
+       the data in the middle will be accessible through $tag->data
+- UPD: allow proper XHTML SM tags: <SM .. />
+- UPD: SM_module::eventBadInvar now takes second parameter that contains
+	type check that failed, if any
+- NEW: new directives added to dateEntity. showMonth, showDay, and showYear were added so that you can
+	   turn off specfic pulldowns. All 3 directives are initially set to true (so all 3 pulldowns are
+	   are shown by default) (gollum 1/19/2005)
+- NEW: new directives in dateEntity. addNoOption, noOptionData, and noOptionDisplay were added to
+       the date entity and should act similar to their counterparts in a select entity. (gollum 10/25/2004)
+- NEW: new smartform filter: "xml" to force proper XML input
+- NEW: smart form xml files now parse $variables for their values the same
+       way SMCONFIG files do 
+- UPD: updated auth.inc so that it could handle newer php $_SERVER var and still be backwardsly
+       compatible ($PHP_AUTH_USER or $_SERVER['PHP_AUTH_USER'] and $PHP_AUTH_PW or $_SERVER['PHP_AUTH_PW'])
+       (gollum 09/21/2004)
+- UPD: removed redundant directive (optionBreak) from checkBoxEntity (gollum 09/21/2004)
+- UPD: Made minor changes to smInVarClient->verifyInVars which allows it to give the bad inVar back tp the
+        calling function. made minor changes in smCodePlate and smModules to display this returned value
+        if SM_develState is true.
+- UPD: In setInfo function of SM_entityFilter, added a check to $_FILES in addition to the check to $_POST
+		for data for the entity. This gets the data for any file input entity. (gollum 07/22/2004)
+
+2.5.3 Changes (release 7/6/04)
+--------------------------------------
+- NEW: add LDAP membersystem. contributed by Vaggelis haniotak@ucnetnom.ucnet.uoc.gr
+- NEW: add PULINK tag for making popup links in templates
+- FIX: handle anchors properly in sessionH::ulink
+- NEW: added a check in smSession.inc to see if we are in 'CLI' mode or not. If we are, then 
+       we force 'useCookies' to be 'none' (gollum 6/18/2004)
+- UPD: add option in credit card filter of not allowing known sample cards.
+- NEW: revamp session negotiation. SiteManager will now attempt to detect cookies on the clients
+       machine. if found it will keep the session id in the cookie. if not, it will pass session
+       id on all links. this feature is turned on by the session GCS variable "useCookie" which
+       can be set to "auto", "none" or "require"
+- UPD: changed siteConfig's getVar function to be a little more efficent.
+- UPD: major changes to SM_siteManagerRoot's _findSMfile_disk function so that it makes less calls to 
+       'file_exists' function. This should increase speed and preformance and shouldn't break any functionality.
+- UPD: handle error that happen early in the startup more gracefully (ie, during read of globalConfig)
+- FIX: as of PHP 4.3.4, XML_CASE_FOLDING option needs to be 1, not true
+- NEW: Added a directive to 'fileSelectEntity' calle 'fileNameFilter' which should be a regular expression that
+       is used to filter the names put in the select entity.
+- FIX: Added 'hasFormRun' var to SM_smartForm to track if the runForm function has been called. If
+       dataVerified is called and the form hasn't been run yet, dataVerified runs the form. This fixes
+       a problem where filters weren't being checked because the form hadn't been run yet and dataVerified
+       was returing true when it should have been returning false.
+- NEW: add directive optionAlign to radio entity which will put options in a table to align them nicley  
+- FIX: Changed textAreaEnitiy to pass $this->value thru the htmlspecialchars() function just before 
+       displaying the textarea tag. Because of the fact that the actual text in a textarea tag is between
+       the '<textarea>' and '</textarea>' the browser was converting any special characters to html.
+       For example, this would eventually cause the text '&gt;' to become '>', which isn't what we want.
+- NEW: Added 2 directives in globalConfig.xsm trackLastPageAccess in sessions and inactiveTTl in members. If
+       trackLastPageAccess is set to true, the session system will keep track of when the last time any page was
+       accessed. If trackLastPageLoad is true, inactiveTTL is used to log members out after a certian amount of
+       time (in seconds) of being inactive. If inactiveTTL is 0 or less, it will not log members out.
+- UPD: remove SiteManager C extension support (deprecated)
+- UPD: change SiteManager root object bootstrapping so that initial setup doesn't happen in constructor. 
+       This avoids potentially calling an object that hasn't been initialized yet.
+
+2.5.2 Changes (release 9/03/03)
+--------------------------------------
+- FIX: fix dbSelectEntity for oracle users. generated an invalid query. thanks to Tero Ykspetaja
+- FIX: allow quote characters in textEntity values by converting to html &quot entity
+- UPD: fix all access to PEAR DB objects to conform to proper API calls. fixes problems with newer versions on 
+       PEAR DB routines.
+- UPD: update to latest PEAR DB redistribution. remove Date/Calc.php and Var_Dump.php. (use pear install to get these)
+- NEW: Create a 'zip' filter (zipFilter.inc) for smartforms. It can handle 5 digit and 9 digit zips as well as customized zips.
+- FIX: correct check for existance of debug_backtrace function
+- NEW: patch from Pascal adds directive tableBorderColor to SM_module
+- FIX: bugfix in dbUniqueFilter when using non-default database handle (thanks to Tero Ykspetaja)
+- FIX: fix fatal typo in dbunique filter
+- FIX: fix functionality of HTMLTITLE template tag (thanks Graham) 
+
+2.5.1 Changes (release 6/23/03)
+--------------------------------------
+- FIX: SECURITY FIX: patch from Ron Kuris fixes a potential SQL injection vulnerability in the 
+       default member system
+- NEW: integrate waiting contributions (thanks to all!):
+          - patch from Pascal Van Hecke to allow objects to be used in VAR tags
+          - patch from Marinucci Luca to allow SM_object::getText to return default locale if the one 
+            specified wasn't found
+          - updates from Eric Anderson to add Postgre support to memberEdit.mod and dbUniqueFilter
+- NEW: add smartForm directive (varExcludeList) to exclude specified session vars from propagating in a form
+- NEW: add sortByTitle() method to select input entity (and it's decendants). sorts options in the select
+       list by alphabetical order
+
+2.5.0 Changes (release 6/16/03)
+--------------------------------------
+- NEW: add ability to use templates to customize output of switchBox entity
+- NEW: if not in develState, don't maintain debug log. saves some memory/time in larger sites.
+- NEW: input entities now throw a debugLog warning when a filter fails. this makes it easier to see why
+       a form isn't getting to dataVerified()
+- NEW: add poolSelectEntity. this entity sets up two select boxes: one containing a "pool" of items (on left).
+       one containing a list of items that have been selected from the pool (on right). there are arrow buttons
+       between the two select boxes to transfer items between being selected and being available in the pool.
+       the entity provides a simple method (getActionList()) to get an array of items that either need to be
+       removed or added. see lib/sfInputEntities/poolSelectEntity.inc
+- NEW: add optional anchor parameter support to various SM_session  methods (hLink, reloadPage, etc)
+- NEW: add optional parameter to SM_smartForm::getVarHash(). it takes an array of variables to specifically include
+       in the list of variables returned. if it's not in the list, it is not returned. this is usefull if you
+       use loadForm() to get a list of variables in the form, and you wish to verify that the form was not crafted
+       by the user to contain other fields.
+- NEW: add the ability to load a smartform from XML data that was not loaded from a file (assumably
+       loaded from a database.) the new method is SM_smartForm::loadFormData() and takes a string as
+       an argument, which should contain the XML to be parsed.
+       
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+
+2.4.x - 2.5.x UPGRADE NOTES
+---------------------------
+- None yet!

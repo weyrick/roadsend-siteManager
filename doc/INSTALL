@@ -1,0 +1,473 @@
+/*********************************************************************
+ *  Roadsend SiteManager
+ *  Copyright (c) 2001-2006 Roadsend, Inc.(http://www.roadsend.com)
+ **********************************************************************
+ *
+ * This source file is subject to version 1.0 of the Roadsend Public
+ * License, that is bundled with this package in the file 
+ * LICENSE, and is available through the world wide web at 
+ * http://www.roadsend.com/license/rpl1.txt
+ *
+ **********************************************************************
+ * Author(s): Jonathan Michel (pym@roadsend.com)
+ *            Shannon Weyrick (weyrick@roadsend.com)
+ *
+ */
+
+
+-------------
+REQUIREMENTS:
+-------------
+
+    PHP Version 4.2.1 or higher
+    Web Server (Apache recommended)
+
+------------
+TESTED WITH:
+------------
+    PHP Version 4.2.1+, 4.3.x, 4.4.x
+    Apache 1.3.2x,2.0.x
+    MySQL 3.23.x/4.0.x/4.1.x/5.0.x
+    PostgreSQL 7.1.3
+    Linux Kernel 2.2.x/2.4.x/2.6.x
+
+-----------------
+GETTING MORE HELP
+-----------------
+
+    Look in the doc/ directory that came with the SiteManager package.
+    
+    The Manual and API Reference are included in seperate packages, available
+    from http://www.phpsitemanager.com
+
+    If you're still having trouble, visit http://www.phpsitemanager.com
+    or email us at siteManager@roadsend.com.
+    
+    The SiteManager mailing list is available by sending a blank email to
+    siteManager-subscribe@roadsend.com        
+
+-------------------
+PEAR PACKAGE NOTICE
+-------------------
+
+    SiteManager requires the PEAR Database routines to function.
+    
+    The relavent PEAR code has been redistributed with this SiteManager. For more
+    information on PEAR, see the "redist/pear" directory, or visit http://pear.php.net
+
+----------------------------------------
+QUICK START INSTALL (unix/windows)
+----------------------------------------
+
+    The instructions below assume that Apache is the webserver being configured, 
+    and that PHP has already been successfully installed.
+    
+    If you have a different setup and would like to document it and
+    send us instructions to be included here, please send them to
+    siteManager@roadsend.com
+
+    (Note To Windows Users: you should simply have to use windows style path
+     specifications in place of unix style as used in this document. Most 
+     SiteManager sample files include both unix and windows version as examples)
+    
+    -----------------
+
+    There are two common scenarios for installation:
+    
+    1) You have root access to the installation machine, and wish to setup 
+       system wide access to SiteManager
+       
+    2) You have a shell account on a server you do not own, and need to setup 
+       SiteManager in your private user space for your site only. 
+
+
+    The methods for installing SiteManager are similar for both, in that they 
+    require the following steps:
+    
+    0) Select a directory for installation
+    1) Move contents of archive into this directory
+    2) Configure:
+        a) Setup the paths
+        b) Restrict access to SiteManager private files
+    3) Build a test site
+
+    Here are the step by step instructions for each scenario:
+    
+    --------------------------------------------------------------------------
+    SCENARIO #1: You have root access, setup SiteManager for entire system
+    --------------------------------------------------------------------------
+
+    0) Pick a directory for installation
+    
+        The directory you choose for installation should reside outside of the
+        web root (DocumentRoot). For these instructions, we'll use the following 
+        directory and naming convention:
+        
+            <SM_ROOT_DIR>           /usr/local/lib/php/siteManager
+                
+    1. Since you're reading this, you've already unpackaged the tar file. Move
+       the entire directory to it's new location:
+       
+       mv siteManager_2.6.0 /usr/local/lib/php
+       
+       Then come back and continue reading this file from it's new home :)
+
+        2. Change or symlink the directory name, for convenience:
+    
+          mv siteManager_2.6.0 siteManager
+          
+          -or-
+          
+          ln -s siteManager_2.6.0 siteManager
+
+        3. Add <SM_ROOT_DIR> to the php.ini include_path, for example:
+        
+                (root access required)
+                include_path    = "./:/usr/local/lib/php/siteManager:/usr/local/lib/php"
+
+       You're php.ini file is located in /usr/local/lib/php by default on a PHP 
+       source install.
+        
+    4. Limit clients from accessing SiteManager files in Apache
+    
+       This keeps users from being able to view potentially sensitive data.
+       Add the following lines to httpd.conf
+       
+        # dont allow access to SiteManager files
+        <FilesMatch "\.(inc|tpt|stp|mod|xsm|cpt)$">
+            Order allow,deny
+            Deny from all
+        </FilesMatch>    
+    
+        If you skip this step, users will be able to read potentially sensitive
+        information, like database names and passwords!
+
+    5. Reload Apache
+    
+       For example:
+       /etc/init.d/httpd restart
+        
+    6. Review <SM_ROOT_DIR>/config/globalConfig.xsm for any changes
+    
+       Here you should look for changes in the "dirs" section mostly. You should 
+       at least verify that "smRoot" points to the path you chose for your SiteManager 
+       Root Directory.
+
+        7. Setup a test site.
+    
+       See QUICK START EXAMPLE PROJECT ONE below.
+
+    8. Did it not work? Too hard to follow? Need help? Please
+       contact us! We need feedback! 
+       
+       email: siteManager@roadsend.com
+       website: http://www.phpsitemanager.com
+
+    --------------------------------------------------------------------------
+    SCENARIO #2: You have a shell account on a server you do not own
+    --------------------------------------------------------------------------
+
+    If you have a shell on a providers machine, remember that your provider must 
+    have setup Apache and PHP 4.1.x for this to work.
+
+    0) Select a directory for installation
+    
+        The directory you choose for installation should reside OUTSIDE of your
+        public web space, if possible. Public web space is commonly the 
+        "public_html" (or similar) directory inside of your home directory. To 
+        be clear, you DO NOT want to put the SiteManager libraries under the 
+        public_html directory.
+        
+        We will assume the following directory structure:
+        
+        <USER_DIR>      /home/userName
+        <PUBLIC_HTML>   /home/userName/public_html
+        <SM_ROOT_DIR>   /home/userName/siteManager
+        
+    1. Since you're reading this, you've already unpackaged the tar file. Make 
+       sure you've unpacked it into your home directory, so that you now have a 
+       /home/userName/siteManager_2.6.0 directory.
+
+        2. Change or symlink the directory name, for convenience:
+    
+          mv siteManager_2.6.0 siteManager
+          
+          -or-
+          
+          ln -s siteManager_2.6.0 siteManager 
+
+    3. Now you need to pick a method of setup. Either:
+    
+        a) use .htaccess to configure paths and security
+        
+            If possible, you should choose this option. It will let you setup 
+            the php_include path for your site, as well as add the security 
+            settings for Apache. However, some providers might not let you have 
+            access to this functionality. If you are unable to use a .htaccess 
+            file, you'll need to choose the next option
+
+        b) configure the siteManager.inc file directly
+ 
+            Choose this option if you are unable to use .htaccess files. This 
+            will allow the SiteManager system to work, but you will be unable to 
+            setup Apache directives that block unwanted access to SiteManager 
+            files. THIS IS A SECURITY HAZARD! Please only choose this option if 
+            you have no choice, and make sure you place the admin/ directory
+            of your site outside of your web root.
+
+    4. Setup paths
+    
+        a) If you are setting up a .htaccess file:
+        
+            NOTE: The .htaccess method will NOT work if you are using the CGI
+            version of PHP. You should follow step b below instead.
+        
+            It should be located at 
+            /home/userName/public_html/.htaccess
+            
+            It should contain the following lines:
+            
+            #--------------------------
+            php_value include_path ./:/home/userName/siteManager:/usr/local/lib/php
+            # dont allow access to SiteManager files
+            <FilesMatch "\.(inc|tpt|stp|mod|xsm|cpt)$">
+                Order allow,deny
+                Deny from all
+            </FilesMatch>            
+            #--------------------------
+
+            If you skip this step, users will be able to read potentially sensitive
+            information, like database names and passwords!       
+            
+            There is an example .htaccess file in the skeletonSite/ directory.
+            
+            
+        b) If you are editing siteManager.inc directly:
+        
+           Edit /home/userName/siteManager/siteManager.inc, and set the 
+           $SM_rootDir variable to the SiteManager root directory (remember it 
+           has to end in a slash!)
+           
+           Also, if you choose this option, you will have to specify the path of
+           siteManager.inc in your site's admin/common.inc file! (more on this 
+           later)
+           
+    5. Review <SM_ROOT_DIR>/config/globalConfig.xsm for any changes
+    
+       Here you should look for changes in the "dirs" section mostly. You should 
+       at least verify that "smRoot" points to the path you chose for your SiteManager 
+       Root Directory.
+
+        6. Setup a test site.
+    
+       See QUICK START EXAMPLE PROJECT ONE below.
+
+    7. Did it not work? Too hard to follow? Need help? Please
+       contact us! We need feedback! 
+       
+       email: siteManager@roadsend.com
+       website: http://www.phpsitemanager.com
+
+
+-----------------------
+COMMON INSTALL PROBLEMS
+-----------------------
+
+Q. I get a "500 - Internal Error" when trying to view a site
+
+A. Probably comes from .htaccess using php_value when it's
+   not allowed to. A quick and dirty solution would be 
+   to add: "AllowOverride All" to the user's 
+   <Directory> entry in httpd.conf
+
+TIP: In windows, use forward slashes for directory paths. PHP will convert
+     them to backslashes for you, and you don't have to worry about escaping
+     them inside of strings.
+
+-------------------------------------------------------------------------------
+
+----------------------------------------------
+QUICK START EXAMPLE PROJECT ONE (hello, world)
+----------------------------------------------  
+        
+    For this example, we will assume:
+    
+        <PROJECT_DIR> = /var/www/helloWorld
+        <SM_DIR>      = /usr/local/lib/siteManager
+    
+    You may use a different directory - you will configure which directory 
+    you are using in the steps below.
+
+        1. Create a new project directory helloWorld 
+    
+                cp -R <SM_DIR>/skeletonSite/ <PROJECT_DIR>
+
+    1a. In Unix, check permissions on your new directory. If you're running 
+        PHP Safe Mode, you might need to set the owner of the new skeleton
+        directory to be the same as the owner of the SiteManager directory.
+        
+        2. Set up the configuration files for the project
+        
+                cd <PROJECT_DIR>
+        
+        a)  EDIT admin/common.inc
+                        
+            
+            1) Depending on how you setup SiteManager (in the installation 
+               instructions, above), you may have to add a path to the
+               line:
+               
+               require("siteManager.inc");
+            
+               If siteManager.inc is NOT in your php path, specify it's
+               exact location there.
+         
+                    2) CHANGE the siteName and siteID: 
+            
+                       // site name and ID. used for debug output and configuration
+                       $siteName   = "HelloWorld";
+                       $siteID     = "HELLW1";
+
+            3) Edit $adminDir to point to the admin/ directory of your site.
+            
+               $adminDir = "/var/www/helloWorld/admin/";
+                
+        b)  EDIT admin/config/localConfig.xsm
+        
+            Change the SITEID in the SITE tag to match $siteID, which you set above
+            in step 2a
+            
+            <SITE SITEID="HELLW1">
+            
+    3. Point your browser to the URL that corresponds to your new project directory
+    
+       http://localhost/helloWorld
+
+    4. You should see a blank white page with the text "Hellow World". Thats it!
+       You can now read the docs and explore the various parts of a SiteManager
+       Site.
+       
+    5. On Unix, you can use the PERL script in the bin/ directory to do these steps
+       for you. It will run interactively, asking you for input along the way. It
+       creates the directories and does all substitution for you.
+
+-------------------------------------------------
+QUICK START EXAMPLE PROJECT TWO (hello, Roadsend)
+-------------------------------------------------
+
+        This project uses adds two modules, one is the
+        htmlModule, which was introduced in example one and
+    is a standard module that comes with SiteManager.
+     
+        The other is a small custom module that uses a smartForm for
+        a very simple email form.
+        
+    1. Create a project directory per the example above
+                
+    2. cd <PROJECT_DIR>/home
+       edit index.php
+    
+    3. Paste in the example script   
+        // Set two modules with file name and class name    
+        $mod1 =& $SM_siteManager->loadModule('mailRoadsend');
+        $mod2 =& $SM_siteManager->loadModule('rawHTML');
+        
+        // Configure the modules directives:  
+    
+        // Set to true or false
+        $mod1->addDirective('requiredTag',false);
+        $mod2->addDirective('output',"<B>THIS SPACE LEFT BLANK</B>");   
+        
+        // Set the template
+        $rootTemplate =& $SM_siteManager->rootTemplate('basicTemplate');
+        
+        // Add the module to the template
+        $rootTemplate->addModule($mod1,"areaOne");
+        $rootTemplate->addModule($mod2,"areaOne");
+                            
+        // Call the display function to output the php code
+        $SM_siteManager->completePage()
+    
+
+---------------------------------------------------------
+QUICK START EXAMPLE PRJECT THREE: USING A CUSTOM TEMPLATE
+---------------------------------------------------------
+        
+        A template is the easiest thing in the world to create, just make 
+        a standard html page with whatever editor you want and define the
+        AREAS by puting an SM TYPE="areaName" tag when ever you want.  
+        You can have any number of areas defined in a template and add
+        as many modules to each area as you want.
+               
+        FILENAME: threeArea.tpt
+        example: A Three Area Template 
+    
+        <HTML>
+        <HEAD><TITLE><SM TYPE="htmltitle" NAME="Default Title"></TITLE></HEAD>
+        <BODY BGCOLOR="#FFFFFF">
+        <B>The Near Side</B><BR>        
+        <SM TYPE="area" NAME="leftSide">
+        <B>The Far Side</B><BR>
+        <SM TYPE="area" NAME="rightSide">
+        </BODY>                          
+        </HTML> 
+
+        
+        --------------------------------------------------
+        
+        1. Create a template (or use the one above)
+        
+        The template directories are set in the global and local config files, you can use
+        as many directories as needed. The extention .tpt is not required but recommended for clarity and security.
+
+        2. Save it in the templates directory of an existing site
+                
+                (if you have not created a site create one now with the command)
+                <SM_DIR>/bin/siteManager makeSite helloWorld HELWO
+                cd <PROJECT_DIR>/admin/templates                
+        
+        3.      Create a new directive script
+                
+                // Go to the home directory of the site
+                cd <PROJECT_DIR>/home
+                
+                // Add a page with helper script
+                <SM_DIR>/bin/siteManager makePage farside
+                        
+                Load the modules you want to use
+                Configure the Modules
+                Set the template
+                Add the modules to the template
+                Call the Display Function.
+                
+        NOTE:   If you want to use the same module more then once
+                with diferent configuration you need to load it
+                multiple times and configure each one.
+        
+
+    // Set the module with file name and class name
+    $mod1 =& $SM_siteManager->loadModule('rawHTML');
+    $mod2 =& $SM_siteManager->loadModule('viewSource');
+    $mod3 =& $SM_siteManager->loadModule('mailRoadsend');
+    
+    // Configure the module
+    $mod1->addDirective('output','Hello, World!');                      
+    $mod2->addDirective('fileName','/var/www/html/helloWorld/home/farside.php');                        
+    $mod3->addDirective('requiredTag',false);
+    
+    // Set the template
+    $rootTemplate =& $SM_siteManager->rootTemplate('threeArea');
+    
+    // Add the module to the template
+    $rootTemplate->addModule($mod1,"titleName");
+    $rootTemplate->addModule($mod2,"leftSide");
+    $rootTemplate->addModule($mod3,"rightSide");
+                        
+    //  Call the display function to output the php code
+    $SM_siteManager->completePage();
+
+        Your First Module:
+
+    For further examples and help, see the SiteManager documentation.
+
+

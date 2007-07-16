@@ -1,0 +1,169 @@
+
+<section>
+<title>Error Handling and Debugging</title>
+
+<section>
+<title>Error Handler Overview</title>
+
+<para>
+SiteManager provides a default Error Handler object for all SiteManager resources to make use of.
+The included error handler is an extendable class that provides basic error handling and debugging 
+capabilities that modules, CodePlates and other resources can make use of. This includes a common debug log,
+fatal error page, database error checking, and integrated browsing and viewing of the debug log.
+</para>
+
+<para>
+SM_object provides an interface for accessing the error handler, so that any object which extends
+it has this functionality built in. Available methods include:
+</para>
+
+<para><emphasis>debugLog</></para>
+
+<para>
+<function>debugLog(<parameter>$msg, $verbosity=0</>)</function>
+</para>
+    
+<para>
+This method will invoke the <function>debugLog</function> method of the error handler. By default it writes 
+an entry to the global debug log. <varname>$msg</> may be any valid PHP string. In addition to 
+logging the message passed, the class name of the caller will also be logged.
+ <varname>$verbosity</> is used to determine which entries should show up while viewing the log. Higher is more verbose. The level used to determine 
+which debug entries to view while displaying the log is determined by the <varname>debugLevel</> VAR in the
+"debug" section of the GCS.
+</para>
+
+<para><emphasis>fatalErrorPage</></para>
+
+<para>
+<function>fatalErrorPage(<parameter>$msg</>)</function>
+</para>
+
+<para>
+This method will invoke the <function>fatalErrorPage</function> method of the error handler. By default it will
+generate a "Fatal Error Page", which includes the full debug log, the error message passed by the caller, any captured buffered output (ie, 
+from 'echo') and a backtrace of functions called up until the point of the error, including their arguments (PHP 4.3+).
+This method does not return.
+</para>
+
+<para><emphasis>dbErrorCheck</></para>
+
+<para>
+<function>dbErrorCheck(<parameter>$rh, $fatal=true</>)</function>
+</para>
+
+<para>
+This method will invoke the <function>dbErrorCheck</function> method of the error handler. By default it will
+check if <varname>$rh</> is a PEAR DB error object. If <varname>$fatal</> is true and the object was an error,
+then the <function>fatalErrorPage</function> method will be called (which will not return). If the site is in development
+mode (<varname>develState</> is true in "debug" SECTION of GCS) then the SQL error information will be included.
+If <varname>$fatal</> is false, the function will return the result of checking <varname>$rh</> for an error.
+</para>
+
+<para>
+In addition to the above methods, all SM_object decendants have direct access to the current error handler
+object through the class property <varname>$this->errorHandler</>. With this property, one may access any method
+defined in the current error handler, which is especially useful for custom error handlers.
+</para>
+
+</section> <!--  -->
+
+<section>
+<title>Custom Error Handler</title>
+
+<para>
+As each site's requirements vary, it may be necessary to customize the functionality of the error handling methods.
+This is possible by extending the base error handler and telling SiteManager to use the custom version.
+</para>
+
+<para>
+The first step is to copy the <filename>lib/smErrorHandler.inc</> (the included default handler) to it's own file. You will use this as your base.
+The new file should be placed under the <filename>admin/</> directory of the SiteManager based site. You need to use the PHP function <function>require</function>
+to include the class definition for the new handler. The class name may be whatever you wish, but it should extend the
+<classname>SM_errorHandler</> class. Make sure you call <function>require</> <emphasis>before</> calling <function>$SM_siteManager->loadSite</>
+on your <filename>localConfig.xsm</filename> file! This is because the class definition needs to be defined before you
+tell SiteManager to use your custom handler, which you will do in <filename>localConfig.xsm</>.
+</para>
+
+<para>
+The final step is to define the variable <varname>errorHandler</varname> in your <filename>localConfig.xsm</> file. 
+The global value (in <filename>globalConfig.xsm</>) is set to <classname>SM_errorHandler</>, the included default
+handler. The new value in your <filename>localConfig.xsm</> should be the class name you have used when extending the <classname>SM_errorHandler</> class.
+</para>
+
+<para>
+SiteManager will now use your custom error handler for all calls to <function>debugLog</>. <function>fatalErrorPage</>,
+and <function>dbErrorCheck</>. In addition, all <classname>SM_object</> based classes have direct access to your class's
+methods through the <varname>$this->errorHandler</> property.
+</para>
+
+<para>
+One common reason to create a custom error handler is to customize the output of the <function>fatalErrorPage</> for 
+a site. You might want to provide different details of the error based on the current development state of your project,
+for example.
+</para>
+
+</section> <!--  -->
+
+
+<section>
+<title>debugOnVar: Interactive Debug Log Browsing</title>
+
+<para>
+An important part of debugging SiteManager based sites is the ability to view the debug log while interactivly
+viewing the site. This functionlity is controlled by the <varname>debugOnVar</> setting in the "debug" SECTION 
+of the GCS. When this variable is true, SiteManager will look for a special variable passed to a SiteManager
+page. When the variable is present, it will generate the page normally, but display the current debugLog 
+at the top of the page. This can be used to provide a wealth of information about which code ran, and how, while 
+generating the page shown.
+</para>
+
+<para>
+The variable that needs to be passed to turn on this special debug mode is <varname>SM_debug</>, which should be set
+to 1. For example, try accessing a normal SiteManager page (assuming debugOnVar is set to true, as per above)
+like so:
+
+<programlisting>
+    http://www.mysite.com/home/index.php?SM_debug=1
+
+</programlisting>
+
+You should see the same page generated as without the SM_debug variable, but at the top of this page will be the contents of
+the debugLog, generated in accordance with the current verbosity level.
+</para>
+
+<para>
+The verbosity level is determined by the <varname>debugLevel</> variable in the "debug" SECTION of the GCS. Any debug
+log entries created with a verbosity level of this number or less will be shown.
+</para>
+
+<para>
+Here is a handy bit of code that you can place in your <filename>common.inc</> file. It will keep the <varname>SM_debug</> var
+persistent, so that once you set the SM_debug variable to 1 it will stay until you set it back to 0. This allows you to browse 
+your entire site with the debugLog on, checking for errors or warnings you might otherwise not see:
+
+<programlisting>
+
+
+// setup debug session?
+if ($SM_develState) {
+    $SM_siteManager->addPersistent('SM_debug');
+    if ((isset($_GET['SM_debug']))&&($_GET['SM_debug'] == 1)) {
+        $SM_siteManager->sessionH->setPersistent('SM_debug',1);
+    }
+    else if (isset($_GET['SM_debug'])) {
+        $SM_siteManager->sessionH->setPersistent('SM_debug',0);
+    }
+}
+
+
+</programlisting>
+
+You can put this bit of code directly after the $SM_siteManager->startSessions() call in <filename>common.inc</>.
+
+</para>
+
+</section> <!--  -->
+
+
+</section> <!-- end debug section -->
+

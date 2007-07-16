@@ -1,0 +1,70 @@
+This directory contains modules you may find helpful for
+creating SiteManager sites.
+
+CONTRIBUTED MODULES:
+--------------------
+
+- abstractDbEditor.mod
+- dbGui.mod
+- dbRecordSelector.mod
+
+        These are all part of the new DB GUI system, which is an expandable system for
+        creating SmartForms based on database tables on the fly, by reading the table
+        structure, and allowing various opertions to be performed on the table (add, remove, etc)
+
+- blank.mod
+
+        A blank, skeleton module. Used by /bin/siteManager.
+        
+- fileUpload.mod    
+
+        A module for allowing a user to upload a file to the server.
+        
+- mailRoadsend.mod
+
+        Simple module implementing a feedback form with a SmartForm
+        
+- memberEdit.mod
+
+        Sample module for editing a "member" table, in this case the member table of the
+        SiteManager session/member system. It's also a good example of creating a module that
+        can create a SmartForm used for editing content in a database.
+        
+- menu.mod
+    
+        Old heirarchy menu system. This is deprecated, use ngMenu instead.
+        
+- ngMenu.mod
+
+        "Next Generation" menu system. Allows a collapsable/expandable heirarchy of menu items. Items
+        may be links. You can search for items, traverse, get parents, children, etc. Lots of options
+        for formatting output.
+        
+- rawHTML.mod
+
+        A simple module for outputting a block of raw text/HTML in a module.
+        
+
+- smVersion.mod
+
+        Simple module which displays the current SiteManager version.
+        
+- smartGrid.mod
+
+        Feature rich module for displays pages of information from database tables in a grid fashion.
+        
+- store.mod
+
+        Part of a shopping cart system
+        
+- userLogin.mod
+
+        Sample module used for logging users into the SiteManager member/session system.
+        
+- viewSource.mod
+
+        A module which, given a PHP source file as a directive, will displays the contents in
+        syntax highlighted fashion.
+        
+
+

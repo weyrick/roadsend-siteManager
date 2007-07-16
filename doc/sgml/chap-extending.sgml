@@ -1,0 +1,27 @@
+
+<Chapter>
+<title>Extending SiteManager</title>
+
+
+<para>
+    There are many ways to extend SiteManager, and much needed documentation on
+    how to do so. A couple of options include:
+</para>
+    
+<orderedlist numeration="arabic">
+<listitem><para>Creating Modules</para></listitem>
+<listitem><para>Creating Templates</para></listitem>
+<listitem><para>Creating XML SmartForm Files</para></listitem>
+<listitem><para>Creating SmartForm Input Entities</para></listitem>
+<listitem><para>Creating SmartForm Filters</para></listitem>
+<listitem><para>Creating Libraries for use with SiteManager, such as a Member Permission System</para></listitem>
+</orderedlist>
+    
+<para>
+    For now, you may look at the current modules, entities and filters for 
+    example code. Also library code is heavily documented. Check the SiteManager API documentation
+    as well.
+</para>
+
+</Chapter>
+

@@ -1,0 +1,297 @@
+<SM_XML>
+<SMARTFORM VERSION="2">
+	<DIRECTIVE>
+		<VAR name="tableBorder"			value = "0"/>
+		<VAR name="tableWidth"			value = "600"/>
+        <VAR name="resetButton"			value = "RESET"/>
+    </DIRECTIVE>
+
+    <ENTITY name = "headerSection">
+        <PARAMETER>
+            <VAR    name = "title"      value = "&lt;BR&gt;&lt;B&gt;SMART FORM BUILDER- SELECT FORM DIRECTIVES :&lt;BR&gt; &lt;BR&gt;"/>
+            <VAR    name = "type"       value = "rawText" />
+            <VAR    name = "layout"     value = "2"     desc = "SINGLE ELEMENT" />
+            <VAR    name = "titleAlign" value = "CENTER" />
+            <VAR    name = "inputAlign" value = "CENTER" />
+            
+        </PARAMETER>
+    </ENTITY>
+
+    
+    <!-- This allows you to put an extra submit button on top, it can
+    also be used for cool tricks with multipal 'named' submit button actions -->
+    
+    <ENTITY name = "extraSubmit">
+        <PARAMETER>
+            <VAR    name = "title"      value = "&lt;INPUT TYPE='submit' VALUE='Set Directives' &gt; &lt;BR &gt;"/>
+            <VAR    name = "type"       value = "rawText" />
+            <VAR    name = "layout"     value = "2"     desc = "SINGLE ELEMENT" />
+            <VAR    name = "titleAlign" value = "CENTER" />
+            <VAR    name = "inputAlign" value = "CENTER" />
+            
+        </PARAMETER>
+    </ENTITY>
+
+    <ENTITY name = "formName">
+        <PARAMETER>
+            <VAR    name = "title"      value = "File Name"/>
+            <VAR    name = "type"       value = "text" />
+            <VAR    name = "layout"     value = "0" />
+            <VAR    name = "required"   value = "true" />
+            <VAR    name = "value"    value = "tmp.xsm" />
+        </PARAMETER>
+        <DIRECTIVE>
+            <VAR    name = "size"       value="32" />
+        </DIRECTIVE>            
+    </ENTITY>
+    
+    <ENTITY name = "layoutSection">
+        <PARAMETER>
+            <VAR    name = "title"      value = "&lt;BR&gt;&lt;B&gt;Main Options Section"/>
+            <VAR    name = "type"       value = "rawText" />
+            <VAR    name = "layout"     value = "2"     desc = "SINGLE ELEMENT" />
+        </PARAMETER>
+    </ENTITY>
+    
+    <!-- value layout of form entities -->
+    <ENTITY name = "defaultLayout">
+        <PARAMETER>
+            <VAR    name = "title"      value = "Default Layout"/>
+            <VAR    name = "type"       value = "select" />
+            <VAR    name = "layout"     value = "0" />
+            <VAR    name = "required"   value = "true" />
+            <VAR    name = "value"    value = "0" />
+        </PARAMETER>
+        <DIRECTIVE  KEY="optionList">
+            <VAR    name = "0"          value="Title on left, input on right" />
+            <VAR    name = "1"          value="Title on right, input on left" />
+            <VAR    name = "2"          value="Title and input in one cell on two lines" />
+            <VAR    name = "3"          value="Free Form layout - no preset table tags" />
+        </DIRECTIVE>            
+    </ENTITY>    
+
+    <!-- free form seperator is used in SF_LAYOUT_FREEFORM  -->
+    <ENTITY name = "freeFormSeparator">
+        <PARAMETER>
+            <VAR    name = "title"      value = "Field Separator &lt;BR&gt; &lt;SMALL&gt;&lt;/B&gt; Only used with the Free Form Layout style."/>
+            <VAR    name = "type"       value = "text" />
+            <VAR    name = "layout"     value = "0" />
+            <VAR    name = "required"   value = "false" />
+            <VAR    name = "value"    value = "&lt;br&gt;" />
+        </PARAMETER>
+    </ENTITY>    
+    
+    <!-- submit on right (or bottom)-->
+    <ENTITY name = "controlsOnRight">
+        <PARAMETER>
+            <VAR    name = "title"      value = "Submit button on:"/>
+            <VAR    name = "type"       value = "select" />
+            <VAR    name = "layout"     value = "0" />
+            <VAR    name = "required"   value = "false" />
+            <VAR    name = "value"    value = "false" />
+        </PARAMETER>
+        <DIRECTIVE         KEY="optionList">
+            <VAR    name = "false"     value="Bottom" />
+            <VAR    name = "true"      value="Right" />
+        </DIRECTIVE>        
+    </ENTITY>    
+
+    <!-- reset button off by value -->
+    <ENTITY name = "resetButton">
+        <PARAMETER>
+            <VAR    name = "title"      value = "Reset Button Title"/>
+            <VAR    name = "type"       value = "text" />
+            <VAR    name = "layout"     value = "0" />
+            <VAR    name = "required"   value = "false" />
+            <VAR    name = "value"    value = "" />
+        </PARAMETER>
+    </ENTITY>    
+
+    <!-- use javascript or not -->
+    <ENTITY name = "useJS">
+        <PARAMETER>
+            <VAR    name = "title"      value = "Include Javascript Code"/>
+            <VAR    name = "type"       value = "select" />
+            <VAR    name = "layout"     value = "0" />
+            <VAR    name = "required"   value = "false" />
+            <VAR    name = "value"    value = "true" />
+        </PARAMETER>
+        <DIRECTIVE         KEY="optionList">
+            <VAR    name = "true"       value="true" />
+            <VAR    name = "false"      value="false" />
+        </DIRECTIVE>        
+    </ENTITY>    
+    
+    <!-- visual "required" notification settings -->
+    <ENTITY name = "requiredTag">
+        <PARAMETER>
+            <VAR    name = "title"      value = "Include a required field notice?"/>
+            <VAR    name = "type"       value = "select" />
+            <VAR    name = "layout"     value = "0" />
+            <VAR    name = "required"   value = "false" />
+            <VAR    name = "value"    value = "true" />
+        </PARAMETER>
+        <DIRECTIVE         KEY="optionList">
+            <VAR    name = "true"       value="true" />
+            <VAR    name = "false"      value="false" />
+        </DIRECTIVE>        
+    </ENTITY>
+    
+
+    <ENTITY name = "requiredStar">
+        <PARAMETER>
+            <VAR    name = "title"      value = "Symbol to denote required field?"/>
+            <VAR    name = "type"       value = "text" />
+            <VAR    name = "layout"     value = "0" />
+            <VAR    name = "required"   value = "false" />
+            <VAR    name = "value"    value = "*" />
+        </PARAMETER>
+    </ENTITY>
+
+    
+    <ENTITY name = "tableSection">
+        <PARAMETER>
+            <VAR    name = "title"      value = "&lt;BR&gt;&lt;B&gt;Table Layout Section"/>
+            <VAR    name = "type"       value = "rawText" />
+            <VAR    name = "layout"     value = "2"     desc = "SINGLE ELEMENT" />
+        </PARAMETER>
+    </ENTITY>
+
+        
+    <ENTITY name = "tableBorder">
+        <PARAMETER>
+            <VAR    name = "title"      value = "Table Border"/>
+            <VAR    name = "type"       value = "text" />
+            <VAR    name = "layout"     value = "0" />
+            <VAR    name = "required"   value = "false" />
+            <VAR    name = "value"    value = "0" />
+        </PARAMETER>
+        <FILTER>
+            <VAR    name = "number"     value = "Should be a number" />
+        </FILTER>            
+    </ENTITY>    
+
+    <ENTITY name = "tableWidth">
+        <PARAMETER>
+            <VAR    name = "title"      value = "Table Width"/>
+            <VAR    name = "type"       value = "text" />
+            <VAR    name = "layout"     value = "0" />
+            <VAR    name = "required"   value = "false" />
+            <VAR    name = "value"    value = "100%" />
+        </PARAMETER>
+    </ENTITY>    
+    
+    <ENTITY name = "tableCellPadding">
+        <PARAMETER>
+            <VAR    name = "title"      value = "Table Cell Padding"/>
+            <VAR    name = "type"       value = "text" />
+            <VAR    name = "layout"     value = "0" />
+            <VAR    name = "required"   value = "false" />
+            <VAR    name = "value"    value = "0" />
+        </PARAMETER>
+        <FILTER>
+            <VAR    name = "number"     value = "Should be a number" />
+        </FILTER>            
+
+    </ENTITY>    
+    <ENTITY name = "tableCellSpacing">
+        <PARAMETER>
+            <VAR    name = "title"      value = "Table Cell Spacing"/>
+            <VAR    name = "type"       value = "text" />
+            <VAR    name = "layout"     value = "0" />
+            <VAR    name = "required"   value = "false" />
+            <VAR    name = "value"    value = "0" />
+        </PARAMETER>
+        <FILTER>
+            <VAR    name = "number"     value = "Should be a number" />
+        </FILTER>            
+    </ENTITY>
+    
+    <!-- These should be a color picker entity -->    
+    <ENTITY name = "tableBgColor">
+        <PARAMETER>
+            <VAR    name = "title"      value = "Table Background Color"/>
+            <VAR    name = "type"       value = "text" />
+            <VAR    name = "layout"     value = "0" />
+            <VAR    name = "required"   value = "false" />
+            <VAR    name = "value"    value = "#FFFFFF" />
+        </PARAMETER>
+    </ENTITY>
+
+    <ENTITY name = "colorSection">
+        <PARAMETER>
+            <VAR    name = "title"      value = "&lt;BR&gt; &lt;B&gt;Row Color Alternator Section &lt;BR&gt;  &lt;SMALL&gt; &lt;/B&gt; If row color are set every other row will have these background color. &lt;BR&gt; If row colors are left blank it will be ignored.&lt;BR&gt;"/>
+            <VAR    name = "type"       value = "rawText" />
+            <VAR    name = "layout"     value = "2"     desc = "SINGLE ELEMENT" />
+        </PARAMETER>
+    </ENTITY>
+
+    
+    <!-- row color alternator. every other row will have these background color. if blank, it ignores it. -->
+    <ENTITY name = "rowColorAlt1">
+        <PARAMETER>
+            <VAR    name = "title"      value = "Odd Rows &lt;BR&gt;Format: #FFFFFF"/>
+            <VAR    name = "type"       value = "text" />
+            <VAR    name = "layout"     value = "0" />
+            <VAR    name = "required"   value = "false" />
+            <VAR    name = "value"    value = "" />
+        </PARAMETER>
+    </ENTITY>    
+    <ENTITY name = "rowColorAlt2">
+        <PARAMETER>
+            <VAR    name = "title"      value = "Even Rows &lt;BR&gt;Format: #FFFFFF "/>
+            <VAR    name = "type"       value = "text" />
+            <VAR    name = "layout"     value = "0" />
+            <VAR    name = "required"   value = "false" />
+            <VAR    name = "value"    value = "" />
+        </PARAMETER>
+    </ENTITY>    
+
+
+    <ENTITY name = "styleSection">
+        <PARAMETER>
+            <VAR    name = "title"      value = "&lt;BR&gt;&lt;B&gt;Style Section  &lt;SMALL&gt; &lt;/B&gt; &lt;BR&gt; Style sheet classes used in the display of the form. &lt;BR&gt; These should NOT include the CLASS= part. just the style name. &lt;BR&gt;"/>
+            <VAR    name = "type"       value = "rawText" />
+            <VAR    name = "layout"     value = "2"     desc = "SINGLE ELEMENT" />
+        </PARAMETER>
+    </ENTITY>
+    
+    <ENTITY name = "normalClassTag">
+        <PARAMETER>
+            <VAR    name = "title"      value = "Class tag for normal entity title"/>
+            <VAR    name = "type"       value = "text" />
+            <VAR    name = "layout"     value = "0" />
+            <VAR    name = "required"   value = "false" />
+            <VAR    name = "value"    value = "sfNormal" />
+        </PARAMETER>
+    </ENTITY>    
+    
+    <ENTITY name = "badClassTag">
+        <PARAMETER>
+            <VAR    name = "title"      value = "Class tag for invalid entity title"/>
+            <VAR    name = "type"       value = "text" />
+            <VAR    name = "layout"     value = "0" />
+            <VAR    name = "required"   value = "false" />
+            <VAR    name = "value"    value = "sfBad" />
+        </PARAMETER>
+    </ENTITY>    
+    <ENTITY name = "correctMsgClassTag">
+        <PARAMETER>
+            <VAR    name = "title"      value = "Class tag for correct message on entity title"/>
+            <VAR    name = "type"       value = "text" />
+            <VAR    name = "layout"     value = "0" />
+            <VAR    name = "required"   value = "false" />
+            <VAR    name = "value"    value = "sfMessage" />
+        </PARAMETER>
+    </ENTITY>    
+    <ENTITY name = "requiredClassTag">
+        <PARAMETER>
+            <VAR    name = "title"      value = "Class tag for required tag?"/>
+            <VAR    name = "type"       value = "text" />
+            <VAR    name = "layout"     value = "0" />
+            <VAR    name = "required"   value = "false" />
+            <VAR    name = "value"    value = "sfNormal" />
+        </PARAMETER>
+    </ENTITY>
+</SMARTFORM>
+</SM_XML>

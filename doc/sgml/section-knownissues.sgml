@@ -1,0 +1,37 @@
+
+<section>
+<title>Known Issues</title>
+
+<section>
+<title>Known Issues in 2.4</title>
+
+<itemizedlist>    
+
+<listitem><para>
+ if you create an SM_config object, then call loadSite() with caching on, it will cache the results of the two files
+  merged. but if you load the same two files, but the second one with loadSiteReplace() instead, it will likely use
+  the cached version of which ever ran first (ie, the cache doesn't know between replace/overwrite)
+</para></listitem>
+<listitem><para>
+ if you have a module that creates a smartform, and upon reload if one of the values in the smartform is gotten
+  by an inVar (not form var), and because it's there a different form is loaded instead, FTL will be confused with
+  the original form and dataVerified will be true (because it was passed from the first form). they have the same
+  formID because they are created in the same order in the module (one instead of the other on reload)  
+</para></listitem>
+<listitem><para>
+ right now, a module inside of a module that uses sayJS: metamodule must output child modules JS by hand, using
+  parameter to stop additional SCRIPT header
+</para></listitem>
+<listitem><para>
+ handles in SM_object point to global object SM_siteManager, so handles are copied and not referenced. this means
+  database connections created on the fly after SM_object based objects are created are not visible unless _smoConfigure
+  is called again
+</para></listitem>
+  
+
+</itemizedlist>
+
+</section> 
+
+</section>
+

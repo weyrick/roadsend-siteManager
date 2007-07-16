@@ -1,0 +1,18 @@
+
+<TABLE border=0>
+
+<TR>
+  <TD><SM TYPE="SF" DATA="title" VAR="userName"></td><td><SM TYPE="SF" DATA="entity" VAR="userName"></td>
+  <TD><SM TYPE="SF" DATA="title" VAR="firstName"></td><td><SM TYPE="SF" DATA="entity" VAR="firstName"></td>
+  <TD><SM TYPE="SF" DATA="title" VAR="lastName"></td><td><SM TYPE="SF" DATA="entity" VAR="lastName"></td>
+</TR>
+<TR>
+  <td><SM TYPE="SF" DATA="submit" TITLE="Go!!"></td>
+  <td><SM TYPE="SF" DATA="entity" VAR="submit1"></td>
+  <td><SM TYPE="SF" DATA="entity" VAR="submit2"></td>  
+  <td><SM TYPE="SF" DATA="reset" TITLE="Reset The Form!"></td>  
+</tr>
+
+</TABLE>
+
+

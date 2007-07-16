@@ -1,0 +1,7 @@
+<SM_XML>
+	<SMOBJECT VERSION="2">
+	<DIRECTIVE>
+		<VAR NAME="loadedDirective" VALUE="Loaded Value" />
+	</DIRECTIVE>
+	</SMOBJECT>
+</SM_XML>

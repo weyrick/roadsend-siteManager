@@ -1,0 +1,68 @@
+
+<section>
+<title>Upgrade Notes</title>
+
+<section>
+<title>Upgrading from 2.2 to 2.4</title>
+
+<itemizedlist>    
+<listitem><para>contrib module 'menu' is deprecated and shouldn't be used for new code, see 'ngMenu' instead</para></listitem>
+<listitem><para>contrib modules MysqlDBGUI and baseDbEditor are deprecated - they've been replaced with dbGui and abstractDbEditor, 
+  which should pretty much be drop in replacements</para></listitem>
+<listitem><para>Deprecated VARs in GCS: flags -> strictInVars</para></listitem>
+<listitem><para>Format of the global SM_debugOutput array has changed, to allow for verbosity information. Each element of the array
+  is now a hash with two elements, keyed by 'msg' and 'verbosity'. If you accessed the array directly, you will have
+  to update your code to allow for this. See smErrors.inc:_makeErrorPage() for an example of working with it.</para></listitem>
+<listitem><para>SmartForm templates are now parsed by the main SiteManager template engine instead of having it's own code. This means
+  the format of a SmartForm template file is different than it was in 2.2.x. You should follow the new method of 
+  creating SmartForm templates. That being said, the old templates will still work, and this change is fully backward
+  compatible -- but the old method should NOT be used for new sites, since this backward compatibility feature might
+  disappear at some point in the future. also, this deprecates the ".stp" extension, as the new smartform templates
+  use the main ".tpt" extension. using the new loadTemplate() method will search Template paths, not SmartForm paths.
+  If you want it to replicate the old behanvior or looking in SmartForm paths for smartForm templates, add a "template"
+  directory that points to your smartForm directory in the GCS.</para></listitem>
+<listitem><para>the GCS has a new section to handle the new session containers, called 'sessionContainer'. it is a 
+  section with multiple id's, one per session container. 'useDatabase', 'sessionTable', 'serialize', and
+  'dataBaseID' have been moved out of the main 'session' section and into the appropriate sessionContainer
+  section. to make it completely backwards compatible to 2.2.x, so that it still looks for these vars in
+  the old location, turn the 2.2.x compatibility flag.</para></listitem>
+<listitem><para>if you had created a module that extended SM_module and had overridden newSmartForm() method, you need to add the
+  call to make sure the SmartForm component is loaded before creating an instance. simply add 
+  SM_loadComponent('SM_smartForm');
+  before the call to new SM_smartForm($this->moduleID);
+  (there might be other instances of this problem elsewhere, related to component loading)</para></listitem>
+<listitem><para>class SM_layoutTemplate() was changed to allow for template data to be given to the template, rather than always have it
+  load from a file. this changed the constructor for SM_layoutTemplate (see API docs). This should only affect people
+  who instantiated SM_layoutTemplate directly (rather than the loadTemplate() wrapper methods). If you have been 
+  instantiating it yourself, you might now have to specify additional parameters, run parseTemplate() yourself, or use
+  the class variables $htmlTemplate and $htmlTemplateFile differently.</para></listitem>
+<listitem><para>class variable SM_module::inVar is no longer available in SM_module. it is not inVarClient, and reference an 
+  SM_inVarClientT object.this shouldn't affect anyone as long as you've followed the manual and used addInVar() 
+  and getVar() properly</para></listitem>
+<listitem><para>Session variables are no longer globalized when loaded in (use *->inVarH->getSessionVar()), unless 2.2.x compatibility
+  is turned on</para></listitem>
+<listitem><para>Modules no longer have module prefixes/postfixes. Also affects smartforms. (more)</para></listitem>
+<listitem><para>Instantiating several base SiteManager objects is now slightly different, as the parameters for database handlers
+  and session handler have been removed. They've moved to a method of SM_object, which should be called once when a 
+  descendent of SM_object is created: SM_object::_smoConfigure(). This will only affect users who were instantiating
+  base objects, instead of using $SM_siteManager to create them. Also affects those who had created classes that
+  extend SM_object: you should now call $this->_smoConfigure() in your constructor to get access to the current
+  session, database, and inVar handlers.</para></listitem>
+<listitem><para>the javascript debug window has been deprecated - it never really worked well anyway. use debugOnVar and fatalDebugPage
+  instead</para></listitem>
+<listitem><para>SM_inputEntity::entityThink() not longer returns the string it will use for final output. 
+  use $this->say() or $this->sayJS for all output.</para></listitem>
+<listitem><para>SM_layoutTemplate::_runModules() and SM_layoutTemplate::_subOutput() have reverted back to a single run() function
+  that returns the htmlLayout. this also affects SM_codePlate::run() method.</para></listitem>
+<listitem><para>SM_layoutTemplate: passing directives to TAG's HTMLBODY and HTMLTITLE has changed to new extendable format for
+  passing directives to all TAGs. format: $template->directive['TAGNAME'] = array('key'=>'value',...); note this
+  is only useful for tags used ONCE in a template, or for all tags of that type to be configured the same.</para></listitem>
+<listitem><para>the few people who might have been instantiating the SM_config class directly (as opposed to using 
+  SM_siteManager->loadSite) will find the API has changed slightly, due to a reordering of class structure. 
+  check the API docs for the latest info. ($SM_siteManager->siteConfig methods are the same)</para></listitem>
+</itemizedlist>
+
+</section> <!-- 2.2 to 2.4 -->
+
+</section>
+

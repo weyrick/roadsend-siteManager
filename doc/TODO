@@ -1,0 +1,133 @@
+- fix manual, it's -> its
+
+- reading multiple templates from one file
+
+add in eric andersons postgres fixes
+
+line 293:       $ivURL .= "<input [...] ."\" />\n";
+line 237:       return "<input [...] ."\" />\n";
+line 254:       $pURL .= "<input [...] ."\" />\n";
+
+
+> When I now visit the site with a browser that has not a supported locale
+> (eg de_CH) it gives me an error ('translation not available') instead of
+> showing the defaultLocale. How can I fix that?
+-- make it use a locale that's available (defaultLocale) if translation isn't availble
+-- from native browser locale
+
+- detailed startup, howto, to make it easy for newbies
+
+---------------------------------------------------------------------------------------------------------------
+
+TODO 2.5.x
+-------------------------
+
+(new PHP features)
+[these won't happen before 2.4]
+- check var_export for smConfig caching
+- object overload features [where?]
+- object aggregation (inVars and resource usage) [not stable till 4.3?]
+- new is_a() method
+* use unserialize_callback_function (in ini) for seralized objects as session data. add methods for SM support.
+- security problem with being able to specify sID?
+
+
+BUGS
+----
+- stop input entites (and filters?) from output their javascript code more than once, when they are
+  used multiple times in a form
+
+
+(BUGS (2.3.x only))
+* scenario: trying to getVar, section 'members', var 'table', id 'custom'
+            globalConfig has SECTION, but not sectionID nor variable
+            localConfig has section, sectionId and variable
+            only one variable, but returning as a single element array
+
+(NEW ITEMS)
+- fix smart form XML
+- allow reading of XML from database (ie, read from text string instead of file)
+- move to getDirective()
+- start db system automatically if active db connection defined? then we could start sessions automatically also,
+  and not in common.inc
+- variable substitution on SMLANGUAGE files
+- allow different database abstraction layers
+- use buffering to cleanup some of the debug methods?
+- smartform business logic functionality [needed?]
+- custom placement of indication of required field in smart forms
+- move english text used in sitemanager to customizable text to keep base code multilingual
+- cleanup cache stuff (globalConfig, changelog, etc). make other config files use new methods in reader (not from smobject)
+- cache findSMfile hits, so it won't have to loop through array of dirs next time the same object is requested
+- check latest PEAR redist
+- method of accessing a TAG object directly by NAME. allow all tags to set NAME attribute.
+* other comparison types for varCompare (greater than, less than, etc)
+- internationalization of smartforms. (move to templates for formentities?)
+* allow SMOBJECT XML to configure styles (+ other info?)
+* support function for rewriting a text block, replacing <A HREF>'s with session vars
+
+(DESIGN FLAWS)
+* codePlates need the use (resource) scheme, in case they get loaded in a module? [wait for aggregate]
+
+(DATABASE)
+- PEAR db calls - fetchInto? get*?
+- use standard SQL 92 for all SQL queries
+
+(CLEANUPS / SMALL CODE ADDITIONS)
+- better testSite, better examples
+- new style sheet class style for Required fields
+- check magic_quotes bs
+- cleanup misc support libraries
+- consistency with naming: private variables / methods
+- consistency: keep all attributes (including NAME/VALUE/SECTION ID) case insensitive in SM_config?
+  (case sensitive is XML standard)
+- allow variable substitutions (ala SMCONFIG) in SMOBJECT
+- allow KEY= in SMOBJECT DIRECTIVE's
+- cleanup FILTER in XML, stay consistent
+
+(BUGS [also into 2.2.x])
+-
+
+
+(TESTING)
+- complete test suite
+- test sessions without database
+- test sessions without cookies, with database, repeating items in sessions table?
+- test caching
+- test with different options configured in GCS
+- test with different web server, OS, PHP
+- test support for mutltiple smartforms in one module
+- test every possible configuration on every possible platform
+
+(PERFORMANCE)
+- look at PEAR cache methods for caching
+- references are slower than copies in zend 1, so check usage?
+- follow code in step debugger to pinpoint any unnecesary processing
+- caching SM_layoutTemplate templates, modules (based on inVar data)
+- internal speed improvments. check profiler, loops, expensive php function calls
+- compatibility tests
+- PHP C extension for speed (define base libraries, implement slow user space functions)
+  [this is in the works]
+- check library with cache systems
+
+(DOCS)
+- document requirement of session system better
+- flow charts of systems
+- "don't use a constructor for a class that extends SM_module, unless you absolutely have to, and then you should
+   call parent:: constructor. otherwise, you should be using moduleConfig()"
+- "modules must declare all inVars (propagated or otherwise) in moduleConfig. modules that use modules that contain
+   propagated inVars must call useModule() in moduleConfig"
+   
+(KNOWN ISSUES)
+- if you create an SM_config object, then call loadSite() with caching on, it will cache the results of the two files
+  merged. but if you load the same two files, but the second one with loadSiteReplace() instead, it will likely use
+  the cached version of which ever ran first (ie, the cache doesn't know between replace/overwrite)
+- if you have a module that creates a smartform, and upon reload if one of the values in the smartform is gotten
+  by an inVar (not form var), and because it's there a different form is loaded instead, FTL will be confused with
+  the original form and dataVerified will be true (because it was passed from the first form). they have the same
+  formID because they are created in the same order in the module (one instead of the other on reload)  
+- right now, a module inside of a module that uses sayJS: metamodule must output child modules JS by hand, using
+  parameter to stop additional SCRIPT header
+* handles in SM_object point to global object SM_siteManager, so handles are copied and not referenced. this means
+  database connections created on the fly after SM_object based objects are created are not visible unless _smoConfigure
+  is called again
+  

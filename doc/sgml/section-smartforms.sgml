@@ -1,0 +1,546 @@
+
+<section>
+<title>SmartForms</title>
+
+<para>
+    With SmartForms, you create an HTML form by programatically telling it exactly what you need and 
+    how the information needs to be formatted. SmartForms handles all other
+    aspects of outputting, gathering, and validating the information from the form.
+</para>
+
+<para>
+    SmartForm Feature List:
+</para>
+
+<orderedlist numeration="arabic">
+<listitem><para>Generation of all HTML tags and other code, including all form 
+           elements, the table the form appears in for layout, and javascript 
+           functions.</para></listitem>
+<listitem><para>Handles "enter information -> submit -> correct information -> submit" 
+           loop automatically, highlighting which elements need to be corrected
+           and why</para></listitem>
+<listitem><para>Handles checking for valid input based on a list of filters for 
+           each for entity</para></listitem>
+<listitem><para>Ability to use a template for form output, so the layout of the
+           form elements are to your exact specification</para></listitem>
+<listitem><para>Expandable library of common Input Entities: Check Box, Combo Box, Country 
+           List, Date Picker, DB Combo Box, DB Select, Static Text, Radio, 
+           Select List, State List, Switch Box, Text Area, Text</para></listitem>
+<listitem><para>Ability to create new drop in Input Entities and filters, or use 
+           entities and filters designed by others by doing nothing more than 
+           placing a .inc file in the correct directory.</para></listitem>
+<listitem><para>Expandable library of Filters: Credit Card, Email, User Function, Number, 
+           Phone, Regular Expression, Required, Variable Comparison</para></listitem>
+<listitem><para>Can add any number of filter requirements to any entity</para></listitem>
+<listitem><para>Filters and entities can contain optional JavaScript output for
+           increased functionality. Javascript will go to correct JavaScript
+           section of output template</para></listitem>
+<listitem><para>Load a precreated SmartForm from an XML configuration file</para></listitem>
+</orderedlist>
+
+
+<para>
+    Now that you know a little more about what a SmartForm can do, here's how 
+    to use them.
+</para>
+
+<section>
+<title>Usage</title>
+    
+<orderedlist numeration="arabic">
+<listitem><para>Create or Load a Smart Form</para></listitem>
+<listitem><para>Configure The Form</para></listitem>
+<listitem><para>Add Elements</para></listitem>
+<listitem><para>Configure Elements (setup options, add filters)</para></listitem>
+<listitem><para>Run Form</para></listitem>
+<listitem><para>Data Verification Test</para></listitem>
+</orderedlist>    
+
+</section>
+
+<section>
+<title>Create a New Form</title>
+
+<para>
+    First is to create a new SmartForm. This is done in a module through the
+    module's <function>newSmartForm()</> method:
+</para>
+    
+<para>
+<programlisting>$myForm =& $this->newSmartForm();</>
+</para>
+    
+<para>
+    <varname>$myForm</> is now a SmartForm object. 
+</para>
+
+
+        <warning>
+        <title>Return By Reference</title>
+        <para>
+        The object returned from this function is returned <emphasis>by 
+        reference</>: you <emphasis>must</> use the reference assignment operator ( =& ) as in 
+        the example above in order to configure and use the SmartForm properly. For more information
+        on this, see the PHP documentation: <ulink url="http://php.net/manual/en/language.references.php">References Explained</ulink>
+        </para>
+        </warning>
+
+</section>
+
+<section>
+<title>Configure Form</title>
+        
+<para>
+    You can configure SmartForm directives through the standard addDirective() 
+    method call.
+</para>
+     
+<para>
+    You can, for example, tell the SmartForm that the value of the Reset button 
+    on the form should be "RESET FORM":
+</para>
+    
+<para>
+<programlisting>$myForm->addDirective('resetButton','RESET FORM');</>
+</para>
+
+<para>
+    Since a SmartForm extends <classname>SM_object</>, you can use <function>loadConfig()</> to load 
+    directives from an external file. See the <classname>SM_object</> section for more info.
+</para>
+
+<tip>
+<para>
+    A full commented list of directives is available in the library 
+    <filename>lib/smartForm.inc</>. You can also check the Appendix section for an
+    annotated directive list, which will describe all the ways in which you can configure
+    a SmartForm.
+</para>
+</tip>
+
+</section>
+
+<section>
+<title>Add Elements</title>
+
+<para>
+    If you are loading the form from an external file, you can
+    skip this step, as the elements will be created for you
+    from the XML configuration file. See the LOADING A SMARTFORM
+    section below.
+</para>
+
+<para>
+    Otherwise, add some elements. This is done through the <function>add()</> method.
+</para>
+    
+<para>
+<programlisting>$myForm->add('varName','Input Title','text');</>
+</para>
+    
+<para>
+    There are many parameters, but the first three are all that are required. 
+    They are: 
+</>
+    
+<orderedlist numeration="arabic">
+<listitem><para>The variable name to use in the form</></>
+<listitem><para>The title to use, which will tell the user what they are expected to 
+       enter</></> 
+<listitem><para>The type of input entity to create (in the above case, a text box)</></>
+</orderedlist>
+ 
+
+    
+<para>
+Here is another example, illustrating how to access methods of an input entity
+once it's been added to a form. Notice how the input entity is returned as an object
+from the call to <function>add()</>:
+<programlisting>
+
+    $selectList =& $myForm->add('sList','Select A Color','select');
+    $selectList->addOption('Red');
+    $selectList->addOption('Blue');
+    $selectList->addOption('Green');
+    
+</>    
+</para>
+
+<para>
+This final example shows a more complicated call to add(). Note that it makes use of
+the optional parameters. For a full, documented list of parameters, see the API documentation.
+<programlisting>
+
+    $selectList =& $myForm->add('sizeList','Select Your Size(s)','select',true,'large',array('multiple'=>true,'size'=>'5'));
+    $selectList->addOption('XX-Large','xxlarge');
+    $selectList->addOption('X-Large','xlarge');    
+    $selectList->addOption('Large','large');
+    $selectList->addOption('Medium','medium');
+    $selectList->addOption('Small','small');
+    $selectList->addOption('X-Small','xsmall');    
+    
+</>    
+</para>
+
+
+        <warning>
+        <title>Return By Reference</title>
+        <para>
+        The object returned from this function is returned <emphasis>by 
+        reference</>: you <emphasis>must</> use the reference assignment operator ( =& ) as in 
+        the example in order to configure and use the entity properly.
+        </para>
+        </warning>
+
+</section>
+
+<section>
+<title>Loading a SmartForm</title>
+
+    
+<para>
+    Instead of manually <function>add()</>'ing the elements to the SmartForm in your
+    module, you can call the <function>SM_smartForm::loadForm()</> method. It will
+    read in an SmartForm XML definition file and configure the form
+    as indicated in that file. 
+</para>
+    
+<para>
+    The XML format is described in Appendix A, or you may check the testSite for examples.
+</para>
+        
+<para>
+    In that example, the form and it's directives are configured all
+    externally.
+</para>
+    
+<para>
+    Once you call the <function>loadForm()</> method in your module, you can still
+    configure and override all settings, using the <function>addDirective()</function> 
+    method as normal.
+</para>
+    
+<para>
+    For example:
+</para>
+
+<para>
+<programlisting>
+
+        // create form
+        $myForm =& $this->newSmartForm();
+        
+        // load from external file
+        $elemList = $myForm->loadForm("smTest.xsm");
+        
+        // override configuration directives that
+        // were loaded in from the XML form
+        
+        // one of the variables loaded in from the file
+        // was 'userName'. we'll configure that here.
+        $myForm->setArgs('userName',array('size'=>'20'));
+        $myForm->addFilter('userName','number','Must be a number');
+
+        // run the form
+        $myForm->runForm();
+        $this->say($myForm->output('Submit'));
+
+
+</programlisting>        
+</para>
+
+<para>
+Note that loadForm returns an array of strings representing the input entity names that
+were loaded from the external form.
+</para>
+
+<para>
+There is a tool available for creating SmartForms, which may be auto created based on a database table.
+See the SmartForm Builder section for more information.
+</para>
+
+</section>
+
+<section>
+<title>Configuring Elements</title>
+
+<para>
+    You may also use the input entity returned from the <function>add()</> call to setup 
+    directives for this entity:
+</para>
+    
+<para>
+<programlisting>
+    
+    $myPW =& $myForm->add('passWord','Pass Word','text');
+    $myPW->addDirective('passWord',true);   // this tells the text entity to be of type PASSWORD
+                                            // so it will show asterisk when someone types
+    $myPW->addDirective('size','20');       // make it size 20 characters                                            
+    
+</programlisting>    
+</para>
+        
+
+<para>
+    To verify the data coming into your script from the form, use filters.
+</para>
+
+<para>
+    Adding filters to an element is easy. To make the above field match 
+    a phone number pattern, we would:
+</para>
+    
+<para>
+<programlisting>
+
+    $myPW->addFilter('phone','Must be in the form of a phone number');
+    $myPW->setFilterArgs('phone',array('format'=>'(XXX) XXX-XXXX'));    
+    
+</programlisting>    
+</para>
+
+<para>
+    This would add the phone filter, and if the filter didn't pass, it would 
+    display the above message to the user as to why it didn't.
+</para>
+    
+<para>
+    You may add any number of filters to any entity. For the current list of 
+    filters included with the library, look in the <filename>lib/sfFilters</> directory.
+</para>
+
+</section>
+
+<section>
+<title>Run Form and Input Validation Check</title>
+        
+<para>
+    Once the form is defined and configured, you must run the form:
+</para>
+    
+<para>
+<programlisting>$myForm->runForm();</programlisting>
+</para>
+    
+<para>
+    This applies all filters and does some background magic. After the form has 
+    been run, you will know if the data has been verified or not. The check 
+    would be:
+</para>
+    
+<para>
+<programlisting>
+
+    if ($myForm->dataVerified()) {
+    
+        // the form has all required input, and the input has been validated
+        // against all filters
+
+        // send email, write data to database, or do whatever necessary with
+        // form data. access the variables with ->getVar function:
+        $this->say($myForm->getVar('passWord').' was passed and verified!');
+        
+        // or, dump all form input
+        $this->say($myForm->dumpFormVars());
+
+        // how about looping through the form variables...
+        $varList = $myForm->getVarList();
+        foreach ($varList as $formVar) {
+            $this->saybr("form variable $formVar had a value of: ".$myForm->getVar($formVar));
+        }
+
+    }
+    else {
+    
+        // the form either does not have all required input, or some filters
+        // did not pass
+        
+        // display the form
+        $this->say($myForm->output('Submit'));
+
+    }
+
+</programlisting>
+</para>
+
+<para>
+    Here is a simple, complete SmartForm (when copied and pasted into
+    a siteManager module, it should run correctly):
+</para>
+    
+<para>
+    <programlisting>
+
+    
+        // create form
+        $myForm =& $this->newSmartForm();
+        
+        // configure form
+        $myForm->addDirective("requiredStar","***");
+
+        // add a new text entity
+        $myForm->add('userName','User Name','text',true,'',array('size'=>'20','maxLength'=>'25'),0);
+        
+        // add a couple more
+        $myForm->add('firstName','First Name','text',false,'',undef,1,"RIGHT");
+        $myForm->add('phone','Phone Number','text',false,'',undef,2);
+        
+        // add filter
+        $myForm->addFilter('phone','phone','Not a valid phone number',array('format'=>'(XXX) XXX-XXXX'));
+
+        // run the form
+        $myForm->runForm();
+
+        // was data verified?        
+        if ($myForm->dataVerified()) {
+        
+            // yes!
+            $this->say("thanks for the input!!&lt;Br&gt;&lt;br&gt;");
+            
+        }
+        else {
+        
+            // no! output the form
+            $this->say($myForm->output('Submit'));
+            
+        }
+
+</programlisting>    
+</para>
+
+</section>
+
+<section>
+<title>Form Templates</title>
+    
+<para>
+    SmartForms by default will generate the table and layout for the form. 
+    There are many options for formatting the output of this table.
+</para>
+ 
+<para>
+    However, sometime you want your form to be in a specific layout - 
+    SmartForms handles this with templates. SmartForm templates use 
+    the same template engine as the rest of the SiteManager system,
+    and use the special SM tag "SF".
+</para>
+   
+<para>
+    Here is a sample SmartForm template:
+</para>
+    
+<para>
+<programlisting>
+
+    &lt;TABLE border=0&gt;
+
+    &lt;TR&gt;&lt;TD&gt;&lt;sm type="SF" data="title" var="userName"&gt;&lt;/td&gt;&lt;td&gt;&lt;sm type="SF" data="entity" var="userName"&gt;&lt;/td&gt;
+    &lt;TR&gt;&lt;TD&gt;&lt;sm type="SF" data="title" var="firstName"&gt;&lt;/td&gt;&lt;td&gt;&lt;sm type="SF" data="entity" var="firstName"&gt;&lt;/td&gt;
+    &lt;TR&gt;&lt;TD&gt;&lt;sm type="SF" data="title" var="lastName"&gt;&lt;/td&gt;&lt;td&gt;&lt;sm type="SF" data="entity" var="lastName"&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;sm type="SF" data="submit" title="Enter Data"&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;/TABLE&gt;
+    
+</programlisting>
+</para>
+
+<para>
+    You tell a SmartForm to use a template by calling the method:
+    <programlisting>$myForm->loadTemplate('templateName.tpt');</>
+</para>
+    
+<para>
+    You should call this before you call <function>runForm()</>
+</para>
+
+<para>
+    There are two parts to setting up the template: you must tell SmartForms
+    where to place the Title and the Input for each form entity. The format
+    to do so is
+</para>
+    
+<para>
+<programlisting>&lt;sm type="SF" data="title" var="varName"&gt; &lt;sm type="SF" data="entity" var="varName"&gt;</>
+</para>
+    
+<para>
+    "<varname>varName</>" should be the same variable name you used when call the <function>add()</>
+    method to add your elements.
+</para>
+    
+<para>
+    The &lt;sm type="SF" data="submit" title="Submit Button Title"&gt; tag is a special tag which will place the Submit button.
+</para>
+    
+
+<para>
+    Please note, there are many other options and configuration settings for
+    SmartForms. Please reference the API documentation for the following 
+    files:
+</para>
+    
+<para>
+<programlisting>
+    lib/smartForm.inc
+    lib/sfInputEntities.inc
+    lib/sfFormEntity.inc
+    lib/sfFilters.inc
+    lib/sfFilters/*
+    lib/sfInputEntities/*
+</>    
+</para>
+
+</section>
+
+<section>
+<title>Hidden Variables</title>
+
+<para>
+To add hidden variables to your form, use the method <function>addHidden($key, $value)</function>.
+For example, to add the hidden variable "SETTING" with a value of "FOO", use:
+
+<programlisting>    
+    $myForm->addHidden('SETTING','FOO');
+
+</programlisting>
+</para>
+
+</section>
+
+<section>
+<title>Session Aware Forms</title>
+    
+<para>
+    All forms are automatically "session-aware". That is, if persistent 
+    variables have been setup using the SiteManager session code, they will 
+    automatically be included as HIDDEN fields in the form when necessary.
+</para>
+
+<para>
+    In addition to adding persistent variables, SmartForms will also propagate
+    "read-write" inVars. See the Module section for more information on this.
+</para>
+
+</section> <!-- end session aware forms section -->
+
+<section>
+<title>SmartForm Builder</title>
+<para>
+    Roadsend has a tool available to help you build SmartForms. It can either export XML based files to read in
+    through loadForm, or generate an SM_module based module that uses the dbGui contributed modules to
+    create a SmartForm on the fly based on a database table definition.
+</para>
+
+<para>
+    The tool allows you to create a SmartForm from scratch, or base it on a database table definition. You can edit
+    the properties of each input entity, add filters, hide fields and the like.
+</para>
+
+<para>
+    For more information, please visit the <ulink url="http://www.roadsend.com/p/sfBuilder">SmartForm Builder</ulink> page.
+</para>
+
+</section>
+
+
+</section> <!-- end smartform section -->
+

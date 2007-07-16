@@ -1,0 +1,23 @@
+
+<section>
+<title>Miscellaneous Routines</title>
+
+
+<para>
+    Other supportive routines are included in the SiteManager system. Please
+    see the following library files and the API documentation for more 
+    information:
+</para>
+
+<para>
+<programlisting>    
+    - Authentication Routines       (auth.inc)
+    - Security Routines             (security.inc)
+    - Support Routines              (support.inc)
+    - Data Manipulation Routines    (dataManip.inc)
+    
+</>    
+</para>
+
+</section>
+

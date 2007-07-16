@@ -1,0 +1,12 @@
+
+<!-- includedTemplate.tpt -->
+<TABLE>
+<TR BGCOLOR="white">
+  <TD>  
+  Included Template<BR>
+  <SM TYPE="module" NAME="modInTemplate" directives="var1=test1">
+  </TD>
+</TR>
+</TABLE>
+
+

@@ -1,0 +1,443 @@
+
+<section>
+<title>Session Management</title>
+
+
+
+<para>
+    Sessions are used to maintain "states" for users when they access your
+    site. For example, if a client accesses your site and enters a user name,
+    it would be nice if next time they came to the site, they didn't have to
+    enter the username again. This is where the SiteManager sessions system
+    comes in.
+</para>
+
+<para>
+    There are several ways to configure the sessions system, but there is 
+    always one common element: the persistent variables. These are the variables
+    you would like to keep persistent between sessions for each user. 
+</para>
+    
+<para>
+    It is possible to use persistent variables of any valid PHP type - this includes strings, integers,
+    floats, arrays (multidimensional) and objects. To use a variable other than a string,
+    however, you must be using a database and have serialization turned on (which it is by default).
+    If you don't use serialization, you will only be able to keep strings persistent.
+</para>
+
+<para>
+     For example, "userName" could be a persistent variable that gets defined in a SmartForm.
+    If you make this variable persistent, once the user submits the SmartForm,
+    the value will keep throughout their session. To access this variable
+    through a module, simply declare "userName" as a module InVar (see the
+    Module section).
+</para>
+    
+<para>
+    Depending on if you use cookies and/or a database for session storage, their session might last
+    for as long their browser is open, or even until they come back next time, potentially days later.
+</para>
+
+<para>
+    Possible ways to configure the session system:
+</para>
+    
+<orderedlist numeration="arabic">    
+<listitem><para>Don't use database or cookies to store variables. This is the simplest
+       method. In this system, all declared persistent variables are passed
+       around throughout all the links on the site (through the hLink function).
+       This method would let the user see all of the persistent variables in
+       the URL of the script. You will not be able to keep arrays or objects
+       persistent, only strings.</para></listitem>
+<listitem><para>Use database to store variables, optionally using a cookie to store
+       session ID. This method 
+       will store all declared persistent variables in a database. The session
+       ID is passed around in all links throughout the site (through the
+       hLink function). This method would let the user see their sessionID in
+       the URL links, but not the different variables being kept for their
+       session. If you use a cookie for session ID, the session will be maintained
+       even after the user closes their browser. You can keep arrays and objects
+       persistent with this method.</para></listitem>
+</orderedlist>
+
+<warning>
+<title>DATABASE NOTICE</title>
+    
+<para>
+        Even though the session code uses the same PEAR database functionality
+        as the rest of the SiteManager system, database structures and therefore
+        SQL queries vary with each database type.
+</para>
+
+<para>
+        Currently, MySQL, PostgreSQL, and Oracle are the only tested database engines. The code is written
+        in such a way as to easily be able to handle other database structures.
+        If you add support for another database layout, please submit it to us.
+</para>
+
+<para>
+        The current sessions table format can be found in the <filename>tables/</> directory.
+</para>
+</warning>
+
+    
+<section>
+<title>Session Containers</title>
+
+<para>
+    The session system uses an extendable system of "containers" to store session data. The included containers
+    are None, Database, and File. 
+</para>
+
+<para>
+    None is the simplest option, which will only keep track of session variables through GET and POST variables.
+    You won't need a database for this option, but it's not very robust and you won't be able to store complex
+    objects.
+</para>
+
+<para>
+    The Database container stores session variables in a database table.
+</para>
+
+<para>
+    The File container stores session variables in files on the hard drive. The directory to write to should be
+    writable by the web server.
+</para>
+
+<para>
+    It's possible to write your own session container. It must extend the base class <classname>SM_sessionContainer</classname> (defined in
+    <filename>lib/smSessionContainer.inc</filename>). Please see the documentation in this file, and the current session containers for
+    more information on creating your own custom container.
+</para>
+
+</section>
+
+<section>
+<title>Configuring Sessions</title>
+  
+<para>
+    There are several options for configuring the sessions system, including which container to use. 
+    Look in <filename>config/globalConfig.xsm</> in the "sessions" SECTION,
+    for a commented list of all available options.
+</para>
+
+</section>
+
+
+<section>
+<title>Using Sessions</title>
+
+<para>
+    To use the session system, simply call <varname>$SM_siteManager->startSessions()</> in
+    your site's <filename>admin/common.inc</>. Then, use the <filename>addPersistent()</> method to 
+    tell SiteManager which variables you would like to keep persistent.
+</para>
+    
+<para>
+    For Example (from <filename>common.inc</>):
+</para>
+
+<para><programlisting>
+    
+    // use sessions
+    $SM_siteManager->startSessions();
+    // add a variable to keep persistent
+    $SM_siteManager->addPersistent("userName");
+    $SM_siteManager->addPersistent("firstName");
+
+
+</></para>
+
+
+<para>
+    You may also set which variables you want to keep persistent in the local 
+    site configuration file (<filename>localConfig.xsm</>). See the Global Configuration 
+    System section for more info, or take a look at <filename>testSite/admin/config/localConfig.xsm</> in
+    the pVars SECTION.
+</para>
+    
+<para>
+    Now, when "userName" or "firstName" get passed to a script (either through 
+    command line GET or from a SmartForm) the value will be remembered and
+    passed around between links and forms in the site.
+</para>
+
+<para>
+    To accomplish this, modules need to be "session-aware". See the Module
+    System section for more information on this.
+</para>
+
+<para>
+    If you would like to change the value of a persistent, so that at the end of the
+    page load it saves a new value to the database, use the <varname>SM_session::setPersistent()</>
+    method. For example (module excerpt):
+<programlisting>
+    
+    function moduleThink() {
+    
+        // change the value of a persistent variable so that
+        // at the end of this page load, a new value is written 
+        // to the database
+        $this->sessionH->setPersistent('userName','testUser');
+
+    }
+
+</programlisting>    
+</para>
+
+<para>
+    One caveat to persistent variables is that if you are using a database to store the values, once the values
+    get set and written to the database, they will not change until you call setPersistent (as above). If a SmartForm
+    passes a value for that persistent, or a value is set on the URL, it will be overridden from the value retrieved 
+    from the database.
+</para>
+
+<note>
+<para>
+If you're using sessions with a database, SiteManager will not automatically clean
+your session table of old session variables. You must do this yourself with cron and a script.
+You can use the dateCreated field to see how long ago session variables were written.
+</para>
+</note>
+
+</section> <!-- end using sessions section -->
+
+<section>
+<title>Member Login Sessions</title>
+
+<para>
+Member Logins are a sub-system of the main Sessions code. It allows you to easily implement
+a method for users to become "members" of the site (with a username and password) whereby
+they login to potentially receive more information or functionality than guests, or simply
+for tracking purposes.
+</para>
+
+<para>
+To use the member system, you must configure it and turn it on in the Global Config System.
+This is done by setting the 'useMemberSystem' variable in the 'sessions' SECTION to 'true',
+and configuring the variables in the 'members' and 'memberSystem' SECTION. You can copy and paste the defaults
+from globalConfig.xsm into your localConfig.xsm
+</para>
+
+<para>
+    Since the memberSystem is extendable, you must tell it which one you would like to use. By default,
+    the included member system (default_memberSystem) will be used.
+</para>
+
+<note>
+<para>
+loginTTL is the number of seconds a member login session is valid for. After their session expires, they will have to login to reset it.
+  Note the actual memberSessions entry isn't removed when their session expires unless you set <varname>maintainTables</> to true, but
+  there's a performance hit by using this so we recommend you maintain your tables with a cron script.
+</para>
+</note>
+
+
+<para>
+The member system requires two tables: the member table, and the memberSessions table. Both are included in the
+<filename>tables/</> directory of the main distribution.
+</para>
+
+<para>
+The members table is for keeping the actual information on a member. You don't have to use the included members table -
+it may have as many fields as you'd like, but it <emphasis>must</> have a userName, passWord, and UID field. The actual
+field names are configurable (see above). UID is an identifier string used by the sessions system. It should be a
+CHAR(32) field. Username and Password are self explanatory - they should be CHAR fields.
+</para>
+
+<para>
+The memberSessions table must be as per the definition in the <filename>tables/</> directory.
+</para>
+
+<para>
+After creating these tables in your database and configuring the appropriate variables in the GCS, all you 
+need to do is add a mechanism for users to be able to login and out. For logging in, we've provided a simple
+generic module that creates a SmartForm and calls the appropriate methods in the session system for logging in a
+user. It's a good starting point for creating a custom login form -- the module is called <filename>userLogin.mod</> and is in the
+main <filename>modules/</> directory.
+</para>
+
+<para>
+For logging out, you need to setup a page that calls the <classname>SM_sessions::attemptLogout()</> method. For an example
+of this, and also an example of how to check to see if the current session is a member session, see the 
+<filename>testMembers.mod</> module in the <filename>testSite/admin/modules</> directory.
+</para>
+
+<para>
+To use the member system in your modules, you have the following methods available to you, all of them
+available through the <varname>$this->sessionH</> variable:
+</para>
+
+<para>
+<programlisting>
+
+isGuest()           -- returns true if the current session is a GUEST session
+isMember()          -- returns true if the current session is a MEMBER session
+getMemberData()     -- returns an associative array of all fields in your members table
+                       for the current member who is logged in
+attemptLogin()      -- attempt to create a member session with the passed username and password
+                       this is to be used in login modules
+attemptLogout()     -- attempt to remove a valid member login session
+
+
+</programlisting>
+</para>
+
+
+<para>
+Here is an example of a module that displays the status of the current member system, and allows the
+option of logging out if they are currently logged in:
+</para>
+
+<para>
+<programlisting>
+
+class loginCheck extends SM_module {
+     
+     /**
+      * configure the module. run before moduleThink
+      */
+    function moduleConfig() {
+
+        // flag to single logout request
+        $this->addInVar('l',0,'int');
+
+    }
+
+     /**
+      * this function contains the core functionality entry point for the module.
+      */
+    function moduleThink() {
+    
+        global $PHP_SELF;
+        
+        // if they want to logout, do so here
+        if ($this->getVar('l') == 1) {
+            $this->sessionH->attemptLogout();
+        }
+
+        // display status
+        if ($this->sessionH->isGuest()) {        
+            $this->say("You are currently NOT logged in");
+        }
+        else {
+            
+            // they are logged in, get their information!
+            $member = $this->sessionH->getMemberData();
+            $this->say("You are logged in as: ".$member['userName']);
+            $this->say(" [".$this->sessionH->hLink($PHP_SELF.'?l=1','logout').']');
+
+        }
+
+    }
+    
+}
+
+</programlisting>
+</para>
+
+<formalpara>
+<title>Custom Member Load Function</title>
+<para>
+You can also specify a custom function to run when member data is loaded. This function can
+load additional information from a database, for example, or run whatever other code you need it to.
+</para>
+</formalpara>
+
+<para>
+The function will only be run if the session system determines the user is a member who is currently logged in.
+It will be run directly after loading the current members information. The function must take one parameter, <varname>$memberData</>.
+It will be the hash of data loaded from this member. You can use it to perform other database lookups based on this members information.
+The <varname>$memberData</> parameter can be taken by reference, and if so, changes made to it will be visible by modules using 
+<function>$this->sessionH->getMemberData()</> method.
+</para>
+
+<para>
+To create a custom member load function, define the function either in <filename>common.inc</> or a file included therein. The name of the
+function can be any valid PHP function name (you will specify it later). As mentioned above, the function should take exactly one variable as a parameter (possibly by reference). The code inside the function can be any valid
+PHP code. If you need to access the current SiteManager database connection inside of the function, declare <varname>$SM_siteManager</> as global and
+use <varname>$SM_siteManager->dbH</>.
+</para>
+
+<para>
+The final step is to tell the session system the name of the function you've created, and to use it. Both of these tasks are accomplished by
+specifying a variable in your <filename>localConfig.xsm</> called '<varname>memberLoadFunction</>' in the '<varname>sessions</>' SECTION. The value of the variable should be set to the name of the
+function you have declared.
+</para>
+
+<para>
+Here is an example custom load function: 
+
+<programlisting>
+
+// hook for grabbing extra member information
+// this is run when the member system loads the member information from the main table
+// (or from a persistent variable)
+function testMemberLoad(&$memberData) {
+
+    // alter the main users memberData for other modules and code to see
+    $memberData['testMemberLoad'] = 'ran testMemberLoad';
+
+    // could be looking up more info in a database, or whatever else...
+    // to access the SiteManager database settings, use
+
+    // $SM_siteManager->dbH
+
+    // after declaring $SM_siteManager as a global
+
+}
+
+</programlisting>
+</para>
+
+<para>
+This line would appear in the sites <filename>localConfig.xsm</>, in the <varname>sessions</> SECTION.
+
+<programlisting>
+            &lt;VAR name="memberLoadFunction"  value = "testMemberLoad"    desc="a hook for running a custom function to load additional member information" /&gt;
+</programlisting>
+
+</para>
+
+</section> <!-- end member section -->
+
+<section>
+<title>Custom Member Systems</title>
+
+<para>
+The member system is extendable to allow for different types of authentication or other custom member options.
+</para>
+
+<para>
+To create your own member system, start by copying the included "default_memberSystem.inc" to your own file, ie
+"custom_memberSystem.inc". The class file name defined in this file should be changed to "SM_memberSystem_custom", and
+it should be extending the SM_memberSystem base class.
+</para>
+
+<para>
+You will have to define several methods to complete the custom member system. See the SM_memberSystem base class and the
+included default for examples.
+</para>
+
+<para>
+To use the new member system, first make sure it's in the "memberSystems" path in the GCS. Next, you will need to define
+a new SECTION in your localConfig.xsm file with a SECTION ID of the member system name (in the above example, the name would
+be "custom"). Any key/value pairs defined here will show up as directives in your member system object.
+</para>
+
+<para>
+Finally, in the "members" SECTION you should set the "memberSystemType" variable to be "custom" (or whatever your
+member system is called). Your custom member system object will be loaded and used by the session system when loggin in, 
+logging out, etc.
+</para>
+
+<para>
+If you want direct access to the member system object, you may call <function>$this->sessionH->getMemberSystem()</function>
+which will return a reference to the currently loaded member system. This will allow you to call any method defined in your
+member object.
+</para>
+
+</section>
+
+</section> <!-- end session management section -->
+

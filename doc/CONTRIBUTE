@@ -1,0 +1,106 @@
+/*********************************************************************
+ *  Roadsend SiteManager
+ *  Copyright (c) 2001-2006 Roadsend, Inc.(http://www.roadsend.com)
+ **********************************************************************
+ *
+ * This source file is subject to version 1.0 of the Roadsend Public
+ * License, that is bundled with this package in the file 
+ * LICENSE, and is available through the world wide web at 
+ * http://www.roadsend.com/license/rpl1.txt
+ *
+ **********************************************************************
+ * Author(s):    Shannon Weyrick (weyrick@roadsend.com)
+ *               Jonathan Michel (pym@roadsend.com)
+ *            
+ */
+
+
+--------------------------------------------------
+HOW YOU CAN CONTRIBUTE TO THE SITEMANAGER PROJECT
+--------------------------------------------------
+
+OpenSource Explanation 
+
+    The SiteManager libraries are Open Source. This means everyone is invited to
+    distribute, use, review, and change the SiteManager libraries at no charge.
+    
+    We encourage everyone to review the code, suggest improvements, write
+    bugfixes or new functionality and send them to us. Read on and find out
+    how you can help and what do to with your improvements.
+
+    There are certain restrictions with regard to changing the library, specifically
+    with how to distribute your changes. Please see our license agreement, which is
+    based on the QPL created by Troll Tech Software (www.trolltech.com), in the
+    file LICENSE in the /doc directory or online at
+    http://www.roadsend.com/license/rpl1.txt
+    
+    For a full explanation of the reasoning behind Open Source Software, visit
+    http://www.opensource.org
+    
+
+----------------
+How You Can Help
+----------------
+
+ - Submit Feedback
+ 
+    The easiest way to help is simply to use the product and let us know what you think.
+    We'd like to hear your thoughts on how it works (or why it doesn't). We'd like to
+    know if you like the way it's laid out, if the documentation helped, if it fits
+    within the framework of your development environment. We'd like to know what new
+    features you'd like to see and what other tools we could create to make things 
+    easier.
+
+ - Modules, Templates
+ - SmartForm entities, filters
+ 
+    We envision a time in the not too distant future where there will be any number of
+    modules, templates, Smart Form entities and filters freely available from different
+    sources throughout the net. We'd like to see module designers creating pluggable
+    modules that anyone can use in their SiteManager sites. Likewise, if you come up
+    with a good SmartForm entity that others could use, we encourage you to share it,
+    and possibly make it part of the standard SiteManager distribution.
+
+ - New functionality
+ 
+    If you've got a new idea for SiteManager you'd like to see implemented, why not
+    write it an send us a patch? We'll review your submission and put it into the
+    main distribution if we think it would fit into the SiteManager system. Of course
+    your own work is copywritten and you would receive credit in the documentation.
+
+ - Bug fixes
+ 
+    We're certainly not bold enough to say SiteManager is bug free. If you've come across
+    a bug, fix it and send us a patch. We'd be happy to credit you in the change log.
+
+ - Testing
+ 
+    We'd like all feedback related to how it works on various platforms, in different
+    development environments, and with different database backends.
+     
+---------------------
+How To Submit Patches
+---------------------
+    
+    If you write new code or bug fixes, please send us a unified diff of your work, and reference
+    which version you've patched.
+    
+    Send patches and code to siteManager@roadsend.com
+
+-----------------
+How To Contact Us
+-----------------
+
+    You can contact us by going to the main Roadsend website:
+    http://www.roadsend.com
+    
+    Or sending mail to:    
+    siteManager@roadsend.com
+    
+    Visit the SiteManager Community Site at
+    http://www.phpsitemanager.com
+
+    and a mailing list at:
+    sitemanager-subscribe@roadsend.com
+
+   

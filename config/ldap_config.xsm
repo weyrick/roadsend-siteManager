@@ -1,0 +1,26 @@
+
+        <SECTION name="members">
+            <VAR name="memberSystemType"     value="ldap"           desc="which member system handler to use" />
+            <VAR name="usePersistentMembers" value="true"           desc="when true, member data will be keep as a persistent variable instead of loaded in from the container each time" />
+            <VAR name="loginTTL"             value="2678400"        desc="how long is a login session valid for (2678400)" />
+            <VAR name="maintainTables"       value="true"           desc="if true, SiteManager will delete old sessions. performance hit, so defaults to false. better to run a cron'd script." />
+        </SECTION>
+        <SECTION name="ldap" id="default">
+            <VAR name="baseDN"              value="ou=personnel,dc=mycompany,dc=com"      desc="Base DN for our LDAP server" />
+            <VAR name="host"                value="directory.mycompany.com"        desc="LDAP server host address" />
+            <VAR name="port"                value=""                            desc="LDAP server port, leave blank for default" />
+            <VAR name="managerDN"           value="cn=Directory Manager"        desc="LDAP server manager RDN" />
+            <VAR name="domainString"        value="mycompany.com"                      desc="our ldap domain string" />
+        </SECTION>
+        <SECTION name="memberSystem" id="ldap">
+            <VAR name="dataBaseID"          value="default"          desc="which database connection (from db section) should SiteManager use for sessions" />        
+            <VAR name="memberTable"         value="users"            desc="member table name" />            
+            <VAR name="memberSessionsTable" value="memberSessions"   desc="logged in member session table" />
+            <VAR name="userNameField"       value="userName"         desc="the username field" />            
+            <VAR name="passWordField"       value="password"         desc="the password field" />
+            <VAR name="uIDField"            value="userId"           desc="the unique user id field" />
+            <VAR name="sIDField"            value="sID"              desc="the unique session id field" />
+            <VAR name="dcField"             value="dateCreated"      desc="DATETIME field of session creation" />            
+            <VAR name="convertFrom"         value="UTF8"             desc="type of encoding the LDAP server uses" />
+            <VAR name="convertTo"           value="ISO-8859-1"       desc="type of encoding we want to convert our LDAP data to" />
+        </SECTION>

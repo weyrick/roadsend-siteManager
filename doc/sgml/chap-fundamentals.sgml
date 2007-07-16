@@ -1,0 +1,34 @@
+
+<chapter>
+
+<title>SiteManager Fundamentals</title>
+
+&section-globals;
+
+&section-smroot;
+
+&section-GCS;
+
+&section-smobject;
+
+&section-directives;
+
+&section-modules;
+
+&section-templates;
+
+&section-codeplates;
+
+&section-smartforms;
+
+&section-session;
+
+&section-database;
+
+&section-debugging;
+
+&section-misc;
+
+</chapter> <!-- end Using SiteManager chapter -->
+
+

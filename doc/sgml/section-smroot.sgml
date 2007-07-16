@@ -1,0 +1,369 @@
+
+<section>
+<title>
+SiteManager Root Object ($SM_siteManager)
+</title>
+
+<para>
+    When a project includes 'siteManager.inc' for use in the site, a global object 
+    named <varname>$SM_siteManager</> is created automatically. You will use this object to
+    perform high level functions in your site, such as:
+</para>
+
+<itemizedlist>    
+
+<listitem><para>Loading a Module</para></listitem>
+<listitem><para>Loading Layout Templates</para></listitem>
+<listitem><para>Starting the Database System</para></listitem>
+<listitem><para>Starting the Session System</para></listitem>
+<listitem><para>Accessing the Global Configuration System</para></listitem>
+<listitem><para>Completing Page Output</para></listitem>
+</itemizedlist>        
+
+<para>
+   What follows is a partial list of functionality you may access from <varname>$SM_siteManager</>. For further
+   documentation on these methods and others available through <varname>$SM_siteManager</>, consult the 
+   SiteManager API Documentation, available on the web at <ulink url="http://www.roadsend.com/siteManager">http://www.roadsend.com/siteManager</ulink>
+</para>
+
+
+        <warning>
+        <title>Return By Reference</title>
+        <para>
+        Several methods in the SiteManager system return values <emphasis>by 
+        reference</>: you <emphasis>must</> use the reference assignment operator ( =& ) as in 
+        the examples shown in order to configure and use the objects returned properly. For more information
+        on this, see the PHP documentation: <ulink url="http://php.net/manual/en/language.references.php">References Explained</ulink>
+        </para>
+        </warning>
+
+
+
+<section>
+<title>Including and Loading SiteManager Resources</title>
+    
+<para><emphasis>loadSite Method</emphasis></para>
+
+    <para>
+    <function>loadSite(<parameter>$file</parameter>)</function>
+    </para>
+    
+    <para>
+        Call this method to load in local configuration settings for your site.
+        This is usually done in <filename>admin/common.inc</>. You may call this method more
+        than once to load in additional values from multiple files. If multiple files are loaded,
+        configuration values will be appended to, not overwritten.
+        See the next section, Global Configuration System, for more information
+        on this. Also, have a look at the example <filename>common.inc</> in 
+        <filename>skeletonSite/admin/</> directory. 
+    </para>
+    
+    <para>
+    The configuration files will be cached if caching is turned on.
+    </para>
+
+<para><emphasis>loadModule Method</></para>    
+<para>
+    <function>&amp;loadModule(<parameter>$moduleFile, $moduleName='', $fatalFNF=true</parameter>)</function>
+     </para>
+     
+    <para>   
+        Call this method when you wish to load <emphasis>and create an instance</> of a 
+        module. See the Directive Script and Module sections for more information on why and when you 
+        would want to do this. This function will look through your module paths (as defined in 
+        the Global Config System) for the file named <varname>$moduleFile</> (automatically 
+        adding a ".mod" extension). If the actual class name of the module is
+        different from the file name of the module, you must specify it's name
+        in <varname>$moduleName</>. For example, if the module file name you're loading is
+        <filename>'testModule.mod'</>, but the module class is '<classname>myTestModule</>', you must use 
+        the following command:
+    </para>
+
+<para>
+<programlisting>
+        $module =& $SM_siteManager->loadModule('testModule','myTestModule');</programlisting>
+</para>
+
+        <para>
+        If you wish to load a module that's contained in the file '<filename>testModule</>',
+        and the class name is also named '<classname>testModule</>', you may use simply:
+        </para>        
+        
+        <para>
+        <programlisting>
+        $module =& $SM_siteManager->loadModule('testModule');</programlisting>
+        </para>
+        
+        <para>
+        Note that if you wish to load a module from inside of another module, you can use the
+        <function>SM_module::loadModule</function> method
+        </para>
+
+        <para>
+        The <varname>$fatalFNF</varname> parameter decides whether the method will generate
+        a fatalErrorPage (using the current error handler) if the module could not be found or
+        instantiated.
+        If <varname>$fatalFNF</varname> is set to false, then the method will return NULL if
+        the module could not be loaded.
+        </para>
+       
+        <para>
+        See the Module System section and example scripts for more information.
+        </para>
+
+
+
+<para><emphasis>includeModule Method</></para>    
+<para>
+    <function>includeModule(<parameter>$moduleFile, $fatalFNF</>)</function>
+     </para>
+     
+    <para>   
+        Call this method when you wish to load a module's definition, <emphasis>but not
+        create an instance of it</>. This is generally used when you need a module's definition available
+        because you are extending it to create a new module, or you are unserializing a module of this type.
+    </para>
+    
+    <para>
+        The <varname>$fatalFNF</varname> parameter decides whether the method will generate
+        a fatalErrorPage (using the current error handler) if the module could not be found in
+        the current module path.
+        If <varname>$fatalFNF</varname> is set to false, then the method will return NULL if
+        the module could not be loaded.        
+    </para>
+       
+        <para>
+        See the Module System section for information on Extending Modules.
+        </para>
+
+
+
+<para><emphasis>rootTemplate Method</></para>
+
+    <para>
+    <function>&amp;rootTemplate(<parameter>$fName, $type=SM_UNKNOWN</>)</function>
+    </para>
+    
+    <para>    
+        Call this method to set the root HTML layout template for use. It will
+        search the template paths (as defined in the Global Config System) for
+        the template file <varname>$fName</varname> (automatically adding '.tpt' extension for you)
+        </para>
+        
+        <para>
+        Example:
+        </para>
+        
+        <para>
+        <programlisting>
+        $rootTemplate =& $SM_siteManager->rootTemplate('basicTemplate');</programlisting>
+        </para>
+                
+        <para>
+        The root template may also be a CodePlate. See the Template System section and example scripts for more 
+        information.
+        </para>
+
+<para><emphasis>loadTemplate Method</></para>
+<para>
+    <function>&amp;loadTemplate(<parameter>$fName, $fatalFNF</>)</function>
+    </para>
+
+    <para>    
+        Call this method to load an HTML layout template. You should only call
+        this method directly if you plan of loading a template to place inside
+        of another template (see the Templates section for more information on
+        templates within templates) or from inside a module. Otherwise, you should be using 
+        <function>rootTemplate()</> to load a single root template. 
+    </para>
+
+    <para>
+        This method caches loaded templates, so that when a template is used more than once per page
+        load, it will only be loaded and parsed once.
+    </para>
+    
+    <para>
+        Note that when loading a template from inside of a module, you may use the builtin <function>SM_module::loadTemplate()</function>
+        wrapper method instead of calling this one through the root object.
+    </para>
+    
+    <para>
+    This method will search template paths as defined in the GCS.
+    </para>
+            
+
+<para><emphasis>loadCodePlate Method</></para>
+    <para>
+    <function>&amp;loadCodePlate(<parameter>$fName, $fatalFNF</>)</function>
+    </para>
+    
+    <para>
+        Load a CodePlate and return an instance. CodePlates are extensions of regular 
+        templates -- see the CodePlate section for more information. 
+        This method will search the codePlates paths as defined in the GCS.
+    </para>        
+
+
+<para><emphasis>includeCodePlate Method</></para>
+
+    <para>
+    <function>&amp;includeCodePlate(<parameter>$fName, $fatalFNF</>)</function>
+    </para>
+    
+    <para>
+    Much like <function>includeModule</function> above, this method will include a codePlate's class definition,
+    but will not create an instance of it. <varname>$fatalFNF</varname> works in a similiar fashion as well.
+    </para>
+
+
+
+<para><emphasis>includeLib</></para>
+
+    <para>
+    <function>&amp;includeLib(<parameter>$fName, $fatalFNF</>)</function>
+    </para>
+
+    <para>
+    This method is used to include a PHP library. It should have the extension ".inc" and be located in 
+    a path defined in the Global Configuration System under "libs" in the "dirs" SECTION. See the Global
+    Configuration System section for more information.
+    </para>
+
+</section>
+
+<section>
+
+<title>Starting Database and Session Subsystem</title>
+
+<para><emphasis>dbConnect Method</></para>
+<para>
+    <function>dbConnect()</function>
+</para>    
+
+        <para>
+        This method sets up database connection(s) for the rest of the system to
+        use. It will use the database settings found in the Global 
+        Configuration System.
+        </para>
+        
+        <para>
+        This method does not take parameters, nor does it return anything. It 
+        should simply be called once (usually in <filename>common.inc</>) to create the 
+        database connection(s).
+        </para>
+        
+        <para>
+        See the Database Connectivity section for more information.
+        </para>
+
+
+
+<para><emphasis>startSessions Method</></para>
+<para>
+    <function>startSessions()</function>
+    </para>
+    
+    <para>
+        This method starts the session system. It should always be called from <filename>common.inc</>.
+        Even if you don't need sessions, the session system must be started. If you have no need for
+        a database session system, simply use the "None" session container.
+        </para>
+        
+        <para>
+        See the Sessions section for more information.
+</para>
+
+<para><emphasis>addPersistent Method</></para>
+
+    <para>
+    <function>addPersistent(<parameter>$varName</>)</function>
+    </para>    
+
+    <para>
+        Use this method to specify that a variable should be kept persistent 
+        throughout all page links and transfers. It should be called only after startSessions() is 
+        called.
+        </para> 
+
+        <para>
+        Session (persistent) variables need to be declared before they are used. They should be declared
+        in your <filename>common.inc</filename> before they are used by any modules. Modules should not
+        call this method directly.
+        </para>
+        
+        <para>
+        For example, if you would like to keep the variable "userName" 
+        persistent for a user:
+        </para>
+        
+        <para>
+        <programlisting>
+        
+        $SM_siteManager->startSessions();
+        $SM_siteManager->addPersistent('userName');
+        </programlisting>
+        </para>
+        
+        <para>
+        All session-aware modules will now keep this variable intact 
+        automatically, as soon as it gets a value.
+        </para>
+
+        <para>
+        Note, you may also setup persistent variables in the Local Site 
+        Configuration file. They should be in the "pVars" SECTION -- see the 
+        Global Configuration System section, or the 
+        <filename>testSite/admin/config/localConfig.xsm</> example file for more information.
+        Depending on your session configuration, the variable type of the persistent variable value
+        can be any valid PHP type (string, int, array, object, etc). See the Sessions section for
+        more information.
+        </para>
+</section>
+
+<section>
+
+<title>Completing Page Output</title>
+
+<para><emphasis>completePage Method</></para>
+<para>
+    <function>completePage()</function>
+    </para>
+         
+    <para>
+        This method should be the last method called in a Directive Script. 
+        It runs all modules, templates, and codePlates and produces their collective output.
+        </para>
+        
+        <para>
+        See the Directive Script section for more information, or look at the 
+        example scripts in <filename>skeletonSite/</> and <filename>testSite/</> directories.
+</para>
+
+<para><emphasis>fatalDebugPage Method</></para>
+<para>
+    <function>fatalDebugPage()</function>
+    </para>
+    
+    <para>
+        This method will generate a very informative debug page. It should be 
+        called in place of <function>completePage()</function> -- ie, AFTER all modules have been 
+        added and configured.
+        </para>
+
+        <para>
+        Instead of showing the final HTML output as <function>completePage()</> does, it will
+        show all information on how the page WOULD have been generated. That is, 
+        it will list all Global Configuration data, what templates are in use, 
+        which modules are loaded, how the modules are configured, what 
+        SmartForms are in use in these modules, and how the SmartForms are 
+        configured.
+        </para>
+        
+        <para>
+        This function should not be used on live production sites.
+        </para>
+        
+</section>
+
+</section> <!-- end section: SiteManager Root Object -->
+

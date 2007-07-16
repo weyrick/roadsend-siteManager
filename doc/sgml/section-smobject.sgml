@@ -1,0 +1,263 @@
+
+<section>
+<title>SM_object Base Class</title>
+
+<para>
+    Most SiteManager objects extend the SM_object base class.
+</>
+    
+<para>
+    This class gives a set of methods used for a common 
+    configuration system, database access, session access,
+    language independence, caching, and error/debug handling.
+</para>
+    
+<para>
+    All classes that extend this class receive the follow methods. Check the SiteManager API for
+    more information on how to use them.
+</para>
+    
+<para>        
+<programlisting>
+        _smoConfigure()                     - one time configuration of object at object instantiation
+        addDirective($key, $val)            - add a key/value pair configuration directive
+        getDirective($key)                  - return current value of directive $key
+        configure($cDir)                    - configure the object all at once with an array of key/values
+        loadConfig($configFile)             - load configuration data from XML file
+        loadLanguage($langFile)             - load language independent text definition XML file
+        dumpInfo()                          - debug class info dump
+        debugLog($msg)                      - add text to the class debug log
+        fatalErrorPage($msg)                - end script execution with a fatal error page with will display
+                                              $msg and display current debug log.
+        debugLog($msg, $verbosity)          - add $msg to the debug log at verbosity level indicated
+                                              (0-n with higher being more verbose)
+        dbErrorCheck($rh, $fatal)           - check PEAR DB handle $rh for an SQL error and return true
+                                              on error, or call fatalErrorPage if $fatal is true                                              
+        getClassLog()                       - return output of class debug log
+        getText($id)                        - get a string of text by a language independent id
+        saveSerial($file, $prefix, &$data)  - cache PHP data to the SiteManager cache directory
+        loadSerial($file, $prefix, &$data)  - load cached PHP data from SiteManager cache directory
+</>        
+</para>
+
+<para>        
+    They also include the following class variables:
+</para>
+    
+<section>
+<title></title>
+<formalpara>
+<title>$directive</title>
+
+<para>    
+    <varname>$directive</> is a standard associative array -- ie, a list of key/value
+    pairs. It is used to configure the object. <function>addDirective()</>, <function>configure()</>, and
+    <function>loadConfig()</> all work to setup this array.
+</para>
+</formalpara>
+
+<para>    
+    Therefore, any object that inherits this class, such as <classname>SM_modules</>, can
+    be configured through:
+    <programlisting>
+    $module->addDirective('key','value');</>    
+</para>
+
+<para>
+    This system is used extensively throughout SiteManager, and we recommend 
+    using it as an alternative to class variables when creating modules and 
+    other code. There are benefits to doing so:
+
+<orderedlist numeration="arabic">
+<listitem><para>It's easier to create reusable code, because classes that have
+           several parent classes are easier to maintain and configure</></listitem>
+<listitem><para>Common, expandable system for defining a configuration scheme
+           for objects</></listitem>
+<listitem><para>Key/value pairs can be loaded from an XML file using built in methods</para></listitem>
+<listitem><para>You can pass and receive directives easily from other objects that descend from SM_object</para></listitem>
+</orderedlist>           
+
+</para>
+
+<formalpara>
+<title>$dbH</title>
+
+<para>
+    This variable is a reference to the current database handle. This is used by the module 
+    system, SmartForms, etc. as a common way to access the default database connection.
+</para>
+
+</formalpara> <!-- end $dbH -->
+
+<formalpara>
+<title>$dbHL</title>
+
+<para>
+    This variable is a hash of all available database connections, indexed by the connection ID. If database support is
+    on, there should be at least one entry with the index 'default'. See the Database Connectivity section for more
+    information on using this.
+</para>
+
+</formalpara> <!-- end $dbHL -->
+
+
+<formalpara>
+<title>$sessionH</title>
+
+<para>
+    This variable is a reference to the current session manager, if available. It's is an object of type SM_session. See Session Management section for more information.
+</para>
+
+</formalpara> <!-- end $sessionH -->
+
+<formalpara>
+<title>$inVarH</title>
+<para>
+    This variable is a reference to the current INVAR manager. Use it for "raw" access to current "incoming variables" to the script. This includes
+    GET, POST, cookies, and session. It includes type checking routines for verifying a variable is of a certain type (ie integer).
+    It is a variable of type <varname>SM_inVarManager</varname>.
+</para>
+
+</formalpara> 
+
+<formalpara>
+<title>$siteConfig</title>
+
+<para>
+    This variable is a reference to the Global Configuration System variable. Use it to access configuration data loaded
+    through <function>$SM_siteManager->loadSite()</function>. It is a variable of type <varname>SM_siteConfig</varname>. See the
+    Global Configuration System section for more information.
+</para>
+
+</formalpara> 
+
+<formalpara>
+<title>$errorHandler</title>
+
+<para>
+    This variable is a reference to the current error handler. It is an object that extends the base class <varname>SM_errorHandler</varname>.
+    See the Error Handling and Debugging section for more information.
+</para>
+
+</formalpara> 
+
+
+<formalpara>
+<title>$classLog</title>
+
+<para>
+    This variable is an array that contains a list of debug messages for the class. It is populated with the SM_object::debugLog() method, and displayed
+    with the <function>SM_object::getClassLog()</> method.
+</para>
+
+</formalpara> <!-- end $classLog -->
+
+<formalpara>
+<title>$liText</title>
+
+<para>
+    This variable is a multidimensional hash that stores different translations of text the object will use for output. It has two keys: [$locale][$textID]. It
+    is populated with the <function>SM_object::loadLanguage()</> method, which reads information from an XML file. You should not access this directly,
+    however -- use the <function>getText()</> method instead.
+</para>
+
+</formalpara> <!-- end $classLog -->
+
+
+
+</section>
+
+
+
+
+<section>
+<title>Internationalization Support</title>
+
+<para>
+All SM_object descendants (include Modules, SmartForm entities, etc) include support for internationalization - currently, 
+the ability to support multiple languages for output.
+</para>
+
+<para>
+This is done by loading an XML based language description file. The file is organized so that each block of text to be displayed is assigned
+an arbitrary ID string, and then listed multiple times in the file in different language sections, translated accordingly.
+</para>
+
+<para>
+The text may then be retrieved with the <function>getText()</> method, in the desired (or default) language, by it's ID string, and finally written
+for output.
+</para>
+
+<para>
+Because of the format of the XML file, translations can be added at any time, allowing for great scalability. The code need not change at
+all when a translation is added, since the block of text will still be accessed by the same ID string.
+</para>
+
+<para>
+
+</para>
+
+<para>
+For the file format of the XML language file, see Appendix B. For an explanation of using the <function>loadLanguage()</> and <function>getText()</> methods, see the
+Module section under Multilingual Support.
+</para>
+
+</section>
+
+<section>
+<title>Extending From SM_object</title>
+
+<para>
+    Custom objects you build for your site should inherit this class to gain access to
+    the resources that SiteManager provides.
+</para>
+
+<para>
+
+</para>
+
+<formalpara>
+<title>Calling _smoConfigure</title>
+<para>
+    While an SM_object based object is being instantiated (ie, in the constructor), it must make a call
+    to <function>$this->_smoConfigure()</function>. This will setup the local class properties to point to
+    proper SiteManager resources. See the example below.
+</para>
+</formalpara>
+
+<formalpara>
+<title>Serialization</title>
+<para>
+    The SM_object class defines the special PHP methods <function>__sleep</function> and <function>__wakeup</function>.
+    These methods allow the SM_object derived class to serialize and unserialize itself properly, allowing you to store
+    your SM_object based classes on disk or in a database. If you need to override these methods, make sure you call
+    the parent as well.
+</para>
+</formalpara>
+
+<para>
+    By default, when the object is serialized, it will store all of your objects properties in the serialization string.
+    If there is a certain property that shouldn't be serialized, add it to the class variable <varname>$varsNotToSerialize</varname>, like so:
+<programlisting>
+    class myObject extends SM_object {
+    
+        var $volatile;
+
+        function myObject() {
+        
+            // setup SM_object
+            $this->_smoConfigure();
+            
+            // don't serialize $this->volatile
+            $this->varsNotToSerialize[] = 'volatile';
+
+        }
+
+    }
+</programlisting>    
+</para>
+
+</section>
+
+</section> <!-- SMOBJECT section -->
+

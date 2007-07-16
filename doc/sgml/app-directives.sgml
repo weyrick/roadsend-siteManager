@@ -1,0 +1,465 @@
+
+<appendix>
+<title>Directive Lists</title>
+
+<para>
+The following are a list of available directives in use by the SiteManager system. You may
+override the default values by calling the addDirective() method on each object.
+</para>
+
+<section>
+<title>Module Directives</title>
+<para>
+
+<!-- -->
+
+<variablelist><varlistentry><term>
+    outputInTable (default: true)</term>
+<listitem><para>     
+
+    When set to true, the module will output itself in a table automatically. If you don't want your
+    module to appear in a table (for example, it's a module to be used within another module), then set
+    this directive to false.
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    outputInSpan (default: true)</term>
+<listitem><para>     
+
+    When set to true, the module output itself within a SPAN tag, with an ID attribute set to the value
+    of the module's prefix. Setting this to false will force the module NOT to output a SPAN tag.
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    tableBorder (default: 0)</term>
+<listitem><para>     
+
+    When outputting module in a table, this is the BORDER size
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    tableWidth (default: '100%')</term>
+<listitem><para>     
+
+    When outputting module in a table, this is the table WIDTH
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    tableCellPadding (default: 0)</term>
+<listitem><para>     
+
+    When outputting module in a table, this is the table CELLPADDING
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    tableCellSpacing (default: 0)</term>
+<listitem><para>     
+
+    When outputting module in a table, this is the table CELLSPACING
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    tableBgColor (default: '')</term>
+<listitem><para>     
+
+    When outputting module in a table, this is the table BGCOLOR
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    centerInTable (default: false)</term>
+<listitem><para>     
+
+    When outputting module in a table, this adds ALIGN='CENTER' to the &lt;TD&gt; that
+    the module appears in when set to true. No effect if 'outputInTable' is false.
+
+</para></listitem></varlistentry></variablelist>
+
+<variablelist><varlistentry><term>
+    dieOnBadInVarType (default: true)</term>
+<listitem><para>     
+
+    When adding an inVar through the <function>addInVar()</> method, you can specify a data type
+    you are expecting this inVar to be (for example, numeric). If SiteManager determines
+    that the inVar was passed, but wasn't of this type, it can either issues a debug warning,
+    or not continue loading the page.
+    </para>
+    
+    <para>
+    If this option is set to true, the page will not load if the data type is incorrect. This is 
+    a security measure and we recommend leaving it on. 
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    propagateInVars (default: true)</term>
+<listitem><para>     
+
+    This sets the default for inVar propagation for this module. When true, all added inVars will
+    be "read-write" or propagated by default.
+
+</para>
+<para>
+Note, you can also turn off propagation on a per inVar basis. See the Module section for more information.
+
+</para></listitem></varlistentry></variablelist>
+
+<!-- -->
+
+</para>
+</section>
+
+<section>
+<title>Template Directives</title>
+<para>
+
+
+<variablelist><varlistentry><term>
+    bodyBGCOLOR (default: '')</term>
+<listitem><para>     
+
+    When using the SM TYPE="HTMLBODY" tag, this defines the BGCOLOR attribute of
+    the BODY tag.
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    bodyLINK (default: '')</term>
+<listitem><para>     
+
+    When using the SM TYPE="HTMLBODY" tag, this defines the LINK attribute of
+    the BODY tag.
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    bodyALINK (default: '')</term>
+<listitem><para>     
+
+    When using the SM TYPE="HTMLBODY" tag, this defines the ALINK attribute of
+    the BODY tag.
+
+</para></listitem></varlistentry></variablelist>
+
+<variablelist><varlistentry><term>
+    bodyVLINK (default: '')</term>
+<listitem><para>     
+
+    When using the SM TYPE="HTMLBODY" tag, this defines the VLINK attribute of
+    the BODY tag.
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    bodyBACKGROUND (default: '')</term>
+<listitem><para>     
+
+    When using the SM TYPE="HTMLBODY" tag, this defines the BACKGROUND attribute of
+    the BODY tag.
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    bodyONLOAD (default: '')</term>
+<listitem><para>     
+
+    When using the SM TYPE="HTMLBODY" tag, this defines the ONLOAD attribute of
+    the BODY tag.
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    bodyOther (default: '')</term>
+<listitem><para>     
+
+    When using the SM TYPE="HTMLBODY" tag, this defines arbitrary text that
+    should be inserted as attributes into the BODY tag. You can use this to
+    add attributes not directly supported as a directive.
+    
+</para></listitem></varlistentry></variablelist>
+
+</para>
+</section>
+
+<section>
+<title>SmartForm Directives</title>
+<para>
+
+
+<variablelist><varlistentry><term>
+    tableBorder (default: 0)</term>
+<listitem><para>     
+
+    When using the default SmartForm table layout, this is the BORDER size
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    tableWidth (default: '100%')</term>
+<listitem><para>     
+
+    When using the default SmartForm table layout, this is the table WIDTH
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    tableCellPadding (default: 0)</term>
+<listitem><para>     
+
+    When using the default SmartForm table layout, this is the table CELLPADDING
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    tableCellSpacing (default: 0)</term>
+<listitem><para>     
+
+    When using the default SmartForm table layout, this is the table CELLSPACING
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    tableBgColor (default: '')</term>
+<listitem><para>     
+
+    When using the default SmartForm table layout, this is the table BGCOLOR
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    requiredTag (default: true)</term>
+<listitem><para>     
+
+    When true, the default SmartForm table layout will show a message to the user
+    indicating a symbol which means a particular field is required.
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    requiredStar (default: '*')</term>
+<listitem><para>     
+
+    When not blank, this text will show up before every required field. This may
+    be an IMG tag.
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    normalClassTag (default: 'sfNormal')</term>
+<listitem><para>     
+
+    The style sheet element to use for normal element titles
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    badClassTag (default: 'sfBad')</term>
+<listitem><para>     
+
+    The style sheet element to use for element titles who's entity failed the
+    filter check
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    correctMessageClassTag (default: 'sfMessage')</term>
+<listitem><para>     
+
+    The style sheet element to use for displaying an error message when a field
+    failed a filter check
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    requiredClassTag (default: 'sfNormal')</term>
+<listitem><para>     
+
+    The style sheet element to use for displaying the required tag message.
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+    rowColorAlt1, rowColorAlt2 (default: '')</term>
+<listitem><para>     
+
+    These two directives allow you to specify two colors the form should use for
+    alternating rows. It value should be a hex color value (ie, '#FFFFFF'). The row color
+    alternator will preserve groups.
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+   resetButton (default: '')</term>
+<listitem><para>     
+
+    If this value is non blank, a RESET button will be added whose title is the same
+    as the value of this variable.
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+   controlsOnRight (default: false)</term>
+<listitem><para>     
+
+    If this value is true, the submit value will show up to the right of the form, instead of on the
+    bottom. This is useful for forms with one element, where you want a vertically compact form.
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+   submitAlign (default: "LEFT")</term>
+<listitem><para>     
+
+    When not using a template for output, and resetButton is '' (so it won't show up), this directive specifies
+    how the Submit button should be aligned at the bottom of the SmartForm. Should be either LEFT, RIGHT, or CENTER.
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+   freeFormSeperator (default: '&lt;br&gt;')</term>
+<listitem><para>     
+
+    This value is used when layout is SF_LAYOUT_FREEFORM. It is the separator used between 
+    entities.
+
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+   defaultLayout (default: SF_LAYOUT_NORMAL)</term>
+<listitem><para>     
+
+    This value is the default layout of form entities. Other options are SF_LAYOUT_FLIPPED, SF_LAYOUT_SINGLE,
+    and SF_LAYOUT_FREEFORM.
+    
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+   useJS (default: true)</term>
+<listitem><para>     
+
+    When true, JavaScript code will be collected and given back to the SiteManager system for inclusion
+    in the final output page. Some filters or entities might not work without this.
+    
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+   postScript (default: $PHP_SELF)</term>
+<listitem><para>     
+
+    Normally a SmartForm will post to itself. If you want your form to POST to another page, set this directive.
+    Note that the filter system will not work if this is changed.
+    
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+   submitImage (default: '')</term>
+<listitem><para>     
+
+    If you would like the submit button to be an image instead of a regular button, set this directive
+    with the image you'd like to use. (ie '/images/button.gif')
+    
+</para></listitem></varlistentry></variablelist>
+
+<variablelist><varlistentry><term>
+   showRequiredHelp (default: true)</term>
+<listitem><para>     
+
+    Set this to false to turn off both the message that says "* = Required Field" and the actual * next to 
+    required fields (ie, sets requiredTag to false and requiredStar to blank)
+    
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+   cleanHiddens (default: false)</term>
+<listitem><para>     
+
+    Normally all hidden variables added to a SmartForm include the module prefix attached to them. This 
+    is so variables added to this form don't conflict with variables added from other modules. However, sometimes
+    you'll want to access the variables from a SmartForm with their prefix - set this directive to 'true' to allow
+    the hiddens not to include their module prefix.
+    
+</para></listitem></varlistentry></variablelist>
+
+
+<variablelist><varlistentry><term>
+   enctype (default: '')</term>
+<listitem><para>     
+
+    If you need your SmartForm to have a special ENCTYPE added to the FORM tag (for example, you're using your
+    form to post a file), you can set this directive. 
+    
+</para></listitem></varlistentry></variablelist>
+
+<variablelist><varlistentry><term>
+   badFormMessage (default: '')</term>
+<listitem><para>     
+
+    If this variable is non-blank, it will display it's contents above the form (as a header) when any of the 
+    filters in the form fail. It should contain a message such as "The form was invalid, please check your input
+    and try again".
+    
+</para></listitem></varlistentry></variablelist>
+
+
+<!-- -->
+
+</para>
+
+<section>
+<title>Input Entity Directives</title>
+<para>
+coming soon
+</para>
+</section>
+
+<section>
+<title>Filter Directives</title>
+<para>
+coming soon
+</para>
+</section>
+
+</section> <!-- end directive list section -->
+
+
+</appendix>
+

@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+<head>
+    
+    <title><sm type="htmltitle" default="SiteManager Test Site"></title>
+
+    <link type="text/css" rel="stylesheet" href="/yui/build/fonts/fonts.css">
+    <link type="text/css" rel="stylesheet" href="/yui/build/reset/reset.css">
+    <link type="text/css" rel="stylesheet" href="/yui/build/container/assets/container.css">
+    
+    @@javaScript@@
+    
+    <STYLE>
+    .testStyle      { color: #000066; font-size: small; font-family: Arial, Helvetica, sans-serif; font-weight: bold; }    
+    .sfNormal       { color: #000000; font-size: x-small; font-weight: bold; font-family: Arial, Helvetica, sans-serif; }    
+    .sfNormal1      { color: #AAAACC; font-size: x-small; font-weight: bold; font-family: Arial, Helvetica, sans-serif; }
+    .sfNormal2      { color: #AAFFAA; font-size: x-small; font-weight: bold; font-family: Arial, Helvetica, sans-serif; }
+    .sfBad          { color: #990000; font-size: x-small; font-weight: bold; font-family: Arial, Helvetica, sans-serif; }
+    .sfMessage      { color: #000000; font-size: xx-small; font-family: Arial, Helvetica, sans-serif; }
+    .sfEntity       { color: #000077; font-size: x-small; font-weight: bold; font-family: Arial, Helvetica, sans-serif; }    
+    </STYLE>
+    
+</head>
+
+<sm type='htmlbody'>
+
+<center><B><A HREF="index.php?@@sessionVars@@">SiteManager Functionality Test Site</A></B></CENTER><BR>
+<center><B>This is <sm type="module" name="smVersion"></B><br>
+        <B>using <sm type="area" name="phpEngine"></b>
+</CENTER><BR>
+
+<table border="1" width="100%" height="100%" cellpadding="5" cellspacing="0">
+    <tr>
+        <td width="25%" cellpadding="0" cellspacing="0" align="left" valign="top">
+        <br>
+
+        <!-- leftBar -->
+        <sm type="area" name="leftBar">
+        <!-- end leftBar -->
+
+        </td>
+        <td width="75%" cellpadding="0" cellspacing="0" align="left" valign="top">
+        <br>
+        
+        <!-- main -->
+        <sm type="area" name="main">
+        <!-- end main -->
+        
+        </td>
+    </tr>
+
+<SM type="area" name="blankArea">
+<SM type="area" name="anotherBlankArea">
+
+
+</table>
+</body>
+</html>
+

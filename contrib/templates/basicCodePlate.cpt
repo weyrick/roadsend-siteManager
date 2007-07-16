@@ -1,0 +1,60 @@
+<?php
+
+/*********************************************************************
+*  Roadsend SiteManager
+*  Copyright (c) 2001-2003 Roadsend, Inc.(http://www.roadsend.com)
+**********************************************************************
+*
+* This source file is subject to version 1.0 of the Roadsend Public
+* License, that is bundled with this package in the file 
+* LICENSE, and is available through the world wide web at 
+* http://www.roadsend.com/license/rpl1.txt
+*
+**********************************************************************
+* Author(s): xxx
+*
+*/
+
+
+/**
+ * a basic code plate
+ *
+ */
+class basicCodePlate extends SM_codePlate {  
+
+    /**
+     *
+     * define which template this codePlate will use,
+     * and any other pre-configuration
+     *
+     */
+    function codePlateConfig() {
+
+        // define which HTML template we're using
+        $this->setMyTemplate("basicTemplate");
+
+        // default directive
+        //$this->directive('mode','basic');
+
+    }
+
+    /**
+     * code functionality of codePlate
+     * load modules and templates into the areas of
+     * this codePlate
+     */
+    function codePlateThink() {    
+
+        // create a new module. notice, returns a reference!!
+        $mod1 = $this->loadModule('rawHTML','areaOne');
+        
+        // configure the module
+        $mod1->addDirective('output','<B>Hello World</B>');                
+
+    }
+
+    
+}
+
+
+?>

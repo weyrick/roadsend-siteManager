@@ -1,0 +1,30 @@
+This directory contains optional libraries that may be helpful for
+creating SiteManager sites.
+
+CONTRIBUTED LIBRARIES:
+----------------------
+
+- smSaveForm.inc
+
+        This library may be used to save a SmartForm to the current SmartForm XML format.
+        In this way, you can build a form in code, and save it out to XML for later use, by
+        loading it through the SM_smartForm::loadForm() method.
+        
+- columnDefinition.inc
+- dbEditorAction.inc
+- dbGuiBaseHook.inc
+- dbGuiMySqlHook.inc
+- mainDbEditorActions.inc        
+
+        These are all part of the new DB GUI system, which is an expandable system for
+        creating SmartForms based on database tables on the fly, by reading the table
+        structure, and allowing various opertions to be performed on the table (add, remove, etc)
+        (see also contri/modules/abstractDbEditor.mod, dbGui.mod, dbRecordSelector.mod)
+    
+        
+- orderItem.inc
+- orders.inc
+
+        Some basic classes that may be used as a base for a shopping cart system
+        (see also contrib/modules/store.mod)        
+

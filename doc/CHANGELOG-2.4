@@ -1,0 +1,569 @@
+2.4.0-pre3 Changes (release 2/13/03)
+--------------------------------------
+- FIX: fix SM_siteManagerRoot::findSMfile() bug when loading a resource who's name included the same characters as it's
+       extension, ie 'newmod.mod'
+- UPD: add wrapper directive 'cleanOutput' (bool) to base SM_module. when true it will set outputInTable and outputInSpan
+       to false, so that the only output the module will generate is that which is done through 'say()'
+- FIX: stop SM_session::reloadPage() from duplicating variables if keepAllScriptVars is true and variables are
+       passed via $varList array. in this case the variables passed via $varList will override those passed
+       to the script if the same variable exists in both.
+- UPD: add paramter to SM_module::eventBadInVar() method, to determine which variable failed the check
+- NEW: add support for debug_backtrace (new in php 4.3). if available, it will print backtrace information in the
+       standard SM_fatalErrorPage() if SM_develState is true. to get the information by hand, you can call 
+       SM_getDebugBackTrace()
+- UPD: update redist PEAR to that included with php 4.3.0
+- UPD: add several wrapper methods to SM_sessions for consistency: addSessionVar, getSessionVar, setSessionVar
+       which map to adding, setting, and getting persistent variables in the session system
+- FIX: fix a bug in SM_sessions::reloadPage() that occured when $varList was passed and keepAllScriptVars was true
+- FIX: update several places in the code where unique id's were being generated (as md5) including sessionID's, to be
+       more random
+- UPD: add wrapper method SM_layoutTemplate::configureTag(). currently equivalent to $tpt->addDirective(tagName, directives)
+       for example: $tpt->configureTag('VAR', array('data' => $data))
+- UPD: add wrapper method replaceVar() to SM_siteConfig for easier access to replacing a current variable
+
+2.4.0-pre2 Changes (release 11/18/02)
+------------------------------------
+- FIX: better overall support for resetting templates. new base SM_module method: resetModule
+- FIX: fix to entityGrid, make addColumnFilter work properly
+- FIX: bugfixes to SM_module::useTemplate. thanks Darryl
+- NEW: add new session GCS variable: absoluteLinkBase. it will be prepended to all links created with uLink/hLink. it
+       is used for making all links on a site absolute.
+- FIX: fix entityGrid entity, getSubmitButton() to work with image based submit buttons
+- NEW: add new variable "forceAntiCacheVar" to sessions SECTION of the GCS. when it's set, it will be included in all
+       links throughout the site, with a random value which will change with each page load (but consistent throughout
+       one page load). it's intended to stop caching systems from caching pages that have the same URL but dynamic
+       content. it is off by default.
+- FIX: fix saving REMOTE_ADDR of user in database sessions
+- UPD: allow option of using crc32() instead of md5() for generating hash of sessionID+dataKey for database session
+       container. crc32() is now the default and should give a speed boost on sites with large numbers of session
+       variables. new flag is "hashFunc" in the sessionContainer/database SECTION in the GCS, which should 
+       either be 'md5' or 'crc32'
+- FIX: more work towards testSite completion
+- FIX: misc cleanups
+- FIX: add check back in for autoLogin session config variable. if this variable is false, the session won't be
+       restored even if a cookie contains the current session ID (it must be passed to the script via GET/POST)
+- FIX: SMLANGUAGE reader bug fixed, by Alexander
+- FIX: several typos and XHTML compatibility updates from Pascal
+- FIX: fix SM_module::loadCodePlate
+- NEW: small change to SM_siteConfig to allow it's use outside of just SiteManager global/local config, by allowing
+       direct creation of the object passing the config file to use as global.
+- NEW: add SM_smartForm::setEntityTitle() which allows setting entity Title after initial creation
+- NEW: initial (transparent) support for SiteManager PHP extension, a new PHP extension (in C) to speed up 
+       SiteManager based sites. email info@roadsend.com for more info.
+
+2.4.0-pre1 Changes (release 10/1/02) 
+------------------------------------
+Big thanks to the following people who found lots of bugs and/or contributed fixes
+or enhancments in this release:
+ Alexander Boyer
+ Vangelis Haniotakis
+ Mike Wright
+ Jérôme Bolliet
+
+- NEW: support SM_object::addDirective calls with overWrite to false when adding scalar to array, array 
+       to scalar, and array to array
+- FIX: allow sayJS in smartform entities entityThink (used to only work in entityConfig)
+- FIX: make $_SERVER and other variables that begin with underscore work in variable replacement in
+       SMCONFIG files
+- FIX: have sessions use accessor methods for memberSystem
+- NEW: add SM_session::clearSession() and SM_memberSystem::clearMemberSession(). it will clear the
+       specified (or current) session from the session and optionally member session
+- FIX: method name typo fix in entityGrid (thanks Alexander)
+- FIX: more XHTML compatbility fixes in input entities
+- NEW: new smartForm directive to specify wrap tags of entity titles (ie, DIV or SPAN): 
+       titleWrapTag. setting it blank will make it output with no wrapper tag (thanks Mike)
+- FIX: path from Vangelis adding several directives to base selectEntity
+- FIX: several misc bug fixes and debug loggings
+- FIX: patch from Vangelis to comboBoxEntity
+- NEW: finally add patch from Jérôme to add Oracle8 support to SM sessions and member system
+       Sample localConfig.xsm DB section:
+        <SECTION name="db" id="default">
+            <VAR name="dbType" value="oci8" />
+            <VAR name="defaultConnection"   value="true" />
+            <VAR name="DSN"  value = "oci8://user:password@mydatabase" />
+            <VAR name="persistent"  value = "false" />
+        </SECTION>       
+- FIX: small fixup in layout templates to check for active session before assinging javascript to it (thanks Jérôme)
+- FIX: fix for turning OFF persistent DB connections in localConfig (thanks Jerome)
+- FIX: important bugfix in __sleep() method of all SM_object descendants that was screwing up object serialization
+       (thanks Alexander)
+- NEW: add $fatalFNF parameter to SM_siteManagerRoot::loadTemplate, loadCodePlate and loadModule, and wrapper methods
+       SM_module::loadTemplate, loadCodePlate, and loadModule, which allow you to specify that a call to one
+       of these methods doesn't have to result in a fatalErrorPage if not found (by setting fatalFNF to false). if
+       the file wasn't found, the methods will return NULL
+- FIX: cleanup some old copy/paste code mistakes
+- FIX: SM_AREA tag, in tagThink, make sure foreach loop uses obj reference and not copy (thanks Alexander)
+- FIX: SM_inVarClient recieves $parent by reference (thanks Alexander)
+- NEW: add parentTemplate class variable to SM_smTag class, which points to the template object which is using 
+       that tag
+- NEW: add PREFIX/POSTFIX attributes to VAR tag. also add ONMATCH/DISPLAY attributes. if prefix/postfix is set,
+       and the variable is not empty, the variable value will be wrapped in prefix/postfix when output.
+       if ONMATCH is set, and the variable matches the value of ONMATCH, the DISPLAY will be displayed in place
+       of that VAR tag.
+- FIX: pgsql database session container fix
+ 
+
+2.3.11 Changes (release 8/20/02) 
+-----------------------------------
+- NEW: redist PEAR is now from php 4.2.2
+- NEW: add (back) in SM_smartForm::removeFilter functionality. usefull if you load a form from XML, and want
+       to remove one of the filters added to an entity
+- FIX: clean up in smSupport _ddPrint to print false as false, not [blank string] (affects most dump() methods)
+- FIX: use long tag format (<?php) in a few places (thanks Larry)
+- FIX: SM_smartForm getEntity and getFormEntity weren't being returned by reference (thanks prehnal)
+- NEW: added auto-expanding functionality to ngMenu contrib module
+- FIX: update to newest PHPDOC docuemntation format
+- FIX: default member system to not use deprecated functionality for pgsql 7.1.3
+- FIX: use htmlspecialchars() for submit button text (thanks shikala)
+- NEW: cleanup SM_session::reloadPage(), and add ability to reproduce all variables passed to the script in the 
+       reloaded page
+- NEW: add ability to set extra attributes on SmartForm entities, by setting directive 'extraAttributes' on entity 
+       object (for example, to add 'tabindex')
+- FIX: allow cookieTTL session directive to be set to 0, which will expire the session when the browser is closed
+       (thanks jfl)
+- NEW: add method SM_module::getInVarValues() for retrieving a hash of declared inVars => current getVar(inVar)
+- NEW: add method SM_module::getInVarList() for retrieving an array of currently declared inVars
+- FIX: SM_siteManagerRoot::findSMfile fix: make sure we don't match on a directory name (thanks shikala)
+- FIX: smartForm fix in creating submit button tags in default output template (thanks Stefano)
+
+2.3.10 Changes (release 6/28/02)
+-----------------------------------
+- NEW: add SM_layoutTemplate::getTagsByType(). it will return an array of SM_tag based objects by tag type. For
+       example, you can get an array of all SM_smTag_AREA objects created when the template was parsed by calling
+       getTagsByType('AREA'). useful for retrieving custom tags in a template for further processing.
+- NEW: add ability to specify a validTagList and excludeTagList for SM_layoutTemplates. this allows you to
+       limit which tags a template will parse. if excludeTagList is defined at all, any tag in the list will be
+       ignored when the template is parsed or run. similarly, if validTagList is set at all, all tags must 
+       appear on that list before they will be created or run. see SM_layoutTemplate::setExcludeTagTypeList() and 
+       SM_layoutTemplate::setValidTagTypeList(). useful for security reasons when you can't trust template data.
+- NEW: add method SM_smartForm::getVarHash()
+- NEW: fix SMLANGUAGE reader by directing piping the defaultHandler through the character data handler. this allows
+       entities for foreign lanagues to be interpreted
+- NEW: brand new testSite, with a more thorough functionality testing mechanism
+- FIX: fix resetButton directive in smartForms to show specified text properly (thanks mpawright)
+- NEW: smartform directive (requiredBadMsg) for setting the default text of required filter (which
+       is added automatically if the $required paramater to the add() method is true)
+- UPD: more XHTML compatibility updates
+- FIX: fix in smartforms that was causing an error when setting the form to read only
+- FIX: lots of cleanup and changes to abstractDbGui, dbGui, actions, and other contrib modules
+- NEW: added basic login status, logout ability to the contrib/userLogin.mod module
+- NEW: add new smartForm method setReadOnly(), for turning a current input entity into a read only presetText entity
+       $myForm->add('myTextBox','Sample Text Box', 'text');
+       $myForm->setReadOnly('myTextBox', 'New Read Only Value');
+- NEW: add ability to omit resource file name in SM_module:use* methods (second param). in this case, the same it will use
+       the resource file name of the resource name given (first param)
+- FIX: clear variable in SM_smartForm::loadForm() to allow multiple XSM files to be loaded correctly
+- NEW: add SamrtForm method entityExists()
+- NEW: add paramater to various session methods to list variables which should NOT be included in a link (hLink, etc)
+- NEW: use PHP magic methods '__sleep' and '__wakeup' in SM_object so that an SM_Object-based class can be serialized
+       and unserialized properly
+- NEW: added code to check for and stop inifinite template recursion (currently at 50 recursions of the same template)
+- NEW: layout template support for entityGrid
+- NEW: new caching mechanism for readers. instead of simply serializing values, the new cache system writes out valid
+       PHP code which can then be include'd later when it's ready to be read back in. the advantage is the compiled
+       script can be cached by the likes of Zend Cache and APC. This affects the XML reads: SMCONFIG, SMOBJECT,
+       SMARTFORM, and SMLANGUAGE
+
+2.3.9 Changes (release 4/17/02)
+-----------------------------------
+- FIX: updates and changes to internationalization, locale and language loading code. better support for recognizing
+       browser supplied language information, and forcing consistent use of language/country codes. PLEASE TEST THIS,
+       email feedback to siteManager@roadsend.com
+- NEW: add SM_config::loadSiteReplace() method, and $replace paramater to SM_config::addVar() 
+       this allows a loadSite() call (or addVar) that won't append overlapping var's (into arrays), but will instead
+       replace the current value with the new one
+- FIX: fixes to fileSelectEntity
+- FIX: fix in smConfig.inc::SM_sectionTag::varExists() for handling a tag that was an array
+- UPD: lots of other small updates and warning fixes
+- NEW: add SM_object::getDirective() method, which can be used instead of accessing the $directive hash directly
+- UPD: optimize db sessions slightly
+- NEW: implement template load caching. as templates are loaded, they are cached by the root sitemanager object. successive
+       calls to loadTemplate() on the same template will return the cached version instead of reloading and reparsing the
+       template. this speeds up items like loading templates in a loop for output.
+       incidently, reloading a template using the caching system is theoretically faster than using resetTemplate (below) since
+       it uses a copy of the object before it had content added to it, as opposed to telling the object to loop through it's
+       content to unset it.
+- NEW: patch from tcobb implementing "template resetting". This allows you to reset a template to it's initial, post-parsed
+       start (ie, the state it's in directly after it was loaded, before content was added to it). the new method to make this
+       happen is resetTemplate(). 
+- NEW: add directive in numberFilter for setting decimal character (defaults to US style: '.') thanks Steen
+- NEW: added methods reloadPage() and transferToPage() to SM_session (available through $this->sessionH). these allow
+       the reloading and trasfering to pages keeping sessions in tact (deprecates global SM_reloadPage() function)
+- NEW: you can create/load your own SM_layoutTemplate and then assign it to a SmartForm for use in layout. This allows you
+       to create a custom smartform template dynamically. the method is SM_smartForm::useTemplate, which takes a single
+       parameter of the template object.
+- FIX: the default member system now returns true/false for attemptLogout() based on whether a member session was actually
+       removed of not
+- NEW: based on ideas from tcobb: implement 'priority' of SM Tag execution. You can now set an optional attribute for any SM 
+       tag. The attribute name is 'PRIORITY'. priority levels start at 0, there is no set ceiling. tags with a higher priority 
+       level will execute first in relation to the priority levels of other tags. tags with the same priority level will 
+       execute in the order they were encountered in the template. you can also set priority for AREA tags from within code 
+       with the SM_layoutTemplate::setAreaPriority($areaName, $priority) method. For example, a CodePlate can decide it 
+       wants to execute an area of itself first, or a module can load a template and tell it to execute one area before 
+       another.
+- NEW: patch from tcobb implementing:
+       a) inVars propagation list handled by inVarManager instead of smRoot
+       b) codePlates propagate inVars properly
+       c) new SM_session::uLink and SM_module::uLink method for generating session-proper URL link (with <A HREFs> like hLink)
+       d) allow overriding values of inVars
+- FIX: correct SmartForm template dump for new template method (thanks Steen)
+- FIX: make '= Required Field' a directive in SmartForms (thanks Steen)
+- FIX: don't check DNS on email filter if OS is windows (thanks Steen)
+- FIX: fix undefined function call in smInVarClient (thanks Troy)
+
+2.3.8 Changes (release 3/21/02)
+-----------------------------------
+- FIX: update to latest (CVS) version of PEAR DB routines, which fixes multiple database connection bug (thanks Troy)
+- FIX: SM_memberSystem_default::attemptLogout() now returns true (but always succeeds, or fatalError's)
+- FIX: remove extra quotes around bodyOther directive of HTMLBODY SM tag
+- NEW: huge update revamping the way errors are handled in SiteManager. a new Error Handler class is available to
+       all SM_object descendants (including modules, templates, codeplates, etc) through the 'errorHandler' class
+       variable. Two default methods are given: fatalErrorPage() and debugLog(). These work much like the global
+       functions SM_fatalErrorPage() and SM_debugLog() (and in fact, the default handler still uses them). Going through
+       the new error handler class, however, allows a site to extend the base error handler, override the default
+       fatalErrorPage and debugLog to output information in a way fit for the site. You may also add other methods
+       to your custom error handler for custom error processing in a site.
+       To customize the error handler, create a class that extends SM_errorHandler, and make sure it's including in
+       your site's localConfig.xsm. Then set the new GCS variable 'errorHandler' in the 'debug' SECTION to be the class
+       name of your custom error handler. SiteManager will create an instance of it and make it available as the 
+       'errorHandler'  class variable to SM_object descendants.
+       In addition to being able to access $this->errorHandler->* functionality, there are two builtin wrapper
+       methods in SM_object: one for debugLog() and one for fatalErrorPage() that automatically add the $this
+       argument for displaying the class calling the warning or error.
+       Also, debugLog now takes another parameter: verbosity. This should be an int, and defaults to 0. A new
+       GCS variable was added to debug, 'debugLevel'. Only debugLog messages at the level specified and below will
+       be shown in a fatalErrorPage (to filter out unwanted warnings).
+       For more info, take a look at the following files:
+       lib/smErrorHandler.inc
+       lib/smErrors.inc
+       lib/smObject.inc
+       config/globalConfig.xsm
+       testSite/config/localConfig.xsm
+- FIX: fix bug where appending redist directory to php path was using wrong path delimiter for windows
+- NEW: new feature for inVar type checking. in addition to being able to specify the variable type the inVar should match
+       to be valid (such as 'int'), you can specify an array which will be the range of possible valid options. so,
+       for example, if you need an inVar that has to be the value 'foo' or 'bar' for your module to work correctly,
+       instead of just specifying 'string', you can specify:       
+       $this->addInVar('myVar','',array('foo','bar'));
+       and if the value is passed but it's not 'foo' or 'bar', an inVar error will be thrown.
+- NEW: changed SM_entityFilter::badMessage property to be a directive instead of a class variable
+- NEW: new method SM_config::varExists() for determining if a variable exists in section/sectionID/attribute
+- NEW: SM_config::sectionExists() now takes an optional second argument to also verify that a sectionID exists
+- NEW: check all attributes (not just VALUE) in SMCONFIG files for 'true' or 'false' value, and convert from string
+       to bool type
+- NEW: add directive 'forceArray' to checkBox entity, to force return value to always be array, even if there is only
+       one option
+- NEW: misc contrib module updates
+- NEW: allow presetText input entity to output HIDDEN form variables based on their name/value (directive==makeHidden)
+- NEW: make SM_module::sayJS() output a trailing newline
+- FIX: fix SM_siteMabager->load* methods so they take file names with paths specified again
+- FIX: cleanup select, checkBox, and comboBox entities regarding how they take default selected values. allow
+       array to be passed as default value.
+- NEW: new inputEntity: entityGridEntity. this gives SmartForms the long needed functionality of dynamic length,
+       grid based forms.
+       it is to be used when a grid of entities is needed where there is a set number of columns, each column having 
+       a set entity type, and a dynamic number of rows. this is used in a shopping cart or database editor, for example. 
+       see testSite/admin/modules/detailedForm.mod and lib/sfInputEntities/entityGridEntity.inc
+- NEW: use $this->* methods (instead of $SM_siteManager methods) for loading resources from SM_module::use* methods 
+       which gives the module a chance to customize the module before use by overriding load* methods
+- FIX: selectEntity bugfix: when no items have been added to the list, but addNoOption is true, show the entity
+- NEW: allow VALUE attributes to be ommited in an SMCONFIG file
+
+
+2.3.7 Changes (release 2/18/02)
+-----------------------------------
+- FIX: postgreSQL fix for member system submitted by Erik Norvelle (enorvelle)
+- NEW: add method SM_session::getMemberSystem() to return a reference to the current memberSystem object
+- NEW: finally rid the necessity of having PEAR pre-installed before SiteManager will work, by redistributing the
+       relavent pear code and automatically adding it to the include path.
+- NEW: various optimizations: try to avoid using preg_match, etc.
+- NEW: big cleanup of SmartForm code. removed lots of extra debugging calls. cleaned up and optimized some
+       of the older code. these changes resulted in about 25% speed increase in smartforms.
+- NEW: allow defaultVal and expectType in SM_Module::addOutVar
+- FIX: lots of HTML output cleanups. all (?) of the code is XHTML compatible now, and still works in 4.x browsers
+- NEW: break the various XML file reading code into a pluggable, extendable system. this allows for easier maintainence
+       of the readers, and prepares for the addition of being able to read the various formats from a database as well
+       as XML
+
+2.3.6 Changes (release 01/28/02)
+-----------------------------------
+- FIX: run data in selectEntity options through htmlspecialchar() to handle quotes in the data
+- NEW: allow SM_reloadPage() to take a hash of key/value pairs to add to the page when it reloads
+- FIX: fix an obscure bug in SM_config that occured when requesting a variable from a section, by specifying sectionID
+       and attribute, when that variable was listed multiple times in the section but the attribute requested wasn't
+       found for any of them (it was returning a NULL for each VAR. it now returns a single NULL.) boy, I'll bet you 
+       were all waiting for *that* one to come down the pipe, eh? we can all get on with our lives now...
+- NEW: add support for "required inVars". this is an optional parameter to SM_module::addInVar (defaulting to false)
+       which allows you to require that a certain inVar have a value when the script is loaded. if this parameter is
+       true, but the variable wasn't passed to the script, the module will call SM_module::eventBadInVar(), which defaults
+       to a simple SM_fatalErrorPage but may be overridden by your module to run the code of your choice.
+       the exact same functionality also exists for codePlates.
+- NEW: method SM_module::eventBadInVar() will be called in the event that an inVar fails it's type check and
+       dieOnBadInVarType is set to true (which it is by default). this is backward compatible, but allows you to
+       customize the code that runs when the event occurs (by overridding the method) instead of only allowing a 
+       static error message. this functionality also exists for codePlates.
+- NEW: add optional attribute FILE to SM MODULE tag, adding the ability to specify a fileName that is different
+       from the class name of the module
+- NEW: add new SM TAG "INCLUDE". This allows you to include a template directly inside of another template via an SM 
+       TAG. this can be used to build complex templates, or used simply to load a piece of static HTML inside of a
+       template. the syntax is similiar to a MODULE tag, requiring NAME="" to tell it which template to load, which must
+       be in your template path (from the GCS). use:
+       <SM TYPE="INCLUDE" NAME="includedTemplate">
+       "includedTemplate" in this example should be a file called "includedTemplate.tpt" in admin/templates directory.
+       it may just be a static piece of HTML, or it may have other SM tags itself.
+- NEW: add new virtual method SM_inputEntity::eventNewValue(). this method will run when setDefaultValue() is called
+       (either from SM_smartForm or SM_inputEntity). it allows an input entity to do some processing on the value
+       it's given. this fixes a bug with the dateEntity where it wasn't updating the date correctly when the default
+       value was set after the call to SM_smartForm::add()
+- NEW: SmartForm templates now uses the main templating engine instead of having it's own. This means you should create
+       your SmartForm templates differently now -- see testSite/admin/templates/testForm.tpt for the new format (which
+       uses the main SM tag system). The old method still works and should be fully backward compatible, but shouldn't
+       be used for new code.
+
+
+2.3.5 Changes (release 1/3/02)
+-----------------------------------
+- NEW: add SM_smartForm::addHidden($name, $value) wrapper method
+- UDDATE: lots of misc code improvements (which also includes the inevitable misc bugs :)
+- UPDATE: SM_smartForm updates, new methods for accessing internal smartform objects
+- NEW: add methods getLocalVar(), getLocalSection(), and getGlobalSection() to SM_siteConfig object. this allows
+       more specific control of retrieving site configuration settings
+- NEW: move to extendable 'member system'. this is similiar to the other plugable parts of sitemanager, and allows
+       developers to easily add their own member system into the SiteManager framework. the 2.2.x member system is
+       provided as the default, and is backward compatible. this makes it easy to, for example, create a member system
+       that uses LDAP for authentication, by simply extending the base member system class and creating a new SECTION
+       in the GCS config.
+- NEW: add 'readOnly' directive to smartforms, which will make all entities of a form 'presetText', regardless of
+       the type in the add() call
+- FIX: create smart form form ID's based on number of smart forms in module. this fixes a bug when using multiple forms
+       in one module gave the forms the same form NAME
+- FIX: fix quote bug in submitEntity
+- FIX: create module ID's based on a global module counter. this fixed a bug where different modules were being
+       assigned the same ID's when the module loaded another module in it's think method (with useModule)
+- NEW: move to extendable 'session container' system. sessions now save their session variables via a
+       session container - of which there are now 'none', 'database', and 'file'. file is a new container
+       which allows SiteManager to store sessions in files, rather than require a database. to use the file container,
+       set containerType to 'file' (in sessions section), then set 'savePath' var in sessionContainer section. make
+       sure the path is writable by the web server.
+       note, this changed the layout of the 'sessions' section in GCS, 
+       giving rise to a new section called 'sessionContainer', id'd by it's container name. see globalConfig.xsm,
+       and update notes.
+
+
+2.3.4 Changes (release 12/13/01)
+-----------------------------------
+- NEW: change names of some lib/ files for consistency
+- NEW: move SM template tags to their own directory, one to a file. this allows one to create new tags very easily
+       by extending the SM_smTag class and dropping the file into the smTag directory for the site. when a tag is
+       found in a template, it will automatically try to load a tag file from the smTag directory. the filename format
+       must adhread to TAGNAME_tag.inc (see lib/smTags/ directory)
+- NEW: move to a component system where non-critical parts of the SiteManager core library are loaded
+       on the fly as needed. this improves overall performance. systems afected: smartforms, code plates,
+       inVars, template tags, sm objects, others...
+- NEW: add ability to add user data as a module resource. SM_module::addResource($rID, $data), for example,
+       assume we have some 'menu' object we want to store as a resource, with a resource ID of 'menu':
+       $this->addResource('menu',$menuVariable);
+       retrieved in other parts of your module like:
+       $myMenu =& $this->getResource('menu');
+       $myMenu->methodCall();
+- NEW: allow non-fatal checks with SM_dbErrorCheck, through a third boolean argument which defaults to true (fatal). when
+       used as non-fatal, it will return true on db error, and SM_debugLog the error message.
+- NEW: allow SmartForm entities to change their entity type when recommitting back to smartForm through commit()
+- NEW: add common directive 'javaScript' to input entities. it will place the value of this directive into the input
+       entity tags as free form text, so you can, for example do:
+       $myRadioBox->addDirective('javaScript','onClick="myJSfunction()"');
+- FIX: fix select entity so that a multiple select box with options that have non-numeric data values show up when 
+       the entities default value is set to a comma delimited list
+
+2.3.3 Changes (release 11/26/01)
+-----------------------------------
+- NEW: add SM_Module::sayHLink() convenience wrapper method. no more $this->say($this->sessionH->hLink(...)),
+       it's now simply $this->sayHLink(...)
+- NEW: add SM_Module::useSmartForm() method, which is to be used in moduleConfig() to declare that a smartForm
+       will be a resource used later in the module (moduleThink()). The single parameter is the resource ID.
+       This should be used where SmartForms needs to be initialized before the module runs.
+- NEW: add new SM VAR tag. it is useful for substituing variables directly a template, without using addText
+       to an area. This gives you the ability to, for example, do a database pull and use the template
+       to specify where each field should show up. a VAR tag example:
+       <SM TYPE="VAR" NAME="rr" INDEX="userName">
+       see the Var Tag example in testSite (admin/modules/varTags.mod, admin/templates/varTemplate.tpt)
+- NEW: add session directive 'forceSessionID' to GCS. this defaults to true, which is the default 2.2.x behavior.
+       when set to true, session ID will always be appended to links and FORMS, even if sessions is using a cookie.
+       this is the safest setting, as users can turn cookies on and off. but, if you don't like the session ID showing
+       up in the URL all the time, set this to false
+- NEW: added method SM_layoutTemplate::setTemplate(). this lets you set a block of text for the template to use, such
+       as loading it from a database. this change could affect users who were instantiating the SM_layoutTemplate class
+       directly, but should be backwards compatible if you always use the loadTemplate() wrapper methods.
+       An example of this new feature (from moduleThink()):
+       
+       // set this variable, but could have been loaded from database
+       $templateData = '<HTML><SM TYPE="AREA" NAME="areaOne"></HTML>';
+       // new template
+       $myTemplate =& new SM_layoutTemplate();
+       // set text
+       $myTemplate->setTemplateData($templateData);
+       // run and output template
+       $this->say($myTemplate->run());
+       
+       see the API docs for more info. see UPGRADE NOTES below for upgrade info.
+- NEW: added SM_siteManager->includeLib() method, which includes a library file (.inc) after finding it in the GCS 'libs'
+       path
+- NEW: added global function SM_reloadPage(), which reloads the current page with session variables in tact
+- NEW: directory layout changes: modules/ and templates/ have been moved to a new contrib/ directory, and globalConfig.xsm
+       has been changed to reflect this. also added a lib/ directory to contrib/, which includes optional libraries you
+       may use with SiteManager
+- NEW: throw a warning if an inVar is declared in more than one module at a time, so you can locate potential
+       inVar naming conflicts
+- NEW: add PHP_SELF variable to session manager class. you should now access PHP_SELF through any SM_object by accessing:
+       $this->sessionH->PHP_SELF
+       for example, in a module:
+       $this->say($this->hLink($this->sessionH->PHP_SELF.'?myVar=1','Link Text'));
+- UPDATE: more inVar fixes and cleanups, fixes defaultValue handling
+- FIX: small typo bugfix in comboBoxEntity
+
+
+2.3.2 Changes (release 10/15/01)
+-----------------------------------
+- NEW: added wrapper method addOutVar(), which takes a single paramter (variable name) and creates a propagated inVar
+       with no default value or expect type. This should be used by modules that won't be *reading* the inVar of that
+       variable name, but *will* be setting it and require it to propagate.
+- NEW: change to module paradigm. three new methods were added to SM_module: useModule, useTemplate and useCodePlate.
+       the first argument of each is a "resource ID", which gets associated with each resource. You use these
+       methods in moduleConfig, which in effect declare what resource your module will be using. They each return
+       their respective objects, on which you can add directives, etc. Then, in moduleThink(), you retrieve your
+       resource by using the getResource($resourceID) method, using the resource ID you assigned it in moduleConfig. 
+       You may then use the object returned in the normal way, as far as running it and outputting it's results
+       along with your module output.
+       This is optional, but recommened. It's only *required* when a module will be loading another module or codeplate
+       that declares propagated invars. In that situation, you *must* use this new method of declaring your resources.
+- NEW: added inVar type MD5 for checking MD5 hash values
+- UPDATE: moved modules inVar access code to new classes, and gave access to these classes to codePlates. codePlates can
+          now call addInVar() and getVar(), the same as modules can.
+- UPDATE: huge rewrite of inVar code, which also affected sessions. related to this, modules no longer have
+          module postfixes, which means more notice has to be given to using module with the same inVars, but 
+          different purposes. same for form variable names. also, getVar() can be used in moduleConfig (and codePlateConfig)
+          now (they could have been used previously in *Think() methods)
+- FIX: switchBox entity now adds the checkBox items it creates to the main form variable list (so they shows up in 
+       getVarList())
+- CLEANUP: initialize class variables at var declaration
+- NEW: all descendents of SM_object now have access to $this->siteConfig, which is a reference (and equivilent to)
+       $SM_siteManager->siteConfig (except you don't need to make $SM_siteManager global)
+- NEW: don't pass reference to siteManager objects to SMOBJECT descendents, use new common configuration method
+       SM_Object::_smoConfigure()
+- NEW: add directive 'swapControlOrder' to smartform, which allows Reset on left, Submit on right when using
+       default submit controls
+- UPDATE: smartform default submit and reset buttons now use submitEntity and resetEntity, instead of outputting a
+          hard coded entity
+- NEW: added 'resetImage' directive to smartforms, which works just like submitImage, and uses the new resetEntity
+- NEW: add resetEntity to smartforms. adding this to your form allows you to have an image for a reset button, which uses
+       a bit of javascript to fake a real submit button. check lib/sfInputEntity/resetEntity
+- NEW: add support for adding a CLASS='' to all input entities.To use, either set the default smartform directive 
+       'entityAttributeClassTag' to one of your style sheet items, or set that same directive 
+       specifically on a particular input entity after it's been added. works best on text, textArea, 
+       and select, but requires a newer browser that supports this functionality.
+- NEW: add support for different normalClassTag STYLE's in alternating row colored rows in SmartForms, so the text
+       of the input entity can be different depending on it's background color. The new directives are
+       'normalClassTagAlt1' and 'normalClassTagAlt2', which should match 'rowColorAlt1' and 'rowColorAlt2'. This
+       functionality is backward compatible.
+- UPDATE: remove broken javaScript debug window functionality
+
+2.3.1 Changes (release 10/4/01)
+-----------------------------------
+NOTES:
+ + caching of SM_config files is broken in this release.
+
+- UPDATE: rewrote more parts of SM_config to fix a design flaw in the Global/Local SMCONFIG scheme.
+          this allows better use of SM_config objects on their own. if you weren't instantiating the SM_config class,
+          you shouldn't notice a difference. see update notes for more info.
+- NEW: add 'quickTags', which are inside of an identifier, take no parameters, and can be used only globally
+       per template per tag ID. These quickTags use the same tag handlers as regular SM tags, and the following
+       are equivalent: <SM TYPE="tagType"> and @@tagType@@
+       the identifier is configurable, and defaults to "@@". you can also turn off support for quickTags .see the new
+       "templates" section in globalConfig.xsm
+- UPDATE: changed the way TAG's get directives in templates. format is now 
+          $tempate->directive['SMTAGNAME'] = array('key'=>'value'). see upgrade notes.
+- UPDATE: the session system is now required to be on at all times
+- UPDATE: large rewrite of layoutTemplate code to allow for extendable SM tag usage
+          You can now define custom handlers for SM tags. SM tag handlers have a tagConfig() and tagThink(),
+          much like modules. For an example, look at the new lib/smTags.inc file
+          also see upgrade notes.
+- UPDATE: rewrite portions of SM_Config code to allow for accessing an arbitrary number of attributes from
+          VAR tags in SMCONFIG files (not just VALUE)
+          - you can now access additional attributes in SM_config files by adding a 5th parameter to the getVar()
+            method of $SM_siteManager->siteConfig. example:
+            $dbTypeDesc = $SM_siteManager->siteConfig->getVar('db','dbType',false,'default','DESC');
+            would retrieve the "desc" attribute from the config system for VAR 'dbType' in section 'db', section ID
+            'default'. NOTE that the attribute specification should be UPPERCASE.
+- UPDATE: remove debugOnVar hidden in SmartForms. make SM_debugVar persistent instead
+- UPDATE: add directive formName to SM_smartForm which allows you to override the FORM NAME attribute
+- UPDATE: make input entities more consistent with SM framework by using $this->say() and $this->sayJS methods for output
+          see upgrade notes.
+- UPDATE: make setcookie() use a configurable path that defaults to '/', so it affects all pages on the site (thanks to
+          Chris Hughes)
+- FIX: make input entites return their javascript code even when had no filters
+- FIX: make showRequiredHelp directive in SmartForm actually work right
+- UPDATE: make header in SmartForms (through setHeader) use normalClassTag CSS style
+- FIX: small bug in textAreaEntity fixed
+
+
+UPGRADE NOTES 2.2.x - 2.4.x
+---------------------------
+- contrib module 'menu' is deprecated and shouldn't be used for new code, see 'ngMenu' instead
+- contrib modules MysqlDBGUI and baseDbEditor are deprecated - they've been replaced with dbGui and abstractDbEditor, 
+  which should pretty much be drop in replacements
+- Deprecated VARs in GCS:
+    flags -> strictInVars
+- Format of the global SM_debugOutput array has changed, to allow for verbosity information. Each element of the array
+  is now a hash with two elements, keyed by 'msg' and 'verbosity'. If you accessed the array directly, you will have
+  to update your code to allow for this. See smErrors.inc:_makeErrorPage() for an example of working with it.
+- SmartForm templates are now parsed by the main SiteManager template engine instead of having it's own code. This means
+  the format of a SmartForm template file is different than it was in 2.2.x. You should follow the new method of 
+  creating SmartForm templates. That being said, the old templates will still work, and this change is fully backward
+  compatible -- but the old method should NOT be used for new sites, since this backward compatibility feature might
+  disappear at some point in the future. also, this deprecates the ".stp" extension, as the new smartform templates
+  use the main ".tpt" extension. using the new loadTemplate() method will search Template paths, not SmartForm paths.
+  If you want it to replicate the old behanvior or looking in SmartForm paths for smartForm templates, add a "template"
+  directory that points to your smartForm directory in the GCS.
+* the GCS has a new section to handle the new session containers, called 'sessionContainer'. it is a 
+  section with multiple id's, one per session container. 'useDatabase', 'sessionTable', 'serialize', and
+  'dataBaseID' have been moved out of the main 'session' section and into the appropriate sessionContainer
+  section. to make it completely backwards compatible to 2.2.x, so that it still looks for these vars in
+  the old location, turn the 2.2.x compatibility flag.
+- if you had created a module that extended SM_module and had overridden newSmartForm() method, you need to add the
+  call to make sure the SmartForm component is loaded before creating an instance. simply add 
+  SM_loadComponent('SM_smartForm');
+  before the call to new SM_smartForm($this->moduleID);
+  (there might be other instances of this problem elsewhere, related to component loading)
+- class SM_layoutTemplate() was changed to allow for template data to be given to the template, rather than always have it
+  load from a file. this changed the constructor for SM_layoutTemplate (see API docs). This should only affect people
+  who instantiated SM_layoutTemplate directly (rather than the loadTemplate() wrapper methods). If you have been 
+  instantiating it yourself, you might now have to specify additional parameters, run parseTemplate() yourself, or use
+  the class variables $htmlTemplate and $htmlTemplateFile differently.
+- class variable SM_module::inVar is no longer available in SM_module. it is not inVarClient, and reference an 
+  SM_inVarClientT object.this shouldn't affect anyone as long as you've followed the manual and used addInVar() 
+  and getVar() properly
+* Session variables are no longer globalized when loaded in (use *->inVarH->getSessionVar()), unless 2.2.x compatibility
+  is turned on
+- Modules no longer have module prefixes/postfixes. Also affects smartforms. (more)
+- Instantiating several base SiteManager objects is now slightly different, as the parameters for database handlers
+  and session handler have been removed. They've moved to a method of SM_object, which should be called once when a 
+  descendent of SM_object is created: SM_object::_smoConfigure(). This will only affect users who were instantiating
+  base objects, instead of using $SM_siteManager to create them. Also affects those who had created classes that
+  extend SM_object: you should now call $this->_smoConfigure() in your constructor to get access to the current
+  session, database, and inVar handlers.
+- the javascript debug window has been deprecated - it never really worked well anyway. use debugOnVar and fatalDebugPage
+  instead
+- SM_inputEntity::entityThink() not longer returns the string it will use for final output. 
+  use $this->say() or $this->sayJS for all output.
+- SM_layoutTemplate::_runModules() and SM_layoutTemplate::_subOutput() have reverted back to a single run() function
+  that returns the htmlLayout. this also affects SM_codePlate::run() method.
+* SM_layoutTemplate: passing directives to TAG's HTMLBODY and HTMLTITLE has changed to new extendable format for
+  passing directives to all TAGs. format: $template->directive['TAGNAME'] = array('key'=>'value',...); note this
+  is only useful for tags used ONCE in a template, or for all tags of that type to be configured the same.
+- the few people who might have been instantiating the SM_config class directly (as opposed to using 
+  SM_siteManager->loadSite) will find the API has changed slightly, due to a reordering of class structure. 
+  check the API docs for the latest info. ($SM_siteManager->siteConfig methods are the same)
+  
+* notes with asterisk will be backward compatible if "compatibility" flag is turned on in globalConfig.xsm  
+
+

@@ -1,0 +1,93 @@
+
+<appendix>
+<title>File Formats</title>
+
+
+<section>
+<title>.XSM Resource Files</title>
+
+<para>
+    All files with a .XSM extension are XML files used by SiteManager for configuration and operation of the site. They
+    all contain the root tag &lt;SM_XML&gt;, and one or more of the tags listed in this section. Most of these files can be cached
+    by SiteManager.
+</para>
+
+<section>
+<title>SMARTFORM</TITLE>
+
+<para>
+SMARTFORM files describe a method for defining and configuring SiteManager SmartForms.
+</para>
+
+</section> <!-- end SMARTFORM -->
+
+
+<section>
+<title>SMLANGUAGE</TITLE>
+
+<para>
+SMLANGUAGE files describe a method for defining translations of blocks of text.
+</para>
+
+<para>
+<programlisting>
+
+    &lt;SMLANGUAGE VERSION="1"&gt;
+        &lt;LDEF locale="en_US"&gt;
+            &lt;TEXT id="text1"&gt;This is the text&lt;/TEXT&gt;
+            &lt;TEXT id="text2"&gt;Here is some more text&lt;/TEXT&gt;
+        &lt;/LDEF&gt;
+        &lt;LDEF locale="da_DK"&gt;
+            &lt;TEXT id="text1"&gt;Dette er en tekst&lt;/TEXT&gt;
+        &lt;/LDEF&gt;
+        &lt;LDEF locale="es_ES"&gt;
+            &lt;TEXT id="text1"&gt;Éste es el texto&lt;/TEXT&gt;
+            &lt;TEXT id="text2"&gt;Aquí está más texto&lt;/TEXT&gt;
+        &lt;/LDEF&gt;
+        &lt;LDEF locale="fr_FR"&gt;
+            &lt;TEXT id="text1"&gt;C'est le texte&lt;/TEXT&gt;
+        &lt;/LDEF&gt;
+        &lt;LDEF locale="de_DE"&gt;
+            &lt;TEXT id="text1"&gt;Dieses ist der Text&lt;/TEXT&gt;
+        &lt;/LDEF&gt;       
+        &lt;LDEF locale="it_IT"&gt;
+            &lt;TEXT id="text1"&gt;Ciò è il testo&lt;/TEXT&gt;
+        &lt;/LDEF&gt;        
+    &lt;/SMLANGUAGE&gt;
+
+</programlisting>
+</para>
+
+<para>
+    An LDEF should appear for each language to be defined. The 'locale' attribute should contain
+    the language you're defining (if anyone can find a reference as to where the official list of
+    these locale id's are, please notify us). Each block of text to be defined should be listed in a
+    TEXT tag. The 'id' attribute is arbitrary, and will be used by the getText() method for retrieving
+    this block. The same ID should be used in each translation of that text.
+</para>
+
+</section> <!-- end SMLANGUAGE -->
+
+<section>
+<title>SMOBJECT</TITLE>
+
+<para>
+SMOBJECT files describe a method for configuring SiteManager objects.
+</para>
+
+</section> <!-- end SMOBJECT -->
+
+
+<section>
+<title>SMCONFIG</TITLE>
+
+<para>
+SMCONFIG files describe method for configuring SiteManager sites on a global and site-wide basis.
+</para>
+
+</section> <!-- end SMCONFIG -->
+
+</section> <!-- end XSM file desc -->
+
+</appendix> <!-- end appendix -->
+

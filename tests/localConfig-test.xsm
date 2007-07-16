@@ -1,0 +1,116 @@
+<SM_XML>
+<SMCONFIG VERSION="1.2">
+
+    <SITE siteid="TESTSITE">                                           
+        <SECTION name="compatibility">
+            <VAR name="2.2.x"               value = "false"  desc = "set to true if you want more compatibility with SiteManager 2.2.x" />
+        </SECTION>
+        <SECTION name="dirs">
+            <VAR name="base"        value = "{$adminDir}" desc="global variable that is defined in common.inc"/>
+            <VAR name="config"      value = "{$base}config/"/>
+            <VAR name="libs"        value = "{$base}lib/"/>
+            <VAR name="modules"     value = "{$base}modules/"/>
+            <VAR name="modules"     value = "{$base}modules2/"/>
+            <VAR name="templates"   value = "{$base}templates/"/>                        
+            <VAR name="codePlates"  value = "{$base}codePlates/"/>            
+            <VAR name="smartForms"  value = "{$base}smartForms/" />
+            <VAR name="myDir"       value = "{$base}myDir/" />
+            <VAR name="smTags"      value = "{$base}smTags/" />
+            <VAR name="locale"      value = "{$base}locale/" />
+            <VAR name="testDir"     value = "{$base}test/" desc="used only for debugging" />
+            <VAR name="testDir2"    value = "{$testDir}test2/" desc="used only for debugging" />
+        </SECTION>
+        <SECTION name="test">
+            <VAR name="testDir"    value = "{$dirs.testDir2}" desc="used only for debugging" />
+            <VAR name="testDir2"   value = "{$testDir} - testDir2" desc="used only for debugging" />
+            <VAR name="testDir3"   value = "{$testDir} - testDir3" desc="used only for debugging" />            
+            <VAR name="configTest1" value = "PASSED" />
+            <VAR name="configTest2" value = "TVAL1" />
+            <VAR name="configTest2" value = "TVAL2" />
+            <VAR name="regressionTest" value = "config1" />
+        </SECTION>
+        <SECTION name="test2" id="primary">
+            <VAR name="sample" value = "PASSED" />
+            <VAR name="sample2" value = "SAMPLE-PRIMARY" />
+            <VAR name="sample3" value = "SAMPLE3-PRIMARY-1" />
+            <VAR name="sample3" value = "SAMPLE3-PRIMARY-2" />
+        </SECTION>
+        <SECTION name="test2" id="secondary"> 
+            <VAR name="sample2" value = "SAMPLE-SECONDARY" />       
+            <VAR name="sample3" value = "SAMPLE3-SECONDARY-1" />
+            <VAR name="sample3" value = "SAMPLE3-SECONDARY-2" />
+        </SECTION>        
+<!--
+        <SECTION name="vTest">
+            <VAR name="testGlobal" value = "{$testGlobal}" />
+            <VAR name="testServer" value = "{$_SERVER['SERVER_NAME']}" />
+        </SECTION>
+-->
+        <SECTION name="templates">
+            <VAR name="testSection1"      value = "PASS"  desc = "test stuff" />
+            <VAR name="testSection2"      value = "PASS"    desc = "test stuff" />
+        </SECTION>
+        <SECTION name="debug">        
+            <VAR name="debugLevel"          value="2"       desc="debugLog messages of this verbosity and lower will be shown in the debugLog - all else ommitted." />        
+            <VAR name="develState"  value="true" desc="whether sitemanager is in development mode or not"/>
+            <VAR name="debugOnVar"  value="true" />            
+        </SECTION>        
+        <SECTION name="flags">        
+            <VAR name="sendNoCacheHeaders"      value="true"   desc="if this is true, a header will be sent to stop browsers from caching pages" />
+        </SECTION>
+        <SECTION name="db" id="default">
+            <VAR name="dbType" value="mysql" />
+            <VAR name="defaultConnection"   value="true" />
+            <VAR name="DSN"  value = "mysql://testUser:testPass@localhost/test" />            
+            <VAR name="persistent"  value = "true" />
+        </SECTION>                                
+        <SECTION name="db" id="secondary">        
+            <VAR name="dbType" value="mysql" />
+            <VAR name="DSN"  value = "mysql://testUser:testPass@localhost/test" />
+            <VAR name="persistent"  value = "true" />
+        </SECTION>                                
+        <SECTION name="sessions">                        
+            <VAR name="containerType"       value = "database"          desc="which session container to use. currently 'database' or 'file'" />
+            <VAR name="memberLoadFunction"  value = "testMemberLoad"    desc="a hook for running a custom function to load additional member information" />
+            <VAR name="useMemberSystem"     value = "true"              desc="main on/off switch for member system. if on, make sure 'members' section is setup" />            
+            <VAR name="forceSessionID"      value = "true"             desc="when set to true, the session ID variable will always be appended to links, even if a cookie is in use." />
+            <VAR name="sessionCookie"       value = "smTestCookie"      desc="when non blank, create a cookie on the remote users machine that stores their session id" />            
+            <VAR name="autoLogin"           value = "true"             desc="when true, if a session cookie was found, try to restore their session" />
+            <VAR name="badSessionPage"      value = "home/home.php"     desc="page to send to when a session is invalid" />
+            <VAR name="sessionIDName"       value = "sID"               desc="variable name to use to store sessions ID" /> 
+            <VAR name="cookieTTL"           value = "2678400"           desc="session cookie expire time. 2678400=1month" />
+            <VAR name="defaultScript"       value = "index.php"         desc="the default script that loads when no script is specified" />
+        </SECTION>        
+        <SECTION name="sessionContainer" id="database">
+            <VAR name="serialize"           value="true"            desc="whether to serialize all persistent variables or not. must be true to keep arrays and objects perisistent" />            
+            <VAR name="dataBaseID"          value="default"         desc="which database connection (from db section) should SiteManager use for sessions" />
+            <VAR name="sessionTable"        value="sessions"        desc="sessions table name" />            
+        </SECTION>        
+        <SECTION name="sessionContainer" id="file">
+            <VAR name="savePath"           value="/tmp/"            desc="where to store session files. " />            
+        </SECTION>                
+        <SECTION name="members">
+            <VAR name="memberSystemType"     value="default"        desc="which member system handler to use" />
+            <VAR name="usePersistentMembers" value="true"          desc="when true, member data will be keep as a persistent variable instead of loaded in from the container each time" />
+            <VAR name="loginTTL"             value="2678400"        desc="how long is a login session valid for (2678400)" />
+            <VAR name="maintainTables"       value="true"          desc="if true, SiteManager will delete old sessions. performance hit, so defaults to false. better to run a cron'd script." />
+        </SECTION>
+        <SECTION name="memberSystem" id="default">
+            <VAR name="dataBaseID"          value="secondary"          desc="which database connection (from db section) should SiteManager use for sessions" />        
+            <VAR name="memberTable"         value="members"          desc="member table name" />            
+            <VAR name="memberSessionsTable" value="memberSessions"   desc="logged in member session table" />
+            <VAR name="userNameField"       value="userName"         desc="the username field" />            
+            <VAR name="passWordField"       value="passWord"         desc="the password field" />
+            <VAR name="uIDField"            value="uID"              desc="the unique user id field" />            
+            <VAR name="sIDField"            value="sID"              desc="the unique session id field" />
+            <VAR name="dcField"             value="dateCreated"      desc="DATETIME field of session creation" />            
+        </SECTION>
+        <SECTION name="pVars">
+            <VAR name="SM_debug" value="0" />
+            <VAR name="testPersistent" value="foo" />
+        </SECTION>
+    </SITE>
+        
+</SMCONFIG>
+</SM_XML>
+

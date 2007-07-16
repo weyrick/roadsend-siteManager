@@ -1,0 +1,39 @@
+
+<Chapter>
+<title>Getting More Help</title>
+
+<para>
+    The documentation we've included so far should help you get started using
+    and extending SiteManager.But there's also a lot that's not covered.
+</para>
+    
+<para>
+    We recommend going through the library source files to get a better 
+    understanding of the library system. All files are heavily documented, 
+    using a JavaDoc like layout.
+</para>
+    
+<para>
+    You may also use our online resources to get help. Head over to
+</para>
+    
+<para>
+    http://www.phpsitemanager.com
+</para>
+        
+<para>
+    Here you will find the latest information on SiteManager, including links
+    to Message Boards, Mailing Lists, Support Emails, and the like.
+</para>
+    
+<para>
+    When in doubt, you can also rip us off an email:    
+    siteManager@roadsend.com
+</para>
+    
+<para>
+    Thanks.
+</para>
+
+</Chapter>
+

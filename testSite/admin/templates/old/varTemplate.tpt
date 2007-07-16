@@ -1,0 +1,22 @@
+
+<!-- varTemplate.tpt -->
+<TABLE>
+<TR BGCOLOR="gray">
+  <TD>
+  <SM TYPE="VAR" NAME="rr" INDEX="userName">
+  </TD>
+</TR>  
+<TR BGCOLOR="white">
+  <TD>  
+  <SM TYPE="VAR" NAME="rr2" INDEX="firstName">  
+  <SM TYPE="VAR" NAME="rr2" INDEX="lastName">
+  </TD>
+</TR>
+<TR BGCOLOR="white">
+  <TD>  
+  <SM TYPE="VAR" NAME="testVar" VARTYPE="global">  
+  </TD>
+</TR>
+</TABLE>
+
+

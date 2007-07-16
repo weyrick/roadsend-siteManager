@@ -1,0 +1,28 @@
+#### PHP INCLUDE PATH ####
+# if you want to include siteManager in your php_include path, uncomment 
+# one of these line with the correct path you installed SiteManager into
+# you only need to do this if you didn't put siteManager into your main php.ini file
+
+# (unix) 
+#php_value include_path ./:/home/userName/siteManager:/usr/local/lib/php
+
+# (windows)
+#php_value include_path ".;C:\package\siteManager;C:\package\pear"
+
+
+#### LIMIT FILE ACCESS ####
+# you only need to do this if you didn't (or can't) put these lines in your
+# httpd.conf file
+
+# don't allow access to SiteManager files
+<FilesMatch "\.(inc|tpt|stp|mod|xsm|cpt)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# here is an extended list of extensions you might also want to block
+#<FilesMatch "\.(txt|tpl|bak|pl|sh|cgi|rej|ihtml|sql)$">
+#   Order allow,deny
+#   Deny from all
+#</FilesMatch>
+

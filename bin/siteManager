@@ -1,0 +1,512 @@
+#!/usr/bin/perl
+######################################################################
+#  Roadsend SiteManager
+#  Copyright (c) 2001-2003 Roadsend, Inc.(http://www.roadsend.com)
+######################################################################
+#
+# This source file is subject to version 1.0 of the Roadsend Public
+# License, that is bundled with this package in the file 
+# LICENSE, and is available through the world wide web at 
+# http://www.roadsend.com/license/rpl1.txt
+#
+######################################################################
+# Author(s): Shannon Weyrick (weyrick@roadsend.com)
+#            Jon Michel (pym@roadsend.com)
+######################################################################
+#
+# This script is a helper script for making and maintaining SiteManager
+# sites. It can be used to create new skeleton sites, and add modules
+# and pages to them. In the future, it may do more than that.
+#
+# It requires PERL to be installed.
+#
+# Run the file without any arguments for usage information
+#
+
+use Getopt::Std;
+use File::Basename;
+
+# setup some variables we will use later
+$VERSION       = 'v1.2';
+$cFile         = $ENV{'HOME'}.'/.siteManager';
+$pwd           = `pwd`; chop($pwd); $pwd .= '/';
+$siteAuthor    = $ENV{USER};                    # this can be made static
+$siteDate      = `date +%D`; chop($siteDate);
+
+# get command line options
+getopts('v', \%opts); 
+
+# tag out
+&tag;
+
+# read config, or create new
+&getConfig;
+
+# command line ok?
+&usage if ($ARGV[0] eq '') or ($ARGV[0] ne 'makesite' and $ARGV[0] ne 'makemod' and $ARGV[0] ne 'makepage');
+
+&makeSite if ($ARGV[0] eq 'makesite');
+&makeMod  if ($ARGV[0] eq 'makemod');
+&makePage if ($ARGV[0] eq 'makepage');
+
+################################
+
+# make a new skeleton site
+sub makeSite {
+
+   print "CREATE NEW SITE\n";
+
+   # interactive by default
+   $interactive = 1;
+
+   # command line?
+   if (scalar(@ARGV) == 3) {   
+      $siteName = $ARGV[1];
+      $siteID   = $ARGV[2];
+      $interactive = 0;
+   }
+
+   if ($interactive) {   
+
+      # SITE NAME
+      $siteName = getData("Enter the new Site Name. This can be any free text title for your site.");
+   
+      # auto gen SITEID
+      $siteID = $siteName;
+   }
+
+   $siteID =~ s/\W//g;
+   $siteID = uc($siteID);   
+
+   if ($interactive) {   
+
+
+      if (confirm("Use a SITEID of $siteID",'y')) {      
+         $siteID = '';
+         while ($siteID !~ /^[A-Z0-9]+$/) {
+            $siteID = getData("Enter a SITE ID for this Site. This is all uppercase alphanumeric, no spaces, unique ID string");
+            $siteID = uc($siteID);
+         }      
+      }
+
+
+   }
+
+   print "Using SITEID: $siteID\n";
+
+   # DIRCTORY NAME
+   if ($SM_vars{'SM_defaultSiteDir'} ne '') {   
+      $siteDir = $SM_vars{'SM_defaultSiteDir'}.lc($siteID).'/';
+   }
+   else {
+      $siteDir = $pwd.lc($siteID).'/';
+   }
+
+   if ($interactive) {   
+
+      if (confirm("Site directory will be $siteDir",'y')) {
+         $siteDir = getData("Enter the full root directory for this site\n(including trailing slash)");
+      }
+   
+      if (!confirm("Really make a new SiteManager skeleton site [$siteName] in $siteDir")) {
+         die("new site creation aborted\n");
+      }
+   
+   }
+
+
+   ($dName, $dPath, $suff) = fileparse($siteDir);
+
+   # create directory, copy skeleton
+   print "copying skeletonSite/ directory $siteDir...\n";
+   print `mkdir $siteDir`;
+   print `cp -a $SM_vars{SM_rootDir}skeletonSite/* $siteDir`;
+   print `cp $SM_vars{SM_rootDir}skeletonSite/.htaccess $siteDir`;
+
+
+   ########################################################
+   #            Parse and format admin/common.inc
+   ######################################################## 
+   open (COMMON,$siteDir."/admin/common.inc") or die "can't find /admin/common.inc!";
+   open (COMMON_NEW,">$siteDir"."/admin/common_new.inc") or die "can't write new /admin/common.inc!";
+   while (<COMMON>) {
+   
+        if (m#xx/xx/xx#) {
+                print COMMON_NEW "\t $siteDate - script created by $siteAuthor \n";
+        } elsif (m#^\$SM_siteName#) {
+                print COMMON_NEW '$SM_siteName' . qq(\t = "$siteName";\n);
+        } elsif (m#^\$SM_siteID#) {
+                print COMMON_NEW '$SM_siteID' .qq(\t = "$siteID";\n);           
+           } elsif (m#^\s*\$adminDir#) {
+                    print COMMON_NEW '$adminDir' . "\t = \"".$siteDir."admin/\";\n";
+           } else {
+                print COMMON_NEW $_;
+        }
+   }
+   close (COMMON);
+   close (COMMON_NEW);
+      
+   print `mv $siteDir/admin/common_new.inc $siteDir/admin/common.inc`;
+   
+   
+   ########################################################
+   #            Parse and format home/index.php
+   ######################################################## 
+   open (INDEX,$siteDir."/home/index.php") or die "can't open /home/index.php!";
+   open (INDEX_NEW,">$siteDir"."/home/index_new.php") or die "can't write new /home/index.php!";
+   while (<INDEX>) {
+   
+        if (m#xx/xx/xx#) {
+                print INDEX_NEW "\t $siteDate - script created by $siteAuthor \n";
+           } else {
+                print INDEX_NEW $_;
+        }
+   }
+   close (INDEX);
+   close (INDEX_NEW);
+   
+   print `mv $siteDir/home/index_new.php $siteDir/home/index.php`;
+   
+   
+   ####################################################################
+   #            Parse and format admin/config/localConfig.xsm
+   ####################################################################
+   open (CONFIG,$siteDir."/admin/config/localConfig.xsm") or die "can't open /admin/config/localConfig.xsm";
+   open (CONFIG_NEW,">$siteDir"."/admin/config/localConfig_new.xsm") or die "can't write new /admin/config/localConfig.xsm";
+   while (<CONFIG>) {
+        s/PROJ1/$siteID/;
+        print CONFIG_NEW $_;
+   }
+   close (CONFIG);
+   close (CONFIG_NEW);
+   
+   print `mv $siteDir/admin/config/localConfig_new.xsm $siteDir/admin/config/localConfig.xsm`;
+   
+   ###################################################################
+
+   # write config file
+   $SM_vars{$siteID} = $siteDir;
+   writeConfig();
+
+}
+
+# make a new module
+sub makeMod {
+
+   # interactive by default
+   $interactive = 1;
+
+   # command line?
+   if (scalar(@ARGV) == 2) {   
+      $className = $ARGV[1];
+      $interactive = 0;
+   }
+
+   # try to get site directory
+   getCurrentSite();
+
+   # setup location
+   if ($siteDir ne './') {   
+      $moduleDir = $siteDir.'admin/modules/';
+   }
+   else {
+      $moduleDir = $siteDir;
+   }
+
+   print "CREATE NEW MODULE\n";
+
+   if ($interactive) {   
+
+      # get module class name
+      $className = getData("Enter the module class name");
+
+   }
+
+   $fName = $className.'.mod';
+
+   if ($interactive) {   
+
+      if (confirm("Use a module file name of $fName",'y')) {
+         $fName = getData("Enter a filename for the module (.mod extension will automatically be added)");      
+         $fName .= '.mod' if $fName !~ /\.mod$/;
+      }
+
+   }
+
+   $newModule = $moduleDir.$fName;
+
+   if ($interactive) {
+
+      # confirm
+      if (!confirm("Really make a new SiteManager module [$className] in $newModule")) {
+         die("new module creation aborted\n");
+      }
+
+   }
+
+   print "creating module...\n";
+
+   open(HEADER,$SM_vars{SM_rootDir}.'/contrib/modules/blank.mod') or die "can't open skeleton module";
+   open(NEWPAGE,">$newModule") or die "can't open new module for output";
+   
+   while(<HEADER>) {
+   
+      # Create a Formatted header out of the index.php sample
+      s/xxx/$siteAuthor/;
+      s/MODNAME/$className/;
+      print NEWPAGE $_;
+   }
+   
+   close(HEADER);
+   close(NEWPAGE);
+
+   print "done!\n";
+
+}
+
+# make a new directive script / page
+sub makePage {
+
+   # interactive by default
+   $interactive = 1;
+
+   # command line?
+   if (scalar(@ARGV) == 2) {   
+      $fName = $ARGV[1];
+      $interactive = 0;
+   }
+
+   # try to get site directory
+   getCurrentSite();
+
+   # setup location
+   if ($siteDir ne './') {   
+      $pageDir = $siteDir.'home/';
+   }
+   else {
+      $pageDir = $siteDir;
+   }
+
+   print "CREATE NEW PAGE\n";
+
+   # get module class name
+   if ($interactive) {   
+      $fName = getData("Enter the new page file name (.php extension will automatically be added)");
+   }
+
+   $fName = $fName.'.php' if $fName !~ /\.php$/;
+   $newPage = $pageDir.$fName;
+
+   # confirm
+   if ($interactive) {   
+      if (!confirm("Really make a new SiteManager page [$fName] in $newPage")) {
+         die("new page creation aborted\n");
+      }
+   }
+
+   print "creating page...\n";
+
+   open(HEADER,$SM_vars{SM_rootDir}.'/skeletonSite/home/index.php') or die "can't open skeleton page";
+   open(NEWPAGE,">$newPage") or die "can't open new page for output";
+   
+   while(<HEADER>) {   
+      if (m#xx/xx/xx#) {
+              print NEWPAGE "\t $siteDate - script created by $siteAuthor \n";
+         } else {
+              print NEWPAGE $_;
+      }
+   }
+   
+   close(HEADER);
+   close(NEWPAGE);
+
+   print "done!\n";
+
+}
+
+
+
+###########################################################
+
+# confirm something with the user, y/n question
+sub confirm {
+
+   my ($message, $default) = @_;
+
+   $default = 'n' if $default eq '';
+
+   $ms = 'Y/n' if ($default eq 'y');
+   $ms = 'y/N' if ($default eq 'n');
+
+   print "$message [$ms]: ";
+   $answer = <STDIN>;
+   chop($answer);
+
+   if ($default eq 'n') {   
+      return ($answer =~ /^[yY]$/)   
+   }
+   else {
+      return ($answer =~ /^[nN]$/)   
+   }
+
+}
+
+# get some input from the user. possible default value.
+sub getData {
+
+   my ($message) = @_;
+
+   print "$message\n> ";
+   $answer = <STDIN>;
+   chop($answer);
+
+   if ($answer eq '') {
+      $answer = $default;
+   }
+
+   return $answer;
+
+}
+
+# try to figure out what site we're in, by directory
+sub getCurrentSite {
+   foreach $sID (keys %SM_vars) {
+      if ($sID !~ /^SM_/) {
+         $sD = $SM_vars{$sID};
+         if ($pwd =~ /^$sD.*$/) {
+            # default to current directory if not            
+            $siteID  = $sID;
+            $siteDir = $SM_vars{$sID};
+            print "working in $siteID, $siteDir...\n";
+            return;
+         }
+      }
+   }
+
+   # fall through
+   print "working in unknown current directory...\n";
+   $siteDir = './';
+   $siteID  = '';
+
+}
+
+
+# load config file
+sub getConfig {
+
+   # if not found, get configuration
+   &createConfig ()if not -e $cFile;   
+
+   # open and load config
+   open (CFG, "<$cFile");
+
+   while (chop($line = <CFG>)) {
+
+      ($key, $val) = split(/=/, $line);
+      $SM_vars{$key} = $val;
+
+   }
+
+   close (CFG);
+
+}
+
+# create a new config file
+sub createConfig {
+
+   print "no configuration file was found in $cFile, creating new one...\n";
+
+   # find siteManager base directory
+   print "looking for SiteManager root directory....";   
+
+   # check known locations
+   if (-e '/usr/local/lib/php/siteManager/siteManager.inc') {
+      $SM_rootDir = '/usr/local/lib/php/siteManager/';
+   }
+   elsif (-e './siteManager.inc') {
+      $SM_rootDir = `pwd`;
+      chop($SM_rootDir);
+      $SM_rootDir .= '/';
+   }
+   else {
+      $SM_rootDir = '';
+   }
+
+   # if we didn't scout the sitemanager root dir, ask them for it
+   if ($SM_rootDir eq '') {
+
+      print "not found!\n";
+
+      while (not -e $SM_rootDir.'siteManager.inc') {
+         $SM_rootDir = getData("Please enter the root directory where SiteManager is installed\n(including trailing slash)");
+         if ($SM_rootDir !~ /\/$/) {
+            $SM_rootDir .= '/';
+         }
+      }
+
+      print "found siteManager.inc in $SM_rootDir, using this directory.\n";
+
+   }
+   else {
+      print "found!\n";
+   }
+
+   # make sure we have the skeleton directory
+   if (not -d $SM_rootDir.'skeletonSite') {
+      die("couldn't access the skeletonSite directory in $SM_rootDir! check your installation.");
+   }
+
+   # default site dir
+   $SM_defaultSiteDir = getData("Enter the default directory for new SiteManager sites, or blank for none\n");
+
+   # setup SM_vars for writing
+   $SM_vars{'SM_rootDir'} = $SM_rootDir;
+   if ($SM_defaultSiteDir ne '') {   
+      $SM_vars{'SM_defaultSiteDir'} = $SM_defaultSiteDir;
+      $SM_vars{'SM_defaultSiteDir'} .= '/' if $SM_vars{'SM_defaultSiteDir'} !~ /\/$/;
+   }
+
+   # write out config
+   &writeConfig;
+
+}
+
+# write out the configuration
+sub writeConfig {
+
+   open(CFG, ">$cFile");
+  
+   foreach $key (keys(%SM_vars)) {
+      print CFG "$key=$SM_vars{$key}\n";
+   }
+
+   close(CFG);
+
+}
+
+# quick tag of program name
+sub tag {
+   print "\nRoadsend SiteManager - Helper Script $VERSION\n";
+}
+
+# usage 
+sub usage {
+
+   print "\n";
+   print "usage: siteManager [command]\n";
+   #print "where options are:\n";
+   print "where command is:\n";
+   print "\tmakesite  [siteName] [siteID] -  create a new SiteManager skeleton site\n";
+   print "\tmakemod   [className]         -  create a new SiteManager module for this site\n";
+   print "\tmakepage  [pageName]          -  create a new SiteManager directive script (page) for this site\n";
+
+   print "\n";
+
+   print "Currently maintaining sites:\n";
+   foreach $siteID (keys (%SM_vars)) {
+      print "$siteID in $SM_vars{$siteID}\n" if ($siteID !~ /^SM_/);
+   }
+
+   die("\n");
+}
+

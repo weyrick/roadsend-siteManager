@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<SM_XML>
+    <SMLANGUAGE VERSION="1">
+        <LDEF locale="en_US" LANG='en'>
+            <TEXT id="text1">This is the text</TEXT>
+        </LDEF>
+        <LDEF locale="da_DK">
+            <TEXT id="text1">Dette er en tekst</TEXT>
+        </LDEF>
+        <LDEF locale="es_ES">
+            <TEXT id="text1">Éste es el texto</TEXT>
+        </LDEF>
+        <LDEF locale="fr_FR">
+            <TEXT id="text1">C'est le texte</TEXT>
+        </LDEF>
+        <LDEF locale="de_DE">
+            <TEXT id="text1">Dieses ist der Text</TEXT>
+        </LDEF>       
+        <LDEF locale="it_IT">
+            <TEXT id="text1">Ciò è il testo</TEXT>
+        </LDEF>        
+    </SMLANGUAGE>
+</SM_XML>
+

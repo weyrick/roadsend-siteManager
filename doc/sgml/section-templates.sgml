@@ -1,0 +1,340 @@
+
+<section>
+<title>Templates</title>
+
+<section>
+<title>Working With Templates</title>
+
+<para>
+    The template system is used to separate the module logic from the way 
+    the final page will look to the end user. 
+</para>
+    
+<para>
+    SiteManager allows you to take a "template" of static HTML,
+    define arbitrary "areas", and define which modules should go in which
+    areas, and in what order.
+</para>
+    
+<para>
+    You may have as many areas as you like, and any number of modules in
+    any area. You can also add other resources to templates, including 
+    text, other templates, or CodePlates. In addition, you can define your own custom tags
+    to be used your templates, which will trigger and run the PHP code of your choice.
+</para>
+    
+<para>
+    The basic SiteManager "template" consists of a static HTML file with a custom &lt;SM&gt;
+    tag placed in them:
+</para>
+
+    
+<para>
+    <programlisting>
+    
+    &lt;SM TYPE="area" NAME="areaName"&gt;                                         - define an area
+    &lt;SM TYPE="module" NAME="moduleName" DIRECTIVES="key1=val1,key2=val2"&gt;    - directly replace this tag with a module
+    &lt;SM TYPE="javaScript"&gt;                                                   - replace with JavaScript code collected from modules
+    &lt;SM TYPE="htmlTitle" NAME="Default Title"&gt;                               - replace with directive 'htmlTitle', or use default if undefined
+    &lt;SM TYPE="htmlBody"&gt;                                                     - replace with HTML BODY tag, using directives 'bodyBGCOLOR', 'bodyLINK', etc
+    @@sessionVars@@                                                                - special tag. directly replaces itself with current session variables
+                                                  
+    </>                                          
+</para>
+    
+<para>
+    Here is a simple example template:
+</para>
+    
+<para>
+<programlisting>
+
+    &lt;html&gt;
+    &lt;head&gt;
+    
+    &lt;SM TYPE="javaScript"&gt;
+    
+    &lt;/head&gt;
+    &lt;body bgcolor="#ffffff"&gt;
+    
+    &lt;a href="staticLink.php?@@sessionVars@@"&gt;Test Link With Session Variables&lt;/a&gt;
+
+    &lt;table&gt;
+    &lt;tr&gt;&lt;td&gt;&lt;SM TYPE="area" NAME="areaOne"&gt;&lt;/td&gt;&lt;td&gt;&lt;SM TYPE="area" NAME="areaTwo"&gt;&lt;/td&gt;&lt;/tr&gt; 
+    &lt;/table&gt;
+    
+    &lt;SM TYPE="module" NAME="footerModule"&gt;
+
+    &lt;/body&gt;
+    &lt;/html&gt;
+
+
+</programlisting>    
+</para>
+
+<para>
+    This simple template sets up 2 areas, a JavaScript area, and a footer 
+    module call.
+</para>
+    
+<para>
+    All area names are arbitrary. Here we've used "<varname>areaOne</>" and "<varname>areaTwo</>", we 
+    could just as easily have used "<varname>leftArea</>", "<varname>rightArea</>". The area name will 
+    be reference in the directive script, when you are adding modules.
+</para>
+    
+<para>
+    The javascript tag is optional, but if it appears it should be in the 
+    &lt;HEAD&gt; section of the HTML. This will allows modules and SmartForms to 
+    plug in javascript functionality.
+</para>
+    
+<para>
+    <varname>@@sessionVars@@</> is a direct search-and-replace convenience tag. It will replace itself
+    with the current list of session variables (if any). It exists so that one does 
+    not have to create a module merely to output static links with session 
+    variables included.
+</para>
+
+<para>
+    If an area is listed in a template, but a module is not added to it by the
+    time the page is displayed, the area tag is removed from the template and ignored.
+</para>
+
+<para>
+    A template is loaded in the following fashion (usually in a directive 
+    script):
+</para>
+    
+<para>
+    <programlisting>$template =& $SM_siteManager->rootTemplate('templateName');</>
+</para>
+    
+<para>
+    This will search your template path for the requested template, and load it
+    once found.
+</para>
+    
+<para>
+    From there you may add a previously loaded and configured module to the 
+    template using the <function>addModule()</> method:
+</para>
+    
+<para>
+    <programlisting>$template->addModule($modulePointer, 'areaOne');</>
+</para>
+    
+<para>
+    This adds the module created into <varname>$modulePointer</> to area <varname>areaOne</>, and will
+    cause it's output to show up in the corresponding area.
+</para>
+
+<para>
+    Instead of adding a module to the area, you could add text instead:    
+</para>
+
+<para>
+    <programlisting>$template->addText('Welcome to my site', 'areaOne');</>
+</para>
+
+<para>
+    You can even add both to the same area, as it will output all resources added to an area in the
+    order in which they were added.
+</para>
+
+<para>
+    Finally, the <function>completeDisplay()</> method is called to run the modules and
+    output the finished page.
+</para>
+
+<para>
+    See the Directive Script section for more information on creating a 
+    template and adding modules to it.
+</para>
+
+
+</section> <!-- end working with template -->
+    
+<section>
+<title>Templates within Templates (sub-templates)</title>   
+    
+<para>
+    Templates can act recursively - that is, you can have templates within 
+    templates.
+</para>
+    
+<para>
+    To do this, you use the <varname>$SM_siteManager</> root object method <function>loadTemplate()</>.
+    Then add the template that gets returned into another template through the 
+    <function>addTemplate()</> method (in much the same way as adding a module). 
+    For example (directive script excerpt):
+</para>
+    
+<para>
+<programlisting>
+
+    // create root template. notice, returns a reference!!
+    $layout1 =& $SM_siteManager->rootTemplate("welcome");
+    
+    // add our module to root template area
+    $layout1->addModule($mod1, "leftDirectory");
+    
+    // load subtemplate, returns reference!
+    $layout2 =& $SM_siteManager->loadTemplate("subTemplate");
+    
+    // add module to subtemplate
+    $layout2->addModule($mod2, "areaOne");
+
+    // add sub template to root template
+    $layout1->addTemplate($layout2, "intro");
+
+    // finish display
+    $SM_siteManager->completePage();
+
+
+</programlisting>    
+</para>
+
+<para>
+    Every loaded template has an <function>addTemplate()</> method, which allows you to
+    add an entire template (modules and all) into an area in another template.
+    When a root template displays, if it encounters a template inside one of
+    it's areas, and it run recursively, gathering and returning output.
+</para>
+    
+<para>
+    Computer resources are the only limit to the depth of recursion.
+</para>
+    
+<para>
+    Also note, you can use CodePlates instead of templates, which also act
+    recursively. See the next section on CodePlates.
+</para>
+
+
+</section> <!-- end templates within templates section -->
+
+<section>
+<title>Custom Template Tags</title>
+
+<para>It's easy to increase the functionality of the Template system by creating your own SM tags. With this
+system, you can create an SM tag that will run your custom code whenever your tag is encountered by the
+template system.
+</para>
+
+<para>
+All template tags extend the base class <classname>SM_smTag</classname>. The base tags included with SiteManager (AREA, MODULE, SESSIONVARS, etc)
+may be found in the <filename>lib/smTags</filename> directory of the main SiteManager distribution, and will serve
+as a good starting point for creating your own.
+</para>
+
+<para>
+Custom tags must conform to the naming convention <filename>TAGNAME_tag.inc</filename>, where TAGNAME is the
+name of your custom tag. The file should be located in the "smTags" directory, as defined in the "dirs" section
+in the GCS. The class that gets defined in the tag file should extend the SM_smTag base class, and the name of the
+class should be SM_smTag_TAGNAME. This convention has to be followed in order for the tag auto-load system to work.
+</para>
+
+<para>
+When the template system is parsing a SiteManager template and it comes across an SM tag, it will attempt to
+automatically load the tag specified by the TYPE attribute. If a tag of that type is found in the local smTag path,
+it will be loaded an used. If it's not found, the SM tag will be ignored.
+</para>
+
+<para>
+Tags follow a similiar structure to other SiteManager objects in that they have two main methods: <function>tagConfig</function>
+and <function>tagThink</function>. tagConfig is called immediately when the tag is initialized. tagThink is called
+only when the tag is being run by the template system.
+</para>
+
+<para>
+Here is a simple custom SM TAG:
+
+<programlisting>
+
+
+class SM_smTag_CAR extends SM_smTag {
+
+    /**
+     * tag config
+     */
+    function tagConfig() {
+
+        // always require CARTYPE attribute
+        if (!isset($this->attributes['CARTYPE'])) {
+            $this->fatalErrorPage("CAR tag missing CARTYPE attribute");
+        }
+
+        // start with a red car
+        $this->addDirective('color','red');
+
+    }
+
+    /**
+     * called when template is reset
+     */
+    function tagReset() {
+        $this->addDirective('color','red');
+    }
+
+    /**
+     * main think method. 
+     */
+    function tagThink() {
+        
+        // tell them what kind and color of car they drive!
+        $this->say("You drive a ".$this->getDirective('color')." ".$this->getAttr('CARTYPE')."!");
+
+    }
+
+}
+
+</programlisting>
+
+</para>
+
+<para>
+    To use this tag in a SiteManager template, you would use:
+    <programlisting>
+        
+        &lt;html&gt;
+        Hello, everyone! I'm a genie, and I'm going to tell you something about yourself...
+        &lt;sm type="car" cartype="corvette"&gt;
+        &lt;/html&gt;
+    </programlisting>
+</para>
+
+<para>
+    By default, the above template would output:
+    <programlisting>
+    
+    Hello, everyone! I'm a genie, and I'm going to tell you something about yourself...    
+    You drive a red corvette!
+    </programlisting>
+</para>
+
+<para>
+    From the example, we can deduce a few things about the tag system. Attributes passed to the tag are available
+    through the <function>getAttr()</function> method, or the <varname>$attributes</varname> hash. Note that attributes
+    are always stored in UPPER CASE.
+</para>
+
+<para>
+    Directives are available, but can only be set on a TAG-wide basis per template. In other words, there is only one
+    set of directives available to all CAR tags in this template. To set directives, use 
+    <function>SM_layoutTemplate::configureTag($tagName, $directives)</function> (see the API docs for SM_layoutTemplate for more).
+</para>
+
+<para>
+    <function>tagReset</function> is only called when <function>SM_layoutTemplate::resetTemplate()</function> is called. The
+    purpose of the function is to reset the tag back to a "clean" state.
+</para>
+
+<para>
+    Since SM_tags are based on SM_object, you have access to the database, session, and inVar handles.
+</para>
+
+</section>
+          
+</section> <!-- end templates section -->
+

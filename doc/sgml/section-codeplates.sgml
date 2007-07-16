@@ -1,0 +1,198 @@
+
+<section>
+<title>CodePlates</title>
+
+<section>
+<title>Overview</title>
+
+<para>
+    CodePlates take templates a step further. They are "smart" templates, or templates
+    that have logic associated with them.
+</para>
+    
+<para>
+    Often, you'll want to use a template that has the same (or almost the same)
+    module layout in several pages. For example, on a typical website you
+    might have one main layout that includes a menu on the top, another menu
+    in a left column, and the content in the center changes depending on the 
+    page loaded. One way to do this in SiteManager is to create a directive
+    script for each page, and load and add the same menu modules on each page,
+    then load a different module to place in the center section. But what if, at
+    a later date,
+    you wanted to change which module gets loaded in the left column? You would
+    have to go through each directive script to change it by hand.
+</para>
+    
+<para>
+    CodePlates solve this problem. To handle the above example, you would create
+    a CodePlate that always has the menu in the top and left areas of the 
+    template. Then, instead of loading the template and modules in the directive
+    scripts, you would load just the code plate, and the center module. Place
+    the center module in the code plate, and you're all done. Since the menu
+    modules were automatically added by the code plate, you don't have to worry
+    about them (although you can still configure them if you wish, per directive
+    script).
+</para>
+
+</section>
+
+<section>
+<title>Working With CodePlates</title>
+    
+<para>
+    CodePlates are actually a descendant of the <classname>SM_layoutTemplate</> class -- they
+    have all the same methods and functionality of a regular template. You
+    associate a CodePlate with an HTML template, and you can add modules to
+    the areas in the same way. However, CodePlates have extra methods which
+    are used to configure and define which modules get loaded, and where they
+    get placed.
+</para>
+    
+<para>
+    To use a CodePlate, you must create a class that extends the <classname>SM_codePlate</>
+    class. This piece of code may be in an external file, and loaded in
+    your sites <filename>common.inc</>
+</para>
+    
+<para>
+    Here is an example CodePlate:
+</para>
+
+<para>
+<programlisting>    
+
+    /**
+     * a test code plate
+     *
+     */
+    class mainLayout extends SM_codePlate {
+         
+        /**
+         *
+         * pre-configure the CodePlate
+         *
+         */    
+        function codePlateConfig() {
+        
+            // configure a directive
+            $this->addDirective('testDirective','testValue');
+
+            // load and parse 'basic.tpt' for my template 
+            // this will search my template paths
+            // THIS CALL IS REQUIRED!
+            $this->setMyTemplate('basic');
+
+        }
+
+
+        /**
+         *
+         * define which modules i want where in my template
+         *
+         */
+        function codePlateThink() {
+
+            // load a new module, and place it into area 'leftBar'          
+            $mod1 =& $this->loadModule('menu','leftBar');
+            
+            // load another module, place it into area 'main'
+            $mod2 =& $this->loadModule('runTestModule','main');  
+    
+            // configure the menu
+            $mod1->addDirective('menuStyle','sp');
+            $mod1->addDirective('menuSpaces','5');
+            
+            // load more modules, for subtemplate
+            $mod3 =& $this->loadModule('rawHTML');
+            $mod4 =& $this->loadModule('rawHTML');
+             
+            // configure the module
+            $mod3->addDirective('output','Module 2, Sub Template');
+            $mod4->addDirective('output','Module 3, Sub-Sub Template');
+                          
+            // load subtemplate, add it to 'main' area of my codeplate
+            $layout2 =& $this->loadTemplate("subTemplate",'main');
+             
+            // add module to subtemplate
+            $layout2->addModule($mod3, "areaOne");
+             
+            // load subsubtemplate
+            $layout3 =& $this->loadTemplate("subTemplate");
+             
+            // add module to subsubtemplate
+            $layout3->addModule($mod4, 'areaOne');
+             
+            // add subsubtemplate to subtemplate
+            $layout2->addTemplate($layout3, 'areaTwo');
+        
+    }
+
+</programlisting>
+</para>
+    
+<para>    
+    <function>codePlateConfig()</> is required, because the call to <function>$this->setMyTemplate()</> is required. By
+    calling this method, you are telling SiteManager which template this CodePlate will be based 
+    on. Once it loads and parses the template, it will know what areas are available to
+    load modules (and possibly other templates or CodePlates) into.
+</para>
+    
+<para>
+    codePlateThink() is then used to load, configure, and add modules and templates to areas
+    of the CodePlate. This is similar to a directive script, except when loading a module or template,
+    you can specify which area it should be located in immediately. Also, you use built in methods
+    rather than the global <varname>$SM_siteManager</> object to do so. Check the SiteManager API for the list
+    of methods available to <classname>SM_codePlate</> decedents.
+</para>
+
+<para>
+    CodePlates behave like any other template, and therefore can have any number of modules or
+    templates (or even other CodePlates!) added to any area, and to any depth of recursion.
+</para>
+    
+<para>
+    Once you have a CodePlate defined and included in your site, you use it in
+    your directive scripts much like a template. For example (this is a full
+    directive script):
+</para>
+    
+<para>
+<programlisting>
+    
+    // include load site common
+    include ("../admin/common.inc");
+    
+    // load a module
+    $mod1   =& $SM_siteManager->loadModule('detailedForm');
+    
+    // load code plate as root template
+    $layout =& $SM_siteManager->rootTemplate("mainLayout.cpt");
+    
+    // add form module into codeplate
+    $layout->addModule($mod1, "intro");
+    
+    // finish display
+    $SM_siteManager->completePage();
+
+
+</programlisting>
+</para>
+
+<para>
+    As you can see, you can set a CodePlate to be the rootTemplate, in the 
+    same way as setting a normal template. You can also add modules to a 
+    CodePlate in the exact same manner.
+</para>
+
+<note>
+<para>
+When using a CodePlate as a rootTemplate, you must include the extension (.cpt)
+so that the SiteManager system knows you're loading a CodePlate and not a regular
+template (which has a .tpt extension).
+</para>
+</note>
+
+</section> <!-- end working with codeplates -->    
+
+</section> <!-- end codeplate section -->
+

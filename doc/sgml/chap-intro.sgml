@@ -1,0 +1,445 @@
+
+<chapter>
+<title>Introduction</title>
+
+<section><title>Overview</title>
+
+<para>SiteManager is an Open Source Web Application Framework that 
+leverages the power of PHP and it's Object Oriented features to 
+create a powerful base library for all types of web applications.
+</para>
+
+<para>
+SiteManager was designed with PHP programmers and development teams in mind. It allows
+them to separate the process of web application design into four areas: code creation, layout design, 
+site implementation and site configuration. </para>
+
+<formalpara>
+<title>
+1. Code Creation
+</title>
+<para>
+During code creation developers construct modules of reusable source code. The 
+modules can be shared easily between projects and developers. SiteManager 
+simplifies creating, configuring, and maintaining code modules by providing a 
+common framework and an integrated library of tools. The library includes 
+database connectivity, user session management, error handling, security, 
+SmartForms, and much more. Since modules are PHP Objects, they can be extended
+and reused.</para>
+</formalpara>
+
+<formalpara>
+<title>
+2. Layout Design
+</title>
+<para>
+During layout design, standard HTML tags, style sheets, and SiteManager XML 
+Tags combine to form a powerful template engine. This engine lets 
+developers keep the HTML layout separate from the code modules that power it. 
+SiteManager Tags are used to identify important sections of the layout to 
+the template engine. SiteManager Tags are completely customizable, and you
+can even create your own tags for custom functionality. 
+Layout based templates give designers and graphic artists 
+freedom to create and change the appearance of the entire site without worrying 
+about breaking the sites functionality. Advanced SiteManager 
+developers can take reusable layout design even further through the 
+implementation of CodePlates. </para>
+</formalpara>
+
+<formalpara>
+<title>
+3. Site Implementation
+</title>
+<para>
+During implementation developers use directive scripts to assemble modules of 
+code and template layouts into the completed web application that clients will see. 
+Only a few lines of code are required to select which template is used, add 
+modules into specific areas of the template, and customize each module. 
+The site may be implemented with a simple single template, or may require mutliple
+levels of sub-templats and CodePlates.
+</para>
+</formalpara>
+
+<formalpara>
+<title>
+4. Site Configuration
+</title>
+<para>
+In order to facilitate maintenance of the site, almost  
+all of the top level settings are stored in global (system wide) and local 
+(site specific) XML configuration files. These settings include database 
+connection information, directory locations and all of the configuration 
+options for sessions, debugging and default extensions. Once the site has been 
+created you can utilize the Global Configuration System to make changes and upgrades safely.
+You may add your own custom information to the base configuration files, or create entirely
+new ones.
+</para>
+</formalpara>
+
+<para>
+As a truly Open Source project, Roadsend PHP SiteManager includes full source code, which is 
+clean and well documented.
+</para>
+
+</section>
+
+<section>
+
+<title>Feature Summary</title>
+
+<variablelist>
+<varlistentry><term><emphasis>
+
+Module System
+
+</></term>
+<listitem>
+<para>
+
+Modules are the nucleus of a SiteManager web application. They are the 
+functional blocks of code such as a search engine, tree menu, or data driven 
+news display that make a web site interactive or original. SiteManager's 
+powerful object-oriented system helps programmers to design reusable modules 
+for their websites by allowing for run time configuration. This lets the same 
+module do different things depending on the context in which it was called or 
+the page that loaded it. Modules can even decide not to load at all. Modules 
+also have embedded support for cascading style sheets, client side scripting 
+and for the extensive library of SiteManager object functions such as database 
+access, sessions, and SmartForms. While many PHP web programmers are busy 
+reinventing the wheel, users of the SiteManager system will have access to a 
+growing library of modules developed by the Open Source community.
+        
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+        
+<variablelist>
+<varlistentry><term><emphasis>
+    Template System
+    </></term>
+<listitem>
+<para>
+    
+To support team-oriented development of web applications, SiteManager uses a 
+powerful template engine which separates HTML, graphics and layouts from 
+functionality. The SiteManager template engine gives developers much more than 
+a simple "search and replace" template variable system. Using the extendable SiteManager 
+Tag system, a template defines arbitrary "areas" in which to place modules of code. 
+These tags are interpreted by the SiteManager system. There are several built-in tags, and
+you can easily create your own for custom functionality. A template can load 
+specific modules into areas or use Directive Scripts and CodePlates to extend modularity
+even further. Templates can also be used recursively (sub-templates), or even used
+inside of a module.
+    
+    </para>
+</listitem>
+</varlistentry>
+</variablelist>
+
+<variablelist>
+<varlistentry><term><emphasis>
+    CodePlates
+    </></term>
+<listitem>
+<para>
+
+CodePlates take the template system a step further. CodePlates solve the 
+problem of having to duplicate code when you use a similar template/module 
+layout scheme in multiple pages. CodePlates are templates that already have 
+certain modules associated with their areas. These modules are configured 
+inside of the CodePlate. A CodePlate can be loaded as the main layout template 
+or added to an area in another CodePlate or Template. This functionality makes 
+creating co brands with SiteManager's template engine fantastically easy. Since CodePlates
+are PHP Objects, they have the ability to run any custom PHP code to decide which
+content to load into themselves.
+
+    
+    </para>
+</listitem>
+</varlistentry>
+</variablelist>
+    
+<variablelist>
+<varlistentry><term><emphasis>
+    SmartForms
+    </></term>
+<listitem>
+<para>    
+    
+To truly create a "dynamic" website, input must be continually gathered from 
+the user. This creates the need for a consistent, structured way to setup an 
+input form, validate input, and gather the information. Creating form elements 
+and validating input by hand is always slow and tedious. </para>
+
+<para>
+SmartForms were created as a way to rapidly create an input form using 
+predefined input entities, validate the input using predefined filters, and 
+gather the information in a structured way. SmartForms includes all the 
+standard input types (textbox, checkbox, select list, etc) as well as some not 
+so standard, but still often used types (date select, combo box, state list, 
+country list, etc). It also includes many predefined filters (required, number, 
+email, credit card, phone, regexp + more) that you can attach to any input 
+entity. You can attach any number of filters to any input entity. And, 
+SmartForms are "database-aware" - we include entities such as DB Select list, 
+which populates a list from a database. All entities and filters are pluggable 
+modules of code, where all you have to do to add a new entity to the system is 
+drop it into the correct directory. </para>
+
+<para>
+When using a SmartForm, you never have to worry about creating elements or 
+checking for input validity by hand. You don't even have to worry about 
+outputting the form -- it's all handled by SmartForms. All you do is define the 
+form, run it, and ask it if all input was valid. </para>
+    
+<para>
+In it's simplest form, a SmartForm will handle all output and layout details. When
+you need a more customized layout, however, you can specify a standard SiteManager
+Template and/or SmartForm XML configuration file to tune the form to your exact
+needs.
+</para>
+    
+</listitem>
+</varlistentry>
+</variablelist>
+
+<variablelist>
+<varlistentry><term><emphasis>
+    Database Connectivity
+    </></term>
+<listitem>
+<para>     
+
+Roadsend SiteManager uses the PEAR Database abstraction layer for database 
+connectivity. It is included with all versions of PHP (v4 and above). It allows 
+connectivity to a number of different databases through a common API. </para>
+
+<para>
+SiteManager includes a middle layer of 
+functionality that allows the PEAR DB system to be integrated within the 
+SiteManager system. Database settings and creation of the database 
+object are consistent with the framework for SiteManager and the Global Configuration System. Once a database
+connection is defined in the GCS, it is usable by all SiteManager objects.
+</para>
+
+<para>
+You may create any number of database connections, and all of them are accessible to any SiteManager 
+based Object.
+</para>
+
+</listitem>
+</varlistentry>
+</variablelist>
+    
+<variablelist>
+<varlistentry><term><emphasis>
+    Global Configuration System
+    </></term>
+<listitem>
+<para>    
+ 
+  All core classes in SiteManager have access to the SiteManager Global Configuration System 
+or GCS. Stored in XML files for easy access, the default options are first set 
+on a global level in the Global Configuration file. When you create a new site, 
+you can override or augment the default options in a local configuration file.
+    
+    </para>
+    
+<para>
+    You may also use SMCONFIG XML files for configuring your own libraries and objects.
+</para>
+
+</listitem>
+</varlistentry>
+</variablelist>
+
+<variablelist>
+<varlistentry><term><emphasis>
+    Sessions
+    </></term>
+<listitem>
+<para>    
+
+SiteManager includes its own extendable session management system. The session 
+manager includes Database, File, or "None" containers which store session information
+in a database, file, or GET/POST (respectively).
+Sessions are maintained with cookies or a session ID passed with all internal 
+links. Session variables are automatically included when passing information 
+through SmartForms and regular HTTP links. All session variables are serialized,
+allowing complex objects to be kept persistent.
+        
+    </para>
+
+<para>
+The session container system is extendable, so users may easily create new session containers
+or extend the base ones.
+</para>
+        
+</listitem>
+</varlistentry>
+</variablelist>
+
+
+<variablelist>
+<varlistentry><term><emphasis>
+    Member System
+    </></term>
+<listitem>
+
+    <para>
+    Related to the session management is the Member system. 
+    SiteManager includes full support for allowing members to "log in" to the site through an extendable Member System.
+    The default member system uses a simple database to keep track of members and their current login status. More
+    complicated member systems (for example, LDAP based) can easily be created and used in SiteManager sites.
+    </para>
+    
+    <para>
+    Each SiteManager object has access to the current member system to determine current login status, security privileges,
+    etc.
+    </para>
+
+
+</listitem>
+</varlistentry>
+</variablelist>
+
+<variablelist>
+<varlistentry><term><emphasis>
+    Security
+    </></term>
+<listitem>
+<para>
+
+SiteManager adds a layer of protection when accessing variables coming in from 
+a web client. A module designer is able tell SiteManager what type
+of variable it's expecting (for example, an integer), and SiteManager will fail 
+to run the script if the value passed for that
+variable doesn't match the type expected.  This limits the amount of damage a user
+can do by passing or changing passed script variables.    
+    </para>
+    
+    <para>
+    SiteManager does not use PHP global variables for receiving input to the script (which is 
+    inherently insecure). SiteManager contains it's own incoming variable manager to handle and verify 
+    incoming script data.
+    </para>
+    
+</listitem>
+</varlistentry>
+</variablelist>
+
+
+<variablelist>
+<varlistentry><term><emphasis>
+    Support Routines
+    </></term>
+<listitem>
+<para>    
+        Many supporting routines are included with SiteManager to help create 
+        your web application. These include:
+        
+
+<itemizedlist mark="opencircle">            
+<listitem><para>Authorization Routines</para></listitem>
+<listitem><para>Data Manipulation Routines</para></listitem>
+<listitem><para>Error Handling / Debug Routines</para></listitem>
+<listitem><para>Security Routines</para></listitem>
+</itemizedlist>            
+            
+    </para>
+</listitem>
+</varlistentry>
+</variablelist>
+
+<variablelist>
+<varlistentry><term><emphasis>
+    Object Oriented Framework
+    </></term>
+<listitem>
+<para>     
+        The SiteManager framework is extensively object oriented, to promote 
+        reusable code and easy maintenance.
+    </para>
+    <para>
+        The SiteManager source code is clean and well documented.
+    </para>
+</listitem>
+</varlistentry>
+</variablelist>
+
+<variablelist>
+<varlistentry><term><emphasis>
+    Open Source
+    </></term>
+<listitem>
+<para>     
+        Roadsend SiteManager is an Open Source project. The entire system may 
+        be distributed and used freely. The source is freely available for all 
+        to learn, review and change. Please read the license agreement 
+        available in the file LICENSE in the /doc directory, or on the web at
+        <ulink url="http://www.roadsend.com/license/rpl1.txt">http://www.roadsend.com/license/rpl1.txt</ulink>
+</para>
+
+<para>        
+        We actively encourage everyone to help us maintain and grow the 
+        project. Please see CONTRIBUTE in the /doc directory for more 
+        information.
+</para>
+
+</listitem>
+</varlistentry>
+</variablelist>
+
+</section>
+
+<section>
+
+<title>About Roadsend</title>
+
+<para>
+    Roadsend, Inc. is based in Fishkill, NY. We have been providing hosting and consulting services for PHP based
+    Web applications since 1998.
+    Our website is <ulink url="http://www.roadsend.com">http://www.roadsend.com</ulink>, and you can reach us at
+    <email>info@roadsend.com</>
+</para>
+
+<para>    
+    Roadsend made the switch from PERL to PHP as it's main web programming
+    language back in 1998 around the time 3.0 was coming out. From then on it
+    was obvious PHP would make a quick rise to the top as the best (and of
+    course freely available) website development language.
+</para>
+
+<para>
+    Over the course of 3 years, Roadsend developed many websites and libraries
+    to support them. Eventually it became necessary to
+    switch to a more structured, modularized framework. SiteManager has grown out of that 
+    system.
+</para>
+
+<para>
+    Roadsend is also the creators of the Roadsend PHP Compiler - the first native PHP code
+    compiler for creating stand alone, web and GUI applications in PHP. More information is
+    available online: <ulink url="http://www.roadsend.com">http://www.roadsend.com</ulink>,
+</para>
+
+<para>
+    Commercial support is also available. Please see the main Roadsend website, or send
+    us mail.
+</para>
+
+<para>
+    The primary authors of Roadsend SiteManager are:
+</para>
+
+<para>
+        Shannon Weyrick (<email>weyrick@roadsend.com</email>)
+</para>
+<para>        
+        Jon Michel      (<email>pym@roadsend.com</email>)
+</para>
+
+</section>
+
+</chapter>
+

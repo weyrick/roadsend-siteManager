@@ -1,0 +1,85 @@
+
+<section>
+<title>Directive Scripts</title>
+
+<section>
+<title>Overview</title>
+
+<para>
+    Directive scripts are the high level link between Modules and Templates.
+</para>
+
+<para>    
+    They are described here so that as you go through the Modules and Template
+    section, you can better understand the parts they play.
+</para>
+
+<para>    
+    A directive script is an actual "page" served by the webserver. It will be the script that the
+    webserver loads first when a URL is accessed. The directive script is generally a very short PHP script - 
+    in fact, as a general rule, you want to do as little logic here as possible. It's job is to:
+</para>
+
+<orderedlist numeration="arabic">    
+<listitem><para>Include the site's '<filename>common.inc</>', which in turn sets up the configuration
+       for this site and includes the SiteManager libraries</para></listitem>
+<listitem><para>Load the modules to be included in this page</para></listitem>
+<listitem><para>Configure the modules</para></listitem>
+<listitem><para>Load the template(s) or CodePlate(s) to be used for this page</para></listitem>
+<listitem><para>Add the modules to the correct areas in the correct order</para></listitem>
+<listitem><para>Output the final page</para></listitem>
+</orderedlist>
+
+<para>    
+    Generally, depending on the amount of configuration to be done to the 
+    modules, this can be done in 10-15 lines of code.
+</para>
+
+<para>
+    When the command is given to "run" the page and output it, the following 
+    happens:
+</para>
+
+<orderedlist numeration="arabic">
+<listitem><para>All modules run through their configuration routines (<function>moduleConfig()</>)</para></listitem>
+<listitem><para>All modules run through their "think" routines (<function>moduleThink()</>)</para></listitem>
+<listitem><para>HTML and JavaScript output is collected from each module</para></listitem>
+<listitem><para>The output from the modules is placed in the proper areas in the template</para></listitem>
+</orderedlist>
+
+<para>
+    A sample, annotated directive script follows (yes this is the entire page):
+</para>
+
+<para>    
+<programlisting>    
+
+    &lt;?php
+    
+    // include site configuration file, which includes siteManager libs
+    include('../admin/common.inc');
+
+    // create a new module. notice, returns a reference!!
+    $mod1 =& $SM_siteManager->loadModule('rawHTML','SM_rawHTML');
+    
+    // configure the module
+    $mod1->addDirective('output','&lt;B&gt;Hello World&lt;/B&gt;');
+
+    // create root template. notice, returns a reference!!
+    $layout1 =& $SM_siteManager->rootTemplate("basicTemplate");
+    
+    // add our module to area 'areaOne'
+    $layout1->addModule($mod1, "areaOne");
+    
+    // finish display
+    $SM_siteManager->completePage();
+    
+    ?&gt;
+
+</programlisting>
+</para>
+
+</section>
+
+</section> <!-- directive script section -->
+

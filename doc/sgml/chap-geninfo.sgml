@@ -1,0 +1,160 @@
+
+<chapter>
+
+<title>General Information</title>
+
+
+<section>
+<title>Version Numbering</title>
+<para>
+SiteManager follows a version scheme that consists of three numbers - for example, 2.1.11
+</para>
+
+<para>
+The first number (MAJOR) indicates the version of the underlying architecture. All releases with the same
+first number have the same underlying architecture. Releases with different MAJOR numbers are not guaranteed
+to be 100% compatible with each other.
+</para>
+
+<para>
+The second number (MINOR) indicates the development state. If the second number is even, the version is a
+"stable" release. If odd, it's a development release and should not be used for production quality sites.
+</para>
+
+<para>
+The third number (RELEASE) indicates the version within this release level. Different versions in the same release level may
+contain bug fixes or new features, but should be back wards compatible with previous versions in the same release level.
+</para>
+
+</section>
+
+<section>
+<title>File Extensions for SiteManager Resource Files</title>
+
+<para>    
+    The following file extensions are used in SiteManager:
+</para>
+
+
+<segmentedlist><title>File Extension List</title>
+<segtitle>Extension</segtitle>
+<segtitle>File Type</segtitle>
+<seglistitem><seg>.inc</seg><seg>PHP Library Code</seg></seglistitem>
+<seglistitem><seg>.mod</seg><seg>SiteManager Module</seg></seglistitem>
+<seglistitem><seg>.tpt</seg><seg>SiteManager HTML Layout Template</seg></seglistitem>
+<seglistitem><seg>.stp</seg><seg>SmartForm Layout Template (deprecated)</seg></seglistitem>
+<seglistitem><seg>.xsm</seg><seg>XML Configuration/Definition File</seg></seglistitem>
+<seglistitem><seg>.php</seg><seg>Web Page Loadable PHP Script (Directive Script)</seg></seglistitem>
+<seglistitem><seg>.cpt </seg><seg>CodePlate Object</seg></seglistitem>
+</segmentedlist>
+
+</section>
+
+<section>
+
+<title>Security Concerns</title>
+
+<para>
+
+    We recommend you make all of the SiteManager Resource Files unreadable by the webserver,
+    except ".php" files. The rest are not meant to be seen by users.
+</>
+
+<para>
+    The following line will accomplish this in Apache:
+</>
+
+<programlisting>
+    # don't allow access to SiteManager files
+    &lt;FilesMatch "\.(inc|tpt|stp|mod|xsm|cpt)$"&gt;
+        Order allow,deny
+        Deny from all
+    &lt/FilesMatch&gt;
+</programlisting>
+
+<para>
+In addition, the "admin" directory should not contain content that is publically accessible. We recommend you 
+disallow any direct access to files in this directory and it's subdirectories.
+</para>
+
+<para>
+Check your web servers documentation for more information.
+</para>
+
+</section>
+
+<section>
+<title>Directory Layout</title>
+
+<para>
+    Every site run by SiteManager has a common directory structure (on UNIX, this is commonly found in <filename>/var/www/myProject</> or <filename>/home/httpd/html/myProject</>).
+    It may contain some or all of the following directories.
+</para>
+
+<programlisting>
+    /                       - (root)
+    /admin                  - (admin / config directory)
+        /modules            - (local site modules)
+        /templates          - (local site templates)
+        /smartForms         - (local site smartForms)
+        /config             - (local site configuration files)
+        /codePlates         - (local site codePlates)
+        /smTags             - (local site SM tags)
+        /lib                - (local library of routines)
+        /locale             - (localization files)
+    /home                   - (main page/directive script directory)
+    /images                 - (main images directory)    
+</programlisting>
+
+<para>    
+    All files in <filename>/admin</> should be protected from reading by the webserver.
+    None of these files located in this directory or it's subdirectory should
+    be readable by a user requesting them through the web. The best way to stop
+    this is the stop the webserver from reading the file types found in these 
+    directories. Alternatively, you can tell the webserver not to serve any files
+    under the <filename>admin/</> directory.
+</para>
+
+<para>
+    For even better security, you can move the directories underneath <filename>admin/</> to a
+    directory outside of the web document root. This is the most secure, as configuration files will then
+    be unavailable to web clients. The only required file in the web root will be <filename>common.inc</filename>, which
+    will be accessed by the directive scripts. If you need to, <filename>common.inc</> can be renamed to <filename>common.inc.php</> (just make sure
+    your directive scripts access it this way!).
+</para>
+    
+<para>
+    SiteManager itself contains the following directory structure (on UNIX, this is commonly
+    found in <filename>/usr/local/lib/php/</>)
+</para>    
+
+<programlisting>    
+    /                       - (root)
+    /bin                    - (binary files/scripts 
+                               for maintenance and automation)
+    /cache                  - (resource cache directory)
+    /config                 - (configuration files, 
+                               ie globalConfig.xsm)
+    /contrib                - (contributed code available for your sites)                                  
+        /lib                - (contributed routines)
+        /modules            - (contributed modules)
+        /templates          - (contributed templates and codePlates)
+    /doc                    - (documentation, LICENSE, etc)
+    /lib                    - (main lib directory)
+        /configReaders      - (SMCONFIG readers)
+        /memberSystems      - (member systems)
+        /sessionContainers  - (session system containers)
+        /smTags             - (SM template tags)
+        /sfFilters          - (SmartForm filters)
+        /sfInputEntities    - (SmartForm input entities)
+    /redist                 - (redistributed code used by Sitemanager)
+    /skeletonSite           - (skeleton site used for 
+                               template when creating new site)
+    /tables                 - (SQL table creation scripts)
+    /testSite               - (Fully functional test site)
+</programlisting>
+
+</section>
+
+</chapter>
+

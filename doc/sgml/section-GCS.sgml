@@ -1,0 +1,441 @@
+
+<section>
+<title>Global Configuration System
+</title>
+
+<section>
+<title>Overview</title>
+
+<para>
+    SiteManager uses (at least) two configuration files to configure paths, 
+    flags, and a variety of other options. You may also add your own sections and
+    variables to the local configuration file, or create an entirely new one. 
+    The values in these files are the basis for the SiteManager Global Configuration System, or GCS. 
+    </para>
+
+    <para>The two basic configuration files are GLOBAL and LOCAL.
+    </para>
+       
+    <para>
+    GLOBAL settings are the default settings that will be used for all sites 
+    that use SiteManager. The GLOBAL config file is named <filename>globalConfig.xsm</filename> and
+    is located in the <filename>config/</filename> directory of the base SiteManager directory. It contains
+    all of the default values for the various configuration options.
+    </para>
+    
+    <para>
+    LOCAL settings are the settings used by a SiteManager site that override the GLOBAL ones. The
+    LOCAL config file is usually <filename>'localConfig.xsm'</> but is definable in <filename>common.inc</>.
+    If you add other XSM configuration files, they should also be located in the <filename>admin/config</> directory.
+    </para>
+    
+    
+<para>
+    When <filename>siteManager.inc</> is included by <filename>common.inc</filename>, the GLOBAL settings are read in by the 
+    root <varname>$SM_siteManager</> object. It reads it into an <varname>SM_config</> object accessible through
+    <varname>$SM_siteManager->siteConfig</> or (<varname>$this->siteConfig</varname> property of an <classname>SM_object</classname>).
+    </para>
+    
+    <para>
+        When a configuration variable is accessed, it will first check for a local value. If one is found, it is
+        returned. If it is not found, the GLOBAL value is returned instead. If there is no GLOBAL value, NULL will
+        be returned.
+    </para>
+
+<para>
+    <filename>admin/common.inc</> will generally tell <varname>$SM_siteManager</> to read in the LOCAL
+    settings using the <function>$SM_siteManager->loadSite()</> method. At least one call to <function>loadSite()</>
+    should be made - but you may load as many local configuration files as you like. Note that successive calls to <function>loadSite()</function>
+    will not <emphasis>override</emphasis> LOCAL settings, but <emphasis>append</emphasis> to them. See below for more detail.
+</para>
+
+    <para>
+    As an additional feature, configuration files have the ability to be cached - see the section on caching for more information.
+    </para>
+
+</section>
+
+<section>
+<title>Configuration File Format</title>
+
+<para>    
+    SiteManager uses an XML file to describe configuration values.
+    Configuration is basically a list of key/value pairs, broken up into 
+    various sections. Section examples include:
+</para>
+
+<para>    
+<programlisting>
+        dirs            - directory settings
+        localization    - localization settings
+        db              - database settings
+        flags           - misc flags
+        sessions        - session settings
+        pVars           - persistent variables
+</>
+</para>
+
+<para>        
+    The easiest way to explain the settings is to take a look at the XML file 
+    that actually stores the variables:
+</para>
+
+<para>
+<programlisting>
+    
+    &lt;SITE name="GLOBAL"&gt;
+        &lt;SECTION name="dirs"&gt;
+            &lt;VAR name="base"        value = "/usr/local/lib/php/siteManager"/&gt;
+            &lt;VAR name="libs"        value = "/usr/local/lib/php/siteManager/lib"/&gt;
+            &lt;VAR name="modules"     value = "/usr/local/lib/php/siteManager/modules"/&gt;                        
+            &lt;VAR name="modules"     value = "/usr/local/lib/php/siteManager/modules/test" /&gt;
+        &lt;/SECTION&gt;            
+        &lt;SECTION name="db"&gt;
+            &lt;VAR name="dbType"      value = "mysql"/&gt;
+            &lt;VAR name="persistent"  value = "true" /&gt;
+        &lt;/SECTION&gt;        
+        &lt;SECTION name="pVars"&gt;
+            &lt;VAR name="SMuserName"  value = "" /&gt;            
+            &lt;VAR name="SMaddDate"  value = "" /&gt;
+        &lt;/SECTION&gt;        
+    &lt;/SITE&gt;
+    
+</programlisting>
+</para>
+
+<para>     
+    This excerpt from <filename>globalConfig.xsm</> shows 1) how the XML structure is laid 
+    out 2) how variables are defined. 
+</para>
+
+<para>
+    The file consists of multiple <varname>SECTION</varname>'s, each with a list of key/values pairs indicated by the <varname>VAR</varname> tag.
+    If a variable is listed more than once, it will form an array of values for that key name.
+</para>
+    
+</section>
+
+<section>
+<title>Variable Replacement</title>
+
+<para>
+To increase maintenance and portability, you can use variable replacement in all SMCONFIG
+files. 
+</para>
+
+
+ <para>
+ Once you define a VAR name/value pair,
+  you may substitute the value in at a later time, by accessing much the same way you do as PHP variables. 
+  This is the way the <filename>globalConfig.xsm</> and <filename>localConfig.xsm</> files are done in the "dirs" 
+  SECTION:
+</para>
+  
+<para>
+<programlisting>
+
+        &lt;SECTION name="dirs"&gt;
+            &lt;VAR name="smRoot"      value = "/usr/local/lib/php/siteManager/" /&gt;
+            &lt;VAR name="base"        value = "{$smRoot}"/&gt;            
+            &lt;VAR name="config"      value = "{$base}config/"/&gt;
+            &lt;VAR name="libs"        value = "{$base}lib/"/&gt;
+            &lt;VAR name="modules"     value = "{$base}modules/"/&gt;            
+            &lt;VAR name="templates"   value = "{$base}templates/"/&gt;            
+            &lt;VAR name="smartForms"  value = "{$base}smartForms/"/&gt;
+            &lt;VAR name="sfEntities"  value = "{$base}lib/sfInputEntities/"/&gt;
+            &lt;VAR name="sfFilters"   value = "{$base}lib/sfFilters/"/&gt;
+        &lt;/SECTION&gt;
+        
+
+</programlisting>
+</para>
+
+<para>
+  You could use this feature in the following way:
+</para>
+  
+<para>
+<programlisting>
+
+    &lt;VAR name="mySiteName" value="Bob's Site" /&gt;
+    &lt;VAR name="errorHeader" value="{$mySiteName}: There was an error" /&gt;
+    
+</programlisting>
+</para>
+
+<para>
+    By default, variable substitution only works for variables defined within the current SECTION. To reference
+    a variable from another section, use the format:
+    <programlisting>
+    
+        &lt;SECTION name="firstSection"&gt;
+            &lt;VAR name="testVar"      value = "value of testVar" /&gt;
+        &lt;/SECTION&gt;            
+        &lt;SECTION name="secondSection"&gt;
+            &lt;VAR name="otherTestVar"      value = "{$firstSection.testVar}" desc="sets value to value of testVar from SECTION firstSection" /&gt;
+        &lt;/SECTION&gt;    
+    </programlisting>
+</para>
+
+    
+<para>
+  In addition, if you try to use a variable that wasn't defined beforehand in this file, it will automatically
+  attempt to substitute the current global PHP value of that variable. that means you can substitute in any PHP
+  or server environment variable. You can also use an associative array (hash) in this context. For example:
+</para>
+
+<para>  
+<programlisting>
+
+        &lt;SECTION name="dirs"&gt;
+            &lt;VAR name="base"        value = "{$HTTP_SERVER_VARS['DOCUMENT_ROOT']}/siteManager/"/&gt;            
+            &lt;VAR name="config"      value = "{$DOCUMENT_ROOT}config/"/&gt;
+            &lt;VAR name="libs"        value = "{$base}lib/"/&gt;
+            
+            ... etc
+            
+
+</programlisting>            
+</para>
+
+
+</section> <!-- end variable replacement section -->
+
+
+<section>
+<title>Section ID's</title>
+
+<para>
+
+    It is possible for SECTION's to be defined multiple times, if you specify an additional attribute (<varname>id</>).
+    You may then either 1) Specify a sectionID when accessing that section (or a variable in the section), in which case you would receive only the
+    value from the variable in the sectionID you requested or 2) Don't specify a sectionID, in which case you would receive the value of the variable
+    you requested from all ID's, merged into one array (so that it appeared that there was only one section with multiple variables specified
+    with the same name).
+
+</para>
+
+<para>
+
+    This is used, for example, by the '<varname>db</>' section to define multiple database connections:
+
+<programlisting>
+
+        &lt;SECTION name="db" id="default"&gt;
+            &lt;VAR name="dbType" value="mysql" /&gt;
+            &lt;VAR name="defaultConnection"   value="true" /&gt;
+            &lt;VAR name="DSN"  value = "mysql://testUser:testPass@localhost/test" /&gt;            
+            &lt;VAR name="persistent"  value = "true" /&gt;
+        &lt;/SECTION&gt;                                
+        &lt;SECTION name="db" id="secondary"&gt;        
+            &lt;VAR name="dbType" value="mysql" /&gt;
+            &lt;VAR name="DSN"  value = "mysql://testUser:testPass@localhost/test" /&gt;
+            &lt;VAR name="persistent"  value = "true" /&gt;
+        &lt;/SECTION&gt;                                
+        
+</programlisting>
+
+</para>
+
+<para>
+
+    If you're not accessing a section with multiple id's, you don't have to worry about this feature (leave that parameter 
+    blank when calling <function>getVar()</> or <function>getSection()</>)
+
+</para>
+
+</section> <!-- end multiple id section -->
+
+
+<section>
+
+<title>Loading Configuration Files</title>
+
+<para><emphasis>loadSite(<parameter>$file</>)</></para>
+
+<para>
+This method is used to load configuration values from a valid SMCONFIG XML configuration file. It may be called multiple
+times to load mutliple files. As each call is made, it will append (not overwrite) values from the new file onto the values
+loaded from previous calls. For example, if the same variable in the same section exists in both files, it will create
+an array of values instead of overwriting with the value from the second file, so that when <function>getVar()</function>
+is called (below) a PHP array will be returned as a result.
+</para>
+
+</section>
+
+<section>
+
+<title>Getting and Setting Configuration Values</title>
+
+<para><emphasis>getVar Method</></para>
+
+<para>    
+        <function>$SM_siteManager->siteConfig->getVar(<parameter>$section, $name, $mergeGlobal=false, $sectionID=''</>)</function>
+        </para>
+        
+<para>
+            This function should be used when a single variable is required. 
+            For instance, to retrieve the main lib directory from section 
+            'dirs', you would use:
+</para>
+            
+            <para>
+            <programlisting>
+            $libDir = $SM_siteManager->siteConfig->getVar('dirs','libs');</>
+</para>
+
+<para>            
+            <varname>$libDir</> would then be a single string variable that contains the 
+            main lib directory.
+</para>
+<para>            
+            Notice you can list VAR name's more than once in the config file 
+            (such as the 'modules' VAR in the example above). When this happens, 
+            an array is created. For example, to get the two 'modules' 
+            directories from the global config you would use:
+</para>
+<para>            
+<programlisting>
+            $moduleDirs = $SM_siteManager->siteConfig->getVar('dirs','modules');
+</>            
+</para>
+            <para>
+            <varname>$moduleDirs</> is now an array of values that contains the two values 
+            listed in the configuration file.
+</para>
+<para>            
+            The <varname>$mergeGlobal</> option is used to tell the <classname>SM_config</> object 
+            whether you want to just use the LOCAL settings, or both the GLOBAL 
+            and LOCAL settings. Usually, you want the local settings to override 
+            global settings, but sometimes you'd like to have both. Use this 
+            option to control that. When set to TRUE, you will receive an array 
+            of values that consists of all values set for that variable name in 
+            both GLOBAL and LOCAL context.
+</para>
+
+<para>
+            The <varname>$sectionID</> is used when a section defines itself multiple times,
+            with different ID's. If you need to, you can use this parameter to specify which ID you're accessing.
+            Normally, you can leave this parameter off. See the section below regarding multiple ID's.
+</para>
+
+<para><emphasis>getSection Method</></para>
+
+<para>        
+        <function>$SM_siteManager->siteConfig->getSection(<parameter>$section, $sectionID=''</>)</function>
+        </para>
+        
+<para>
+            Use this function to retrieve an entire section at a time. For 
+            example:
+</para>
+
+<para>            
+<programlisting>
+            $dbSettings = $SM_siteManager->siteConfig->getSection('db');</>
+</para>
+
+<para>            
+            This will return a hash that can be used in the following way:
+</para>
+
+<para>            
+<programlisting>
+
+            $dbType = $dbSettings['dbType'];
+            $pers   = $dbSettings['persistent'];
+            
+</>
+            
+</para>
+            
+<para>
+            This function automatically merges GLOBAL and LOCAL settings.
+</para>
+
+<para>
+            The <varname>$sectionID</> is used when a section defines itself multiple times,
+            with different ID's. If you need to, you can use this parameter to specify which ID you're accessing.
+            Normally, you can leave this parameter off. See the section below regarding multiple ID's.
+</para>
+
+<para><emphasis>setVar Method</></para>
+            
+<para>
+    You may also SET a variable through the global configuration system. This 
+    can be used to define a value read in from the config file.
+</para>
+
+<para>        
+        <function>$SM_siteManager->siteConfig->setVar(<parameter>'dbSettings','dbType','mysql'</>);</function>
+</para>
+
+<note>    
+<para>
+    You cannot <emphasis>change</emphasis> a value in the GCS with <function>setVar()</function>. It will only add new values.
+    If the key already exists, it will append the new value to the key in the form of an array. If you wish
+    to override a value, use <function>replaceVar</function> instead (below).
+</para>
+</note>
+
+<note>
+<para>
+    You <emphasis>cannot</> change GLOBAL variables this way (only those LOCAL to this siteID)
+</para>
+</note>
+
+<para><emphasis>replaceVar Method</></para>
+            
+<para>
+    <function>replaceVar</function> is used to replace a variable in the GCS. No matter what value exists there
+    before, it will be replaced with the value given as a parameter to this call.
+</para>
+
+<para>        
+        <function>$SM_siteManager->siteConfig->replaceVar(<parameter>'dirs', 'lib', '/usr/local/lib/siteManager/'</parameter>);</function>
+</para>
+
+</section> <!-- end setVar section -->
+
+<section>
+<title>VAR Tag Attributes</title>
+
+<para>Begining in 2.4, SiteManager has the ability to gather attributes from VAR tags other than just VALUE. Any other
+attribute may be specified and accessed through the current accessor methods. For example:
+
+
+<programlisting>
+
+        &lt;SECTION name="myConfig"&gt;
+            &lt;VAR name="myVar"        value = "foo value" desc = "a sample description"/&gt;
+        &lt;/SECTION name="dirs"&gt;                
+
+
+</>
+
+If <function>getVar</function> is used to access the variable <varname>myVar</varname> from section <varname>myConfig</varname>,
+it will by default return the string "foo value", because the VALUE attribute is returned by default. However,
+you may access the DESC attribute by calling:
+
+            <programlisting>
+            
+            $desc = $SM_siteManager->siteConfig->getVar('dirs','libs', false, '', 'DESC');            
+            </programlisting>
+
+</para>
+
+<para>
+    Note that since the attribute to retrieve is the 5th parameter, you need to specify all the optional
+    values to the parameters.
+</para>
+
+<para>
+For more information on the details of accessing the attributes of VAR tags, see the API documentation for the
+accessor methods.
+</para>
+
+</section>
+
+
+</section> <!-- end GCS section -->
+

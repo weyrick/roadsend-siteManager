@@ -1,0 +1,75 @@
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [
+<!ENTITY smversion "2.6.x Stable">
+<!ENTITY chap-intro SYSTEM "chap-intro.sgml">
+<!ENTITY chap-fundamentals SYSTEM "chap-fundamentals.sgml">
+<!ENTITY section-smroot SYSTEM "section-smroot.sgml">
+<!ENTITY section-GCS SYSTEM "section-GCS.sgml">
+<!ENTITY section-globals SYSTEM "section-globals.sgml">
+<!ENTITY section-smobject SYSTEM "section-smobject.sgml">
+<!ENTITY section-directives SYSTEM "section-directives.sgml">
+<!ENTITY section-modules SYSTEM "section-modules.sgml">
+<!ENTITY section-templates SYSTEM "section-templates.sgml">
+<!ENTITY section-codeplates SYSTEM "section-codeplates.sgml">
+<!ENTITY section-smartforms SYSTEM "section-smartforms.sgml">
+<!ENTITY section-session SYSTEM "section-session.sgml">
+<!ENTITY section-database SYSTEM "section-database.sgml">
+<!ENTITY section-debugging SYSTEM "section-debugging.sgml">
+<!ENTITY section-misc SYSTEM "section-misc.sgml">
+<!ENTITY section-changes SYSTEM "section-changes.sgml">
+<!ENTITY section-upgradenotes SYSTEM "section-upgradenotes.sgml">
+<!ENTITY section-knownissues SYSTEM "section-knownissues.sgml">
+<!ENTITY chap-design SYSTEM "chap-design.sgml">
+<!ENTITY chap-geninfo SYSTEM "chap-geninfo.sgml">
+<!ENTITY chap-extending SYSTEM "chap-extending.sgml">
+<!ENTITY chap-testsite SYSTEM "chap-testsite.sgml">
+<!ENTITY chap-morehelp SYSTEM "chap-morehelp.sgml">
+<!ENTITY chap-FAQ SYSTEM "chap-FAQ.sgml">
+<!ENTITY chap-history SYSTEM "chap-history.sgml">
+<!ENTITY app-directives SYSTEM "app-directives.sgml">
+<!ENTITY app-fileformats SYSTEM "app-fileformats.sgml">
+]>
+
+<book>
+
+<bookinfo>
+<date>2006-2-19</date>
+<title>Roadsend SiteManager</title>
+<subtitle>A PHP Web Application Framework</subtitle>
+<authorgroup>
+<author><firstname>Shannon</firstname><surname>Weyrick</surname>
+<affiliation><orgname>Roadsend, Inc.</orgname></affiliation>
+</author>
+<author><firstname>Jon</firstname><surname>Michel</surname>
+<affiliation><orgname>Roadsend, Inc.</orgname></affiliation>
+</author>
+</authorgroup>
+<edition>2.6.x Stable Series</edition>
+<copyright><year>2006</year>
+<holder>Roadsend, Inc.</holder>
+</copyright>
+</bookinfo>
+        
+&chap-intro;
+
+&chap-geninfo;
+
+&chap-fundamentals;
+
+&chap-design;
+
+&chap-testsite;
+
+&chap-extending;
+
+&chap-FAQ;
+
+&chap-morehelp;
+
+&chap-history;
+
+<!-- &app-directives; -->
+
+&app-fileformats;
+
+</book>
+

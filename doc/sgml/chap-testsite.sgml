@@ -1,0 +1,44 @@
+
+<Chapter>
+<title>Using The Test Site</title>
+
+
+<para>
+    The <filename>testSite/</> directory contains a full SiteManager site used for testing.
+</para>
+
+<para>
+    To use it fully, you need to setup a database connection. Use the following
+    steps to create the test user and database.
+</para>
+
+<para>
+    Setup MySQL (or PosgreSQL)
+</para>
+
+<orderedlist numeration="arabic">    
+<listitem><para>Create 'test' database if not already there</para></listitem>
+<listitem><para><programlisting>GRANT SELECT,INSERT,UPDATE,DELETE ON test.* TO testUser@localhost IDENTIFIED BY 'testPass'</></para></listitem>
+<listitem><para>Create the test tables using the file <function>sessionBase.sql</> in <filename>tables/mysql/</> directory in the SiteManager root directory</para></listitem>
+</orderedlist>    
+
+<para>
+    In <filename>testSite/admin/config/localConfig.xsm</>, the database settings are already setup 
+    to reflect this. You should also check the "dirs" SECTION of this file to verify the paths
+    match your setup.
+</para>
+    
+<para>
+    Otherwise, if SiteManager has been setup correctly on your system, and 
+    testSite is in your web document path somewhere, you may point your browser 
+    at the main directory and try it out.
+</para>
+
+
+<para>
+    The testSite is also a great place to look for examples. You should find at least a basic example of most of
+    the features of SiteManager.
+</para>
+
+</Chapter>
+
