@@ -52,14 +52,13 @@ class SM_smTag_AREA extends SM_smTag {
         foreach ($this->itemList as $key => $areaData) {
 
             // is this actually a module or a subtemplate/codeplate?
-            if ((get_class($this->itemList[$key]) == 'sm_layouttemplate') || 
-                (is_subclass_of($this->itemList[$key],'sm_layouttemplate'))) {
+            if ($this->itemList[$key] instanceof SM_layoutTemplate) {
 
                 // reset it
                 $this->itemList[$key]->_resetTemplate();
 
             }
-            elseif (is_subclass_of($this->itemList[$key],'sm_module')) {
+            elseif ($this->itemList[$key] instanceof SM_module) {
 
                 // module
                 $this->itemList[$key]->_resetModule();
@@ -113,8 +112,7 @@ class SM_smTag_AREA extends SM_smTag {
 
             }
     	    // is this actually a module or a subtemplate/codeplate?
-            elseif ((get_class($this->itemList[$key]) == 'sm_layouttemplate') ||
-                    (is_subclass_of($this->itemList[$key],'sm_layouttemplate'))) {
+            elseif ($this->itemList[$key] instanceof SM_layoutTemplate) {
 
                 // either template or codeplate
 
@@ -125,7 +123,7 @@ class SM_smTag_AREA extends SM_smTag {
                 $this->sayJS($this->itemList[$key]->jsOutput);
 
             }
-            elseif (is_subclass_of($this->itemList[$key],'sm_module')) {
+            elseif ($this->itemList[$key] instanceof SM_module) {
 
                 // module
 

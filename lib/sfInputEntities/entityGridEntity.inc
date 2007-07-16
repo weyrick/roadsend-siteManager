@@ -605,7 +605,7 @@ class entityGridEntity extends SM_inputTypeEntity {
 
 			if($altRow) {
 
-	            if(get_class($this->altRowTemplate) == 'sm_layouttemplate') {
+	            if($this->altRowTemplate instanceof SM_layoutTemplate) {
 	            	$rT = $this->altRowTemplate;
 	            } else {
 	            	// will use cache
@@ -614,7 +614,7 @@ class entityGridEntity extends SM_inputTypeEntity {
 				
 			} else {
 
-	            if(get_class($this->rowTemplate) == 'sm_layouttemplate') {
+	            if($this->rowTemplate instanceof SM_layoutTemplate) {
 	            	$rT = $this->rowTemplate;
 	            } else {
 	            	// will use cache

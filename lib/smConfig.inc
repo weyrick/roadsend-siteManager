@@ -364,7 +364,7 @@ class SM_sectionTag {
 
                     if (isset($allID[$varKey])) {
                         // add values
-                        $allID[$varKey] = array_merge($allID[$varKey],$this->getVarAttr($secID, $varKey, $attr));
+                        $allID[$varKey] = array_merge((array)$allID[$varKey],(array)$this->getVarAttr($secID, $varKey, $attr));
                     }
                     else {
                         // set value

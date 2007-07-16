@@ -176,7 +176,7 @@ class columnDefinition {
 
                     //try to get the viewField
                     $res = $dbH->tableInfo($name);
-                    if (MDB2::isError($res)) {
+                    if (empty($res)) {
                         $viewField = NULL;
                         SM_debugLog("couldn't lookup viewField for $this->name",$this);
                     }

@@ -113,10 +113,10 @@ class orders extends SM_object {
         $rh = $this->dbH->query($SQL);
         SM_dbErrorCheck($rh, $SQL);
         
-        while($rr = $rh->fetchRow()) {
+        while($rr = $rh->fetch()) {
             $this->cascadeDeleteOrder($rr['orderID']);
         }
-        $rh->free();
+        $rh = null;
 
 
 
@@ -243,7 +243,7 @@ class orders extends SM_object {
         $SQL = "SELECT * FROM orders WHERE orderID = '$orderID' LIMIT 1";
         $rh = $SM_siteManager->dbH->query($SQL);
         SM_dbErrorCheck($rh, $SQL);
-        $rr = $rh->fetchRow();
+        $rr = $rh->fetch();
         
         // DB row number
         $this->order_idxNum = $rr['idxNum'];
@@ -259,14 +259,14 @@ class orders extends SM_object {
         $this->dateCreated = $rr['dateCreated'];
         $this->lastUpdated = $rr['lastUpdated'];
     
-        $rh->free();
+        $rh = null;
         
         // ADD ITEMS TO ORDER
         $this->orderItemList = '';
         $SQL = "SELECT * FROM orderItem WHERE orders_orderID = '$orderID' LIMIT 50";
         $rh = $SM_siteManager->dbH->query($SQL);
         SM_dbErrorCheck($rh, $SQL);
-        while($rr = $rh->fetchRow()) {    
+        while($rr = $rh->fetch()) {    
             
             $productID = $rr['product_idxNum'];
             $orderItemID = $rr['itemID'];
@@ -280,7 +280,7 @@ class orders extends SM_object {
             $this->orderItemList[$newOrderItem->orderItemID] = $newOrderItem; 
         }
     
-        $rh->free();
+        $rh = null;
         return true;
     }
 

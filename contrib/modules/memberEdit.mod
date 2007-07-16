@@ -174,7 +174,7 @@ class memberEdit extends SM_module {
                 }
 
                 $rh = $this->dbH->query($SQL);
-                if (MDB2::isError($rh)) {
+                if (empty($rh)) {
                     SM_fatalErrorPage("unable to access database",$this);
                 }
 

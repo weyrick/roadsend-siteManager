@@ -53,7 +53,7 @@ function SM_dbErrorCheck($rh, $obj=NULL, $fatal=true) {
 
     global $SM_develState;
 
-    if (MDB2::isError($rh)) {
+    if (empty($rh)) {
 
         $msg = "Database Query Error";
 

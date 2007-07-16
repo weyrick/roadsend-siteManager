@@ -128,7 +128,7 @@ class dbSelectEntity extends selectEntity {
             return;
         }
 
-        while ($rr = $rh->fetchRow(DB_FETCHMODE_ORDERED)) {
+        while ($rr = $rh->fetch(PDO::FETCH_NUM)) {
 
             $title = '';
             for ($fc=1; $fc < sizeof($rr); $fc++) {
@@ -141,7 +141,7 @@ class dbSelectEntity extends selectEntity {
 
         }
 
-        $rh->free();        
+        $rh = null;        
     }
 
 }

@@ -69,10 +69,10 @@ class store extends SM_module {
         $SQL = "SELECT idxNum,title FROM ". $this->directive['productCategoryList'] . " ORDER BY idxNum";
             $rh = $this->dbH->query($SQL);
             SM_dbErrorCheck($rh, $SQL);
-            while($rr = $rh->fetchRow()) {
+            while($rr = $rh->fetch()) {
                 $productCategoryList[$rr['idxNum']] = $rr['title'];
             }
-            $rh->free();
+            $rh = null;
             return $productCategoryList;
     }
 
@@ -97,10 +97,10 @@ class store extends SM_module {
 
         $rh = $this->dbH->query($SQL);
         SM_dbErrorCheck($rh, $SQL);
-        while($rr = $rh->fetchRow()) {
+        while($rr = $rh->fetch()) {
             $productList[$rr['idxNum']] = $rr;
         }
-        $rh->free();
+        $rh = null;
         return $productList;
     }
     

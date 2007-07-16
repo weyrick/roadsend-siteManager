@@ -453,7 +453,7 @@ class SM_siteManagerRoot extends SM_object {
      *
      */
     function _findSMfile_disk($fName, $GCSpath, $extension='', $fatalFNF=true) {
-
+        
         // debug log at verbose level 1
         $this->debugLog("attempting to load SiteManager resource file from disk: $fName ($GCSpath, $extension)",1);
 

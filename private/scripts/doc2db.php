@@ -44,7 +44,7 @@ $baseDB = new DB;
 $dbH = $baseDB->connect($DSN, false);
 
 
-if (MDB2::isError($dbH)) {
+if (empty($dbH)) {
 	echo "***** can't connect to database through /tmp/mysql.sock *****\n";
 	exit;
 }
@@ -53,7 +53,7 @@ if (MDB2::isError($dbH)) {
 $dbH->simpleQuery("DELETE FROM ma_manual where ma_project_idxNum =1");
 
 // if it was a PEAR database error, puke
-if (MDB2::isError($dbH)) {       
+if (empty($dbH)) {       
   echo("$dbH->toString()\n");
   exit;
 }
@@ -76,7 +76,7 @@ foreach ($docList as $doc) {
 
     $SQL = "INSERT INTO ma_manual SET ma_project_idxNum =1, docTitle='$titleList[$dfName]', docFileName='$dfName', docText=\"$dfText\", docTextStripped=\"$dfStripText\", dateCreated=NOW()";
     $rh = $dbH->simpleQuery($SQL);
-    if (MDB2::isError($rh)) {
+    if (empty($rh)) {
         echo "error with query:\n$SQL\n".mysql_error()."\n";
         exit;
     }

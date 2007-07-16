@@ -85,10 +85,10 @@ class dbComboBoxEntity extends comboBoxEntity {
             return;
         }
 
-        while ($rr = $rh->fetchRow()) {
+        while ($rr = $rh->fetch()) {
             $this->addOption($rr[$this->directive['viewField']]);
         }
-        $rh->free();        
+        $rh = null;        
     
     }
     

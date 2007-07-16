@@ -210,7 +210,7 @@ class editEditorAction extends SM_dbEditorAction {
             $SQL = "SELECT * FROM {$dbEditor->directive['tableName']} WHERE {$dbEditor->directive['dataField']}='" . $dbEditor->rNum."'";
             $rh = $dbEditor->dbHL[$dbEditor->directive['dataBaseID']]->query($SQL);
             $this->dbErrorCheck($rh);            
-            $rr = $rh->fetchRow();
+            $rr = $rh->fetch();
             $dbEditor->rowData = $rr;
         }
 
@@ -275,7 +275,7 @@ class removeEditorAction extends SM_dbEditorAction {
             $rh = $dbEditor->dbHL[$dbEditor->directive['dataBaseID']]->query($SQL);
             $this->dbErrorCheck($rh, $this);
             
-            $rr = $rh->fetchRow();
+            $rr = $rh->fetch();
         }
 
         // ge a list of vars from the form and attempt to set the default values

@@ -70,14 +70,14 @@ class test_members extends testBase {
         $mod2 = $this->loadModule('dbRecordSelector');
         $mod2->configure($dbSettings);
 
-        $mod3 = $this->loadModule('dbGui');        
-        $mod3->configure($dbSettings);
+        //$mod3 = $this->loadModule('dbGui');        
+        //$mod3->configure($dbSettings);
 
         $memberSystem = $this->sessionH->getMemberSystem();
         $this->say($memberSystem->dumpInfo());
 
         $this->say($mod2->run());
-        $this->say($mod3->run());
+        //$this->say($mod3->run());
 
     }
     

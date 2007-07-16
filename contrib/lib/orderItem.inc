@@ -71,7 +71,7 @@ class orderItem  {
         // Process query
         $rh = $SM_siteManager->dbH->query($SQL);
         SM_dbErrorCheck($rh, $SQL);
-        $rr = $rh->fetchRow();
+        $rr = $rh->fetch();
         
         // Set class vars
         
@@ -93,7 +93,7 @@ class orderItem  {
 
 
         // Clean record handle        
-        $rh->free();
+        $rh = null;
         return;
     }
 

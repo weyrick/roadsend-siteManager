@@ -154,7 +154,7 @@ class smartGrid extends SM_module {
         $ft = true;
 
         // Get the data for the rows
-        while($rr = $rh->fetchRow()) {
+        while($rr = $rh->fetch()) {
 
             if($ft) {
 
@@ -306,7 +306,7 @@ class smartGrid extends SM_module {
             $this->say("</tr>");
         }
         $this->saybr("</table>");
-        $rh->free();
+        $rh = null;
 
         // If they want it, build & show the footer
         if($this->directive['showFooter'])
@@ -324,7 +324,7 @@ class smartGrid extends SM_module {
             // Get the actual total numbers of matching rows.
             $rh2 = $this->dbHL[$this->directive['dataBaseID']]->query($this->countSQL);
             SM_dbErrorCheck($rh2, $this);
-            $rr2=$rh2->fetchRow();
+            $rr2=$rh2->fetch();
             $this->total = $rr2[key($rr2)];
         }
 
@@ -412,7 +412,7 @@ class smartGrid extends SM_module {
             // Get the actual total numbers of matching rows.
             $rh2 = $this->dbHL[$this->directive['dataBaseID']]->query($this->countSQL);
             SM_dbErrorCheck($rh2, $this);
-            $rr2=$rh2->fetchRow();
+            $rr2=$rh2->fetch();
             $this->total = $rr2[key($rr2)];
         }
 

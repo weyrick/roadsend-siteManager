@@ -890,7 +890,7 @@ class SM_smartForm extends SM_object {
         foreach ($this->entityList as $ent) {
 
             // skip text entities
-            if (get_class($ent) == 'rawtextentity')
+            if ($ent instanceof rawTextEntity)
                 continue;
         
             if (!$ent->inputEntity->isValid) {

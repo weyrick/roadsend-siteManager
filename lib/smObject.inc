@@ -562,6 +562,13 @@ class SM_object {
         return true;
 
     }
+    
+    /**
+     * default toString method
+     */
+    public function __toString() {
+        return '--> toString() dump of: ['.get_class($this).'] (SM_object based) <--';
+    }
 
 }
 

@@ -24,7 +24,7 @@ $docTree = unserialize($contents);
 $baseDB = new DB;
 $dbH = $baseDB->connect($DSN, false);
 
-if (MDB2::isError($dbH)) {
+if (empty($dbH)) {
 	echo "***** can't connect to database through /tmp/mysql.sock *****\n";
 	exit;
 }
@@ -32,25 +32,25 @@ if (MDB2::isError($dbH)) {
 $dbH->simpleQuery("DELETE FROM apiClass");
 
 // if it was a PEAR database error, puke
-if (MDB2::isError($dbH)) {       
+if (empty($dbH)) {       
   echo("$dbH->toString()\n");
   exit;
 }
 $dbH->simpleQuery("DELETE FROM apiMethod");
 // if it was a PEAR database error, puke
-if (MDB2::isError($dbH)) {       
+if (empty($dbH)) {       
   echo("$dbH->toString()\n");
   exit;
 }
 $dbH->simpleQuery("DELETE FROM apiClassVar");
 // if it was a PEAR database error, puke
-if (MDB2::isError($dbH)) {       
+if (empty($dbH)) {       
   echo("$dbH->toString()\n");
   exit;
 }
 $dbH->simpleQuery("DELETE FROM apiMethodParam");
 // if it was a PEAR database error, puke
-if (MDB2::isError($dbH)) {       
+if (empty($dbH)) {       
   echo("$dbH->toString()\n");
   exit;
 }
@@ -67,7 +67,7 @@ foreach ($docTree as $className=>$class) {
     $SQL = "INSERT INTO apiClass SET name='$className', description='$desc', extends='{$class['extend']}'";    
     
     $rh = $dbH->simpleQuery($SQL);
-    if (MDB2::isError($rh)) {
+    if (empty($rh)) {
         echo "error with query:\n$SQL\n".mysql_error()."\n";
         exit;
     }
@@ -85,7 +85,7 @@ foreach ($docTree as $className=>$class) {
             $SQL = "INSERT INTO apiClassVar SET name='$vName', description='$desc', apiClass_idxNum=$apiClass_idxNum";    
 
             $rh = $dbH->simpleQuery($SQL);
-            if (MDB2::isError($rh)) {
+            if (empty($rh)) {
                 echo "error with query:\n$SQL\n".mysql_error()."\n";
                 exit;
             }
@@ -103,7 +103,7 @@ foreach ($docTree as $className=>$class) {
             $SQL = "INSERT INTO apiMethod SET name='$fName', description='$desc', apiClass_idxNum=$apiClass_idxNum";    
 
             $rh = $dbH->simpleQuery($SQL);
-            if (MDB2::isError($rh)) {
+            if (empty($rh)) {
                 echo "error with query:\n$SQL\n".mysql_error()."\n";
                 exit;
             }
@@ -126,7 +126,7 @@ foreach ($docTree as $className=>$class) {
                     $SQL = "INSERT INTO apiMethodParam SET name='$param', description='$desc', apiMethod_idxNum=$apiMethod_idxNum";    
         
                     $rh = $dbH->simpleQuery($SQL);
-                    if (MDB2::isError($rh)) {
+                    if (empty($rh)) {
                         echo "error with query:\n$SQL\n".mysql_error()."\n";
                         exit;
                     }

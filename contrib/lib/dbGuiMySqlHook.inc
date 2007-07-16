@@ -80,7 +80,7 @@ class dbGuiMySqlHook extends dbGuiBaseHook {
             SM_dbErrorCheck($rh, $this);
     
             // loop through each field and gather information
-            while ($rr = $rh->fetchRow()) {
+            while ($rr = $rh->fetch()) {
                 if ($rr['Field'] == $cDef->getName()) {
                     $type = $rr['Type'];
                     break;
