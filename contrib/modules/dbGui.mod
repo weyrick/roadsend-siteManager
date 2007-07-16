@@ -219,9 +219,12 @@ class SM_dbGui extends SM_abstractDbEditor {
 	if (empty($this->dbHL[$this->directive['dataBaseID']]))
 	   $this->fatalErrorPage("Invalid database handle: ".$this->directive['dataBaseID']);
 
-        $res = $this->dbHL[$this->directive['dataBaseID']]->tableInfo($this->directive['tableName']);
+        $rh = $this->dbHL[$this->directive['dataBaseID']]->query('DESC '.$this->directive['tableName']);
+        //$res = $this->dbHL[$this->directive['dataBaseID']]->tableInfo($this->directive['tableName']);
     
-        for($i = 0; $i<sizeof($res); $i++) {            
+        //for($i = 0; $i<sizeof($res); $i++) {
+        while ($rr = $rh->fetch()) {
+
             //create a new tableDefinition object
             $columnDef = new $this->directive['columnClass']();
 
@@ -240,7 +243,7 @@ class SM_dbGui extends SM_abstractDbEditor {
             }
 
             //configure the object
-            $columnDef->config($res[$i], $this->directive['autoFilter']);
+            $columnDef->config($rr, $this->directive['autoFilter']);
                         
             //*** Tweek the object a little
 

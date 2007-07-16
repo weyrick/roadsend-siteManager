@@ -80,7 +80,7 @@ class test_smObjects extends testBase {
 
         // TEST
         $actual = gettype($this->siteConfig).':'.get_class($this->siteConfig);
-        $expect = 'object:sm_siteconfig';
+        $expect = 'object:SM_siteConfig';
         $this->addTest('handler ref: siteConfig', 
                        'verify $siteConfig variable is initialized',
                        $expect,
@@ -88,7 +88,7 @@ class test_smObjects extends testBase {
     
         // TEST
         $actual = gettype($this->dbH).':'.get_class($this->dbH);
-        $expect = 'object:db_'.$this->siteConfig->getVar('db','dbType');
+        $expect = 'object:PDO';
         $this->addTest('handler ref: dbH', 
                        'verify $dbH member variable is initialized',
                        $expect,
@@ -104,7 +104,7 @@ class test_smObjects extends testBase {
     
         // TEST
         $actual = gettype($this->sessionH).':'.get_class($this->sessionH);
-        $expect = 'object:sm_session';
+        $expect = 'object:SM_session';
         $this->addTest('handler ref: sessionH', 
                        'verify $sessionH member variable is initialized',
                        $expect,
@@ -112,7 +112,7 @@ class test_smObjects extends testBase {
     
         // TEST
         $actual = gettype($this->inVarH).':'.get_class($this->inVarH);
-        $expect = 'object:sm_invarmanager';
+        $expect = 'object:SM_inVarManager';
         $this->addTest('handler ref: inVarH', 
                        'verify $inVarH member variable is initialized',
                        $expect,
@@ -121,7 +121,7 @@ class test_smObjects extends testBase {
 
         // TEST
         $actual = gettype($this->errorHandler).':'.get_class($this->errorHandler);
-        $expect = 'object:sm_errorhandler';
+        $expect = 'object:SM_errorHandler';
         $this->addTest('handler ref: errorHandler', 
                        'verify $errorHandler member variable is initialized',
                        $expect,
@@ -132,7 +132,7 @@ class test_smObjects extends testBase {
         $this->debugLog("test debuglog entry",5);
         $testEntry = array_pop($SM_debugOutput);
         $actual = $testEntry;
-        $expect = array('msg' => 'test_smobjects:: test debuglog entry', 'verbosity' => 5);
+        $expect = array('msg' => 'test_smObjects:: test debuglog entry', 'verbosity' => 5);
         $this->addTest('debugLog() method', 
                        'make sure debugLog() method writes to global debugLog',
                        $expect,

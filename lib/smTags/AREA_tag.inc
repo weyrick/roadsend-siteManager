@@ -144,16 +144,16 @@ class SM_smTag_AREA extends SM_smTag {
         // wrap in span with ID or CLASS
         if (isset($this->attributes['CLASS'])) {
             $class = $this->attributes['CLASS'];
-            $areaOutput = '<SPAN CLASS="'.$this->attributes['CLASS']."\">\n".
+            $areaOutput = '<span class="'.$this->attributes['CLASS']."\">\n".
                           $areaOutput.
-                          "\n</SPAN>";
+                          "\n</span>";
         }
 
         if (isset($this->attributes['ID'])) {
             $class = $this->attributes['ID'];
-            $areaOutput = '<SPAN ID="'.$this->attributes['ID']."\">\n".
+            $areaOutput = '<span id="'.$this->attributes['ID']."\">\n".
                           $areaOutput.
-                          "\n</SPAN>";
+                          "\n</span>";
         }
 
 

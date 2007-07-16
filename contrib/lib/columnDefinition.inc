@@ -263,12 +263,21 @@ class columnDefinition {
      * and builds this object accordingly
      */
     function config($res, $autoFilter) {
-        $this->setTableName($res['table']);
-        $this->setName($res['name']);
-        $this->setDataType($res['type'], $res['flags'], $autoFilter);
-        $this->setMaxSize($res['len']);
-        $this->setSize($res['len']);
-        (eregi("null" , $res['flags'])) ? $this->setRequired(true) : $this->setRequired(false);
+        //$this->setTableName($res['table']);
+        if (preg_match('/^(\w+)\((\d+)\)/',$res['Type'],$m)) {
+            $type = $m[1];
+            $size = $m[2];
+        }
+        else {
+            $type = $res['Type'];
+            $size = 0;
+        }
+        $this->setName($res['Field']);
+        $this->setDataType($type, '', $autoFilter);
+        $this->setMaxSize($size);
+        $this->setSize($size);
+        ($res['Null'] == 'NO') ? $this->setRequired(true) : $this->setRequired(false);
+        ($res['Key'] == 'PRI') ? $this->setDisplay(false) : $this->setDisplay(true);
     }
 
     /**
@@ -424,10 +433,7 @@ class columnDefinition {
             $this->setdisplay(false);
             return;
         }
-    
-        // if it's a primary key, don't let them change it
-        (eregi("primary" , $flags)) ? $this->setDisplay(false) : $this->setDisplay(true);
-    
+        
         // if it's a link to another table, change it's type to dbSelect
         // we tell this by looking for "_idxNum" on the end of a field name
         if (preg_match("/(\w+)_idxNum\$/",$this->getname(),$m)) {
