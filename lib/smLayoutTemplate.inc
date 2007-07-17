@@ -701,6 +701,13 @@ class SM_layoutTemplate extends SM_object {
 
     }
 
+    /**
+     * reset on clone
+     */
+    function __clone() {
+        $this->resetTemplate();
+    }
+
      /**
      * this method is run before running the tags tagThink method, and gives
      * the user a chance to add directives before running tagConfig

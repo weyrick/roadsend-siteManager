@@ -557,8 +557,8 @@ class entityGridEntity extends SM_inputTypeEntity {
     }
     
     function setColumnHeaderRow($row) {
-    	$this->addDirective('showColumnHeaders',false);
-		$this->columnHeaderRow = $row;
+        $this->addDirective('showColumnHeaders',false);
+        $this->columnHeaderRow = $row;
     }
     
     /**
@@ -587,8 +587,8 @@ class entityGridEntity extends SM_inputTypeEntity {
             $template .= '</tr>';
         }
 
-		// if we don't have a custom row template...
-		if(empty($this->rowTemplate)) {
+        // if we don't have a custom row template...
+        if(empty($this->rowTemplate)) {
             $rowTemplate = "<tr class='columnRow'>";
             foreach ($this->colList as $colID => $colObj) {
                 $rowTemplate .= "<td><SM TYPE='area' NAME='$colID'></td>";
@@ -597,30 +597,28 @@ class entityGridEntity extends SM_inputTypeEntity {
             $sfTemplate = new SM_layoutTemplate;
             $sfTemplate->setTemplateData($rowTemplate);
             $this->rowTemplate = $sfTemplate;		
-		}
-		
+        }
+
         // rows
         $altRow = false;
         foreach ($this->rowList as $rowID => $rowObj) {
 
-			if($altRow) {
+            if ($altRow) {
 
-	            if($this->altRowTemplate instanceof SM_layoutTemplate) {
-	            	$rT = $this->altRowTemplate;
-	            } else {
-	            	// will use cache
-	            	$rT = $SM_siteManager->loadTemplate($this->altRowTemplate);
-	            }
-				
-			} else {
+                if ($this->altRowTemplate instanceof SM_layoutTemplate) {
+                    $rT = clone $this->altRowTemplate;
+                } else {
+                    $rT = clone $SM_siteManager->loadTemplate($this->altRowTemplate);
+                }
 
-	            if($this->rowTemplate instanceof SM_layoutTemplate) {
-	            	$rT = $this->rowTemplate;
-	            } else {
-	            	// will use cache
-	            	$rT = $SM_siteManager->loadTemplate($this->rowTemplate);
-	            }
-			}
+            } else {
+
+                if ($this->rowTemplate instanceof SM_layoutTemplate) {
+                    $rT = clone $this->rowTemplate;
+                } else {
+                    $rT = clone $SM_siteManager->loadTemplate($this->rowTemplate);
+                }
+            }
             
             foreach ($this->colList as $colID => $colObj) {
                 $areaName = $rowID.'_'.$colID;
@@ -629,13 +627,13 @@ class entityGridEntity extends SM_inputTypeEntity {
             
             // Configure Data for row template 
             $rT->configureTag('VAR',array('data'=>$this->rowList[$rowID]->getRowTemplateData() ));
-            $template .= $rT->run();
+            $template .= $rT->run()."\n";
 
-			if($this->useAltRowTemplate) $altRow = !$altRow;
+            if($this->useAltRowTemplate) $altRow = !$altRow;
         }
 
         $template .= "</table>\n";
-
+        
         // make template, set data
         $this->outputTemplate = new SM_layoutTemplate();
         $this->outputTemplate->setTemplateData($template);

@@ -541,15 +541,15 @@ class SM_siteManagerRoot extends SM_object {
         }
 
         // in cache?
-        if (isset($this->templateCache[$fName])) {
-            return $this->templateCache[$fName];
-        }        
+        //if (isset($this->templateCache[$fName])) {
+            //return $this->templateCache[$fName];
+        //}
 
         // create the template
         $newTemplate = new SM_layoutTemplate($fName, true);
 
         // cache it
-        $this->templateCache[$fName] = $newTemplate;
+        //$this->templateCache[$fName] = $newTemplate;
 
         // return new template
         return $newTemplate;
