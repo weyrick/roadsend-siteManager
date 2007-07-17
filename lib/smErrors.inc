@@ -50,13 +50,18 @@ function SM_debugLog($msg, $obj=NULL, $verbosity=0) {
 /**
  * format output from debug_backtrace PHP function (php 4.3+)
  */
-function SM_getDebugBackTrace($stripTags = false) {
+function SM_getDebugBackTrace($stripTags = false, $exception=NULL) {
 
     if (!function_exists('debug_backtrace'))
         return '(no backtrace available)';
     
     $text = '<br /><font color="blue">';
-    $bt = debug_backtrace();
+    if (!empty($exception)) {
+        $bt = $exception->getTrace();
+    }
+    else {
+        $bt = debug_backtrace();
+    }
     array_shift($bt); // get rid of SM_getDebugBackTrace()
     foreach ($bt as $val) {
         //$args = '('.join(',',$val['args']).')';
@@ -127,7 +132,8 @@ function SM_fatalErrorPage($msg='', $obj=NULL) {
 
     // add backtrace, if available (php 4.3+)
     if ($SM_develState) {
-        SM_debugLog(SM_getDebugBackTrace());
+        ($obj instanceof Exception) ? $e = $obj : $e = NULL;
+        SM_debugLog(SM_getDebugBackTrace(false, $e));
     }
 
     // if msg is an array, dump it
@@ -277,7 +283,12 @@ function SM_errorHandler($errno, $errstr, $errfile, $errline) {
  * @param Exception $exception the uncaught exception
  */
 function sm_default_exception_handler($exception) {
-    SM_fatalErrorPage($exception->toString());
+    if ($exception instanceof Exception) {
+        SM_fatalErrorPage($exception->getMessage(), $exception);
+    }
+    else {
+        SM_fatalErrorPage('Unknown exception: '.$exception);
+    }
 }
 
 // use the default SiteManager exception handler

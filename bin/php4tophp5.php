@@ -19,6 +19,8 @@ foreach ($argv as $name) {
         $line = str_replace('MDB2::isError','empty',$line);
         $line = str_replace('DB::isError','empty',$line);
         $line = str_replace('function &','function ',$line);
+        $line = str_replace('numRows','rowCount',$line);
+        $line = str_replace('rollback','rollBack',$line);
         
         fwrite($op, $line);
         
