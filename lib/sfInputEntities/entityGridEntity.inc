@@ -608,7 +608,8 @@ class entityGridEntity extends SM_inputTypeEntity {
                 if ($this->altRowTemplate instanceof SM_layoutTemplate) {
                     $rT = clone $this->altRowTemplate;
                 } else {
-                    $rT = clone $SM_siteManager->loadTemplate($this->altRowTemplate);
+                    // loadTemplate will return clone
+                    $rT = $SM_siteManager->loadTemplate($this->altRowTemplate);
                 }
 
             } else {
@@ -616,7 +617,8 @@ class entityGridEntity extends SM_inputTypeEntity {
                 if ($this->rowTemplate instanceof SM_layoutTemplate) {
                     $rT = clone $this->rowTemplate;
                 } else {
-                    $rT = clone $SM_siteManager->loadTemplate($this->rowTemplate);
+                    // loadTemplate will return clone
+                    $rT = $SM_siteManager->loadTemplate($this->rowTemplate);
                 }
             }
             
