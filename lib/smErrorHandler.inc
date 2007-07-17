@@ -71,9 +71,8 @@ class SM_errorHandler extends SM_object {
             $msg = '';
 
             if ($SM_develState) {
-                // add SQL query if in devel state
-                //$msg .= ':  '.$rh->message."<br />\n".$rh->userinfo;
-                $msg = 'PDO QUERY FAIL/CHECK WARNINGS';
+                $edata = $this->dbH->errorInfo();
+                $msg .= $edata[2];
             }
 
             if ($fatal) {

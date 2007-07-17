@@ -612,7 +612,7 @@ class SM_siteManagerRoot extends SM_object {
             }
         }
 
-        // set to associative fetch by default
+        // error mode
         $this->dbHL[$id]->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 
         // debug log it
