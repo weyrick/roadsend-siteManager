@@ -232,7 +232,7 @@ class SM_siteConfig {
 
         if (isset($this->localConfig)) {
             $sSection = $this->localConfig->getSection($section, $sectionID, $attr);
-            $section = array_merge($gSection, $sSection);
+            $section = array_merge((array)$gSection, (array)$sSection);
         }
         else {
             $section = $gSection;
