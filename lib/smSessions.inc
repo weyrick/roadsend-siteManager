@@ -967,6 +967,9 @@ class SM_session extends SM_object {
      * this function is called when the page is complete, and will save all session information
      */
     function saveSession() {
+
+        if (php_sapi_name() == 'cli')
+            return;
         
         //if we're tracking last page access, set it to now()
         if ($this->directive['trackLastPageAccess']) {
@@ -987,6 +990,12 @@ class SM_session extends SM_object {
      * after this session exits, either a member or guest session will exist
      */
     function runSession() {
+        
+        // we don't run sessions in command line mode
+        if (php_sapi_name() == 'cli') {
+            $this->directive['useMemberSystem'] = false;
+            return;
+        }
 
         // garbage collect?
         if ($this->directive['garbageCollect']) {

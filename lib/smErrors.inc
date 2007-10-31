@@ -203,7 +203,7 @@ function SM_makeErrorPage() {
         $verLine = "(PHP v".PHP_VERSION.'/'.PHP_OS.')';
     
     $output .= "<hr /><b>Roadsend SiteManager v".SM_VERSION." (<a href=\"http://www.roadsend.com/siteManager\">http://www.roadsend.com/siteManager</a>) ".$verLine;
-    $output .= "</b><br /></body></html>";
+    $output .= "</b><br /></body></html>\n";
 
     if (PHP_SAPI == 'cli')
         $output = strip_tags($output);
