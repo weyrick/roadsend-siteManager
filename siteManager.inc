@@ -32,8 +32,8 @@ $SM_rootDir = '';   // when set, make sure it ends with a slash!
 // -----------------------------------------------------------------------------
 
 // Version
-$SM_versionTag = "4.0.0";
-define('SM_VERSION', '4.0.0');
+$SM_versionTag = "4.1.0";
+define('SM_VERSION', '4.1.0');
 
 // main global config file
 define('SM_GLOBAL_CONFIG_FILE','config/globalConfig.xsm');
