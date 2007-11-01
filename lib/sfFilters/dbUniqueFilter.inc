@@ -94,7 +94,7 @@ class dbUniqueFilter extends SM_entityFilter {
 
         $rh = $this->dbHL[$this->directive['dataBaseID']]->query($SQL);
         $this->dbErrorCheck($rh);
-        return ($rh->numRows() == 0);
+        return ($rh->rowCount() == 0);
 
     }
 
