@@ -175,16 +175,26 @@ class columnDefinition {
                     }
 
                     //try to get the viewField
-                    $res = $dbH->tableInfo($name);
-                    if (empty($res)) {
+                    $SQL = "SHOW FIELDS FROM $name";
+                    $rh = $dbH->query($SQL);
+                    if ($rh) {
+                        $rr = $rh->fetch();
+                        // take the second, if we have it
+                        if ($rh) {
+                            $rr = $rh->fetch();
+                            $viewField = $rr['Field'];
+                            $this->sfDirectives['viewField'] = $viewField;
+                            SM_debugLog("guessing at viewField for $this->name: $viewField (saving for later use)",$this);
+                        }
+                        else {
+                            $viewField = NULL;
+                            SM_debugLog("couldn't lookup viewField for $this->name",$this);
+                        }
+                    }
+                    else {
                         $viewField = NULL;
                         SM_debugLog("couldn't lookup viewField for $this->name",$this);
                     }
-                    else {
-                        $viewField = $res[1]['name'];
-                        $this->sfDirectives['viewField'] = $viewField;
-                        SM_debugLog("guessing at viewField for $this->name: $viewField (saving for later use)",$this);
-                    }                    
                 }
 
             }
@@ -662,7 +672,7 @@ class columnDefinition {
     function setTableName ($newTableName) {
         $this->tableName = $newTableName;
     }
-
+    
 }
 
 ?>
