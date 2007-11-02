@@ -62,6 +62,7 @@ require($SM_rootDir."lib/smSupport.inc");
 require($SM_rootDir."lib/smObject.inc");
 require($SM_rootDir."lib/smErrorHandler.inc");
 require($SM_rootDir."lib/smConfigReader.inc");
+require($SM_rootDir."lib/smDbWrapper.inc");
 
 require($SM_rootDir."lib/smConfig.inc");
 require($SM_rootDir."lib/smSiteConfig.inc");

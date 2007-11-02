@@ -220,6 +220,7 @@ class SM_dbGui extends SM_abstractDbEditor {
 	   $this->fatalErrorPage("Invalid database handle: ".$this->directive['dataBaseID']);
 
         $rh = $this->dbHL[$this->directive['dataBaseID']]->query('DESC '.$this->directive['tableName']);
+        $this->dbErrorCheck($rh);
         //$res = $this->dbHL[$this->directive['dataBaseID']]->tableInfo($this->directive['tableName']);
     
         //for($i = 0; $i<sizeof($res); $i++) {

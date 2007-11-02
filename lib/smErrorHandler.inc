@@ -69,10 +69,14 @@ class SM_errorHandler extends SM_object {
         if (empty($rh)) {
 
             $msg = '';
-
-            if ($SM_develState) {
-                $edata = $this->dbH->errorInfo();
+            $lastid = $GLOBALS['SM_LAST_DB_ID'];
+            if (empty($lastid))
+                $lastid = 'default';
+            
+            if ($SM_develState && isset($this->dbHL[$lastid])) {
+                $edata = $this->dbHL[$lastid]->errorInfo();
                 $msg .= $edata[2];
+                $msg .= ' <br>Query Was: ['.$this->dbHL[$lastid]->lastQuery.']';
             }
 
             if ($fatal) {

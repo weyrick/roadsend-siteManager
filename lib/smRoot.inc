@@ -597,10 +597,11 @@ class SM_siteManagerRoot extends SM_object {
 
         // create a PEAR database object
         try {
-            $this->dbHL[$id] = new PDO($dbSettings['DSN'],
-                                       $dbSettings['userName'],
-                                       $dbSettings['passWord'],
-                                       array(PDO::ATTR_PERSISTENT => $dbSettings['persistent']));
+            $this->dbHL[$id] = new SM_dbWrapper($id,
+                                                $dbSettings['DSN'],
+                                                $dbSettings['userName'],
+                                                $dbSettings['passWord'],
+                                                array(PDO::ATTR_PERSISTENT => $dbSettings['persistent']));
         } catch (PDOException $e) {
             if ($dieOnError) {
                 $this->debugLog($e->getMessage()."<br />\n");

@@ -50,6 +50,12 @@ $SM_siteManager->loadSite($adminDir.'config/localConfig.xsm');
 // connect to database, using settings from localConfig.xsm
 $SM_siteManager->dbConnect();
 
+if ($SM_develState) {
+    if ((isset($_GET['SM_queryTrace']))&&($_GET['SM_queryTrace'] == 1)) {
+        $SM_siteManager->dbH->startQueryTrace();
+    }
+}
+
 // use sessions
 $SM_siteManager->startSessions();
 
@@ -61,6 +67,10 @@ if ($SM_develState) {
     }
     else if (isset($_GET['SM_debug'])) {
         $SM_siteManager->sessionH->setPersistent('SM_debug',0);
+    }
+    $SM_siteManager->addPersistent('SM_queryTrace');
+    if ((isset($_GET['SM_queryTrace']))&&($_GET['SM_queryTrace'] == 1)) {
+        $SM_siteManager->sessionH->setPersistent('SM_debug',1);
     }
 }
 
