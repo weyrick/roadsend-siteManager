@@ -116,10 +116,26 @@ class SM_dbWrapper
         return $this->dbH->lastInsertId($name);
     }
 
-    function quote($string) {
+    // NOTE: this is ripped from PEAR DB for compatibility
+    // notably, that it returns 'NULL' when null
+    function quote($in)
+    {
+        if (is_int($in) || is_double($in)) {
+            return $in;
+        } elseif (is_bool($in)) {
+            return $in ? 1 : 0;
+        } elseif (is_null($in)) {
+            return 'NULL';
+        } else {
+            return $this->escapeSimple($in);
+        }
+    }
+
+    // this calls the PDO version
+    function escapeSimple($string) {
         return $this->dbH->quote($string);
     }
-    
+
     ////////////////////////////////////////////////////////////////////////////////////
     
     function query($query)
