@@ -73,7 +73,6 @@ class dbGuiMySqlHook extends dbGuiBaseHook {
      * accordinglly
      */
     function setDataTypeHook(&$cDef, $flags) {
-
         if (eregi('enum', $flags) || eregi('set', $flags)) {
             $SQL = "SHOW FIELDS FROM " . $cDef->getTableName();
             $rh = $this->dbHL[$this->directive['dataBaseID']]->query($SQL);

@@ -273,7 +273,12 @@ class columnDefinition {
      * and builds this object accordingly
      */
     function config($res, $autoFilter) {
-        //$this->setTableName($res['table']);
+//         $this->setTableName($res['table']);
+//         $this->setName($res['name']);
+//         $this->setDataType($res['type'], $res['flags'], $autoFilter);
+//         $this->setMaxSize($res['len']);
+//         $this->setSize($res['len']);
+//         (eregi("null" , $res['flags'])) ? $this->setRequired(true) : $this->setRequired(false);
         if (preg_match('/^(\w+)\((\d+)\)/',$res['Type'],$m)) {
             $type = $m[1];
             $size = $m[2];
@@ -282,8 +287,17 @@ class columnDefinition {
             $type = $res['Type'];
             $size = 0;
         }
+        // fake these like mysql_field_flags
+        if (substr($type,0,3) == 'set') {
+            $flags[] = 'set';
+            $type = 'string';
+        }
+        if (substr($type,0,4) == 'enum') {
+            $flags[] = 'enum';
+            $type = 'string';
+        }
         $this->setName($res['Field']);
-        $this->setDataType($type, '', $autoFilter);
+        $this->setDataType($type, join($flags,','), $autoFilter);
         $this->setMaxSize($size);
         $this->setSize($size);
         ($res['Null'] == 'NO') ? $this->setRequired(true) : $this->setRequired(false);
@@ -460,15 +474,15 @@ class columnDefinition {
         }
     
         // deal with blobs
-        if($newDataType == 'blob') {
-            if(!(eregi('binary',$flags))) {
+        if($newDataType == 'text') {
+//            if(!(eregi('binary',$flags))) {
                 $this->setSfType('textArea');
-            } else {
+//            } else {
                 //since we dont' deal with binary yet,
                 // just stick up a text message.
-                $this->setSfType('rawText');
+/*                $this->setSfType('rawText');
                 $this->setSfDirectives(array('staticText'=>'This is a binary object'));
-            }
+            }*/
         }
 
         // if we are one of the following, change needQuotes to false

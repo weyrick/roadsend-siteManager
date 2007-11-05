@@ -51,15 +51,24 @@ function SM_reloadPage($list=NULL) {
  */
 function SM_dbErrorCheck($rh, $obj=NULL, $fatal=true) {
 
-    global $SM_develState;
+    global $SM_siteManager, $SM_develState;
+
+    if (isset($SM_siteManager)) {
+        return $SM_siteManager->errorHandler->dbErrorCheck($rh, $obj,$fatal);
+    }
 
     if (empty($rh)) {
 
         $msg = "Database Query Error";
 
-        if ($SM_develState) {
-            // add SQL query if in devel state
-            $msg .= ':  '.$rh->message."<br />\n".$rh->userinfo;
+        $lastid = $GLOBALS['SM_LAST_DB_ID'];
+        if (empty($lastid))
+            $lastid = 'default';
+            
+        if ($SM_develState && isset($this->dbHL[$lastid])) {
+            $edata = $this->dbHL[$lastid]->errorInfo();
+            $msg .= $edata[2];
+            $msg .= ' <br>Query Was: ['.$this->dbHL[$lastid]->lastQuery.']';
         }
 
         if ($fatal) {

@@ -228,6 +228,7 @@ class SM_dbGui extends SM_abstractDbEditor {
 
             //create a new tableDefinition object
             $columnDef = new $this->directive['columnClass']();
+            $columnDef->setTableName($this->directive['tableName']);
 
             //pass along some directives
             $columnDef->setDbOverRide($this->directive['dbOverRide']);
