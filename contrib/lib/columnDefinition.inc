@@ -111,7 +111,7 @@ class columnDefinition {
      * Add what's represented by this object
      * to the smart form that gets passed in.
      */
-    function addToSmartForm(&$myForm, $sType, $dbID, $value='') {
+    function addToSmartForm($myForm, $sType, $dbID, $value='') {
                 
         // Check if we need to do anything with this one
         if ($this->getDisplay() == false || $this->getSfType() == '')
@@ -569,7 +569,7 @@ class columnDefinition {
     /**
      * Setter method for $dbhook
      */
-    function setDbHook(&$newHook) {
+    function setDbHook($newHook) {
         if(is_subclass_of($newHook, 'dbGuiBaseHook')) {
             $this->dbHook = $newHook;
         }        

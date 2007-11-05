@@ -54,7 +54,7 @@ class SM_dbEditorAction extends SM_object {
      *  *** Should be overridden by sub-classes
      *
      */
-    function preFormRun(&$myForm) {
+    function preFormRun($myForm) {
     }
 
     /**
@@ -68,7 +68,7 @@ class SM_dbEditorAction extends SM_object {
      *  *** Should be overridden by sub-classes
      *
      */
-    function dataVerified(&$myForm) {
+    function dataVerified($myForm) {
         return 0;
     }
 
@@ -92,7 +92,7 @@ class SM_dbEditorAction extends SM_object {
     /**
      * Sets the 'dbEditor' that has this object
      */
-    function setDbEditor(&$newDbEditor) {
+    function setDbEditor($newDbEditor) {
         $this->dbEditor = $newDbEditor;
     }
 

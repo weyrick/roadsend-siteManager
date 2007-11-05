@@ -36,7 +36,7 @@ class dbGuiBaseHook extends SM_object {
      * myform->commit() and passes in a refrence to the current
      * columnDefinition class. 
      */
-    function addToSmartFormHook(&$columnDefinition, &$ie) {
+    function addToSmartFormHook($columnDefinition, $ie) {
     }
 
     /**
@@ -73,7 +73,7 @@ class dbGuiBaseHook extends SM_object {
      * the end of the method and passes in a refrence to the
      * current columnDefinition class. 
      */
-    function setDataTypeHook(&$columnDefinition, $flags) {
+    function setDataTypeHook($columnDefinition, $flags) {
     }
 }
   

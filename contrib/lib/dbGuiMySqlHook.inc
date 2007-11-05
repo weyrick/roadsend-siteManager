@@ -54,7 +54,7 @@ class dbGuiMySqlHook extends dbGuiBaseHook {
      * Over-ridden from base class. Slightly modifies the 
      * smartform to add sets. 
      */
-    function addToSmartFormHook(&$cDef, &$ie) {
+    function addToSmartFormHook($cDef, $ie) {
 
         if (isset($this->set) && is_array($this->set)) {
             foreach ($this->set as $dI)
@@ -72,7 +72,7 @@ class dbGuiMySqlHook extends dbGuiBaseHook {
      * data types of 'enum' and 'set'. modifies the column object
      * accordinglly
      */
-    function setDataTypeHook(&$cDef, $flags) {
+    function setDataTypeHook($cDef, $flags) {
         if (eregi('enum', $flags) || eregi('set', $flags)) {
             $SQL = "SHOW FIELDS FROM " . $cDef->getTableName();
             $rh = $this->dbHL[$this->directive['dataBaseID']]->query($SQL);

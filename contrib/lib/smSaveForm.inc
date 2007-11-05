@@ -72,7 +72,7 @@ function xmlValue($value, $directiveName = 'unset') {
  * @return (string) the full XML smartForm output
  */
 
-function SM_saveForm(&$myForm) {
+function SM_saveForm($myForm) {
 
     // Create new XML SMART FORM DESCRIPTION    
     $xmlPage .= "<SM_XML>\n";
