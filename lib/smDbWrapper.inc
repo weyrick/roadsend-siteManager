@@ -150,7 +150,8 @@ class SM_dbWrapper
             if ($this->queryTrace)
                 SM_debugLog("DB [{$this->SM_id}]: $query");
             $rh = $this->dbH->query($query);
-            $rh->setFetchMode(PDO::FETCH_ASSOC);
+            if ($rh)
+                $rh->setFetchMode(PDO::FETCH_ASSOC);
             return $rh;
         }
         
@@ -191,7 +192,8 @@ class SM_dbWrapper
             }
         }
 
-        $rh->setFetchMode(PDO::FETCH_ASSOC);
+        if ($rh)
+            $rh->setFetchMode(PDO::FETCH_ASSOC);
         return $rh;
         
     }
