@@ -149,7 +149,9 @@ class SM_dbWrapper
             $this->lastQuery = $query;
             if ($this->queryTrace)
                 SM_debugLog("DB [{$this->SM_id}]: $query");
-            return $this->dbH->query($query);
+            $rh = $this->dbH->query($query);
+            $rh->setFetchMode(PDO::FETCH_ASSOC);
+            return $rh;
         }
         
         $this->queryTimes[$query]['SQL'] = $query;
@@ -162,7 +164,7 @@ class SM_dbWrapper
         // get start byte count
         if (stristr($query,'select')) {
             $Brh = $this->dbH->query('SHOW SESSION STATUS LIKE "Bytes%"');
-            while ($rr = $Brh->fetchRow()) {
+            while ($rr = $Brh->fetch()) {
                 if ($rr['Variable_name'] == 'Bytes_received')
                     $this->queryTimes[$query]['br_start'] = $rr['Value'];
                 if ($rr['Variable_name'] == 'Bytes_sent')
@@ -181,7 +183,7 @@ class SM_dbWrapper
         
         if (stristr($query,'select')) {
             $Brh = $this->dbH->query('SHOW SESSION STATUS LIKE "Bytes%"');
-            while ($rr = $Brh->fetchRow()) {
+            while ($rr = $Brh->fetch()) {
                 if ($rr['Variable_name'] == 'Bytes_received')
                     $this->queryTimes[$query]['br_stop'] = $rr['Value'];
                 if ($rr['Variable_name'] == 'Bytes_sent')
@@ -189,7 +191,9 @@ class SM_dbWrapper
             }
         }
 
+        $rh->setFetchMode(PDO::FETCH_ASSOC);
         return $rh;
+        
     }
 
     

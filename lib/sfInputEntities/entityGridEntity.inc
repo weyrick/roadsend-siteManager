@@ -129,7 +129,7 @@ class eg_row {
       * @param string $colID the column to put this entity into
       * @param SM_formEntity an SM_formEntity object
       */
-    function addEntity($colID, &$entity) {
+    function addEntity($colID, $entity) {
         if ($entity == NULL) {
             SM_fatalErrorPage("entity was null for colID $colID",$this);
         }
@@ -520,7 +520,7 @@ class entityGridEntity extends SM_inputTypeEntity {
      * for layout
      * @param SM_layoutTemplate $templateObj the template the form should use for output
      */
-    function useAltRowTemplate(&$templateObj) {
+    function useAltRowTemplate($templateObj) {
     	$this->addDirective('showColumnHeaders',false);
     	$this->useAltRowTemplate = true;
         $this->altRowTemplate = $templateObj;
@@ -542,7 +542,7 @@ class entityGridEntity extends SM_inputTypeEntity {
      * for layout
      * @param SM_layoutTemplate $templateObj the template the form should use for output
      */
-    function useRowTemplate(&$templateObj) {
+    function useRowTemplate($templateObj) {
     	$this->addDirective('showColumnHeaders',false);
         $this->rowTemplate = $templateObj;
     }
