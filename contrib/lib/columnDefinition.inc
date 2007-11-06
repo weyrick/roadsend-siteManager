@@ -288,6 +288,7 @@ class columnDefinition {
             $size = 0;
         }
         // fake these like mysql_field_flags
+        $flags = array();
         if (substr($type,0,3) == 'set') {
             $flags[] = 'set';
             $type = 'string';

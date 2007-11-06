@@ -222,7 +222,7 @@ class SM_abstractDbEditor extends SM_module {
      *
      * @param $newType - the new object to add to the list.
      */
-    function addType(&$newType) {
+    function addType($newType) {
     
         if(is_subclass_of($newType, 'SM_dbEditorAction')) {
             //check to see if this type already exsists

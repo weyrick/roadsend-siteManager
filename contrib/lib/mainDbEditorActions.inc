@@ -217,11 +217,11 @@ class editEditorAction extends SM_dbEditorAction {
         // ge a list of vars from the form and attempt to set the default values
         $list = $myForm->getVarList();
         foreach($list as $name) {
-            $this->debugLog("setting value for $name to {$rr[$name]}");
             // make sure it's not on the noDbValue list
             if ( (!isset($this->dbEditor->directive['noDbValue'])) || ((is_array($this->dbEditor->directive['noDbValue'])) && 
-                 (!in_array($name, $this->dbEditor->directive['noDbValue']))) )
-                $myForm->setDefaultvalue($name, $rr[$name]);
+                 (!in_array($name, $this->dbEditor->directive['noDbValue']))) ) {
+                    $myForm->setDefaultvalue($name, $rr[$name]);
+                 }
         }
 
     }
