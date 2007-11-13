@@ -50,6 +50,11 @@ class SM_configReader extends SM_Object {
     var $currentFile = '';
 
     /**
+     * XML file encoding
+     */
+    var $encoding = 'ISO-8859-1';
+    
+    /**
     * constructor
     */
      
@@ -397,7 +402,7 @@ class SM_configReader extends SM_Object {
     */
     function parseXML() {
     
-        $xml_parser = xml_parser_create();
+        $xml_parser = xml_parser_create($this->encoding);
         xml_parser_set_option($xml_parser, XML_OPTION_CASE_FOLDING, 1);
 
         xml_set_object($xml_parser, $this);
