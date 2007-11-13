@@ -55,7 +55,7 @@ class SM_smTag_AREA extends SM_smTag {
             if ($this->itemList[$key] instanceof SM_layoutTemplate) {
 
                 // reset it
-                $this->itemList[$key]->_resetTemplate();
+                $this->itemList[$key]->resetTemplate();
 
             }
             elseif ($this->itemList[$key] instanceof SM_module) {
