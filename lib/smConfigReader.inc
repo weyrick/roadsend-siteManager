@@ -417,6 +417,9 @@ class SM_configReader extends SM_Object {
         
         if (!xml_parse($xml_parser, $this->contentBuffer, true)) {
             ($this->currentFile != '') ? $inFile = "in file $this->currentFile" : $inFile = '';
+            if ($GLOBALS['SM_develState']) {
+                echo "XML dump: \n".$this->contentBuffer;
+            }
             $this->fatalErrorPage(sprintf(get_class($this).": XML error: %s at line %d $inFile",
                         xml_error_string(xml_get_error_code($xml_parser)),
                         xml_get_current_line_number($xml_parser)));
