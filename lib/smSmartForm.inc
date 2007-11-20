@@ -345,7 +345,7 @@ class SM_smartForm extends SM_object {
      * for layout
      * @param SM_layoutTemplate $templateObj the template the form should use for output
      */
-    function useTemplate(&$templateObj) {
+    function useTemplate($templateObj) {
         $this->template = $templateObj;
         $this->template->addDirective('SF', array('parentForm' => &$this));
     }
