@@ -615,6 +615,11 @@ class SM_siteManagerRoot extends SM_object {
 
         // error mode
         $this->dbHL[$id]->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        
+        // backwards compatibility -- buffered by default
+        if ($this->dbHL[$id]->getAttribute(PDO::ATTR_DRIVER_NAME) == 'mysql') {
+            $this->dbHL[$id]->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY,true);
+        }
 
         // debug log it
         $this->debugLog("created database connection with id [$id]");
