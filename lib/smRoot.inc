@@ -637,7 +637,7 @@ class SM_siteManagerRoot extends SM_object {
     function dbConnect() {
         
         if (!class_exists('PDO')) {
-            $this->fatalErrorPage("Unable to locate PEAR DB routines in path: ".ini_get('include_path'));
+            $this->fatalErrorPage("PDO DB routines are not available! You will need to recompile PHP or load the extension first.");
         }
 
         // check for multiple database connections
