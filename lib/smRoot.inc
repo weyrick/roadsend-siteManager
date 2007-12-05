@@ -557,6 +557,24 @@ class SM_siteManagerRoot extends SM_object {
     }
 
     /**
+     * return an array of useful information about a database connection
+     * @return array db info
+     */
+    function getDatabaseConnectionInfo($dbHandle) {
+        $dbSettings = $this->siteConfig->getSection('db',$dbHandle);
+        if (empty($dbSettings)) {
+            return NULL;
+        }
+        if (preg_match('/dbname=(\w+)/', $dbSettings['DSN'], $m)) {
+            $dbSettings['dbName'] = $m[1];
+        }
+        if (preg_match('/host=([-a-zA-Z0-9.]+)/', $dbSettings['DSN'], $m)) {
+            $dbSettings['hostName'] = $m[1];
+        }
+        return $dbSettings;
+    }
+    
+    /**
      * wrapper function for defineDBconnection, for backward compatibility.
      * FIXME: note, this function is deprecated, and will be removed before 2.4.x release!
      */
