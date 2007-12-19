@@ -180,10 +180,10 @@ class SM_smTag_VAR extends SM_smTag {
         $prefix = '';
         $postfix = '';
         if (!empty($this->attributes['PREFIX']) && !empty($op)) {
-            $prefix = $this->attributes['PREFIX'];
+            $prefix = html_entity_decode($this->attributes['PREFIX']);
         }
         if (!empty($this->attributes['POSTFIX']) && !empty($op)) {
-            $postfix = $this->attributes['POSTFIX'];
+            $postfix = html_entity_decode($this->attributes['POSTFIX']);
         }
 
         if (empty($op) && !empty($default))
