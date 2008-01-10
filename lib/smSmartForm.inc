@@ -712,15 +712,21 @@ class SM_smartForm extends SM_object {
       * @param mixed $default the new value to display
       * @return bool true on success, false on error      
       */
-    function setDefaultValue($varName, $default) {
+    function setDefaultValue($varName, $default, $forceNotFTL=false) {
    
         if (!isset($this->entityList[$varName])) {
             $this->debugLog("setDefaultValue: variable not found for argument set: $varName");
             return false;
         }
-        
-        $this->entityList[$varName]->inputEntity->setDefaultvalue($default);
-        return true;
+
+        // we only set defaults on FTL, unless force is on
+        if ($this->ftl || $forceNotFTL) {
+            $this->entityList[$varName]->inputEntity->setDefaultvalue($default);
+            return true;
+        }
+        else {
+            return false;
+        }
     
     }
 
