@@ -693,9 +693,9 @@ class SM_session extends SM_object {
         // Loop thru all the values passsed to us
         if (isset($varList) && is_array($varList)) {
             foreach($varList as $key => $val) {
-            if (!in_array($key, $addList)) {
+                // if we're adding it here, don't add it from session vars
+                $exList[] = $key;
                 $add .= "$key=" . urlencode($val) . '&';
-            }
             }
             $add = substr($add,0,-1);
         }
@@ -706,20 +706,20 @@ class SM_session extends SM_object {
             $add .= '&';
             }
             if (sizeof($_GET)) {
-            foreach ($_GET as $key => $val) {
-                if ( (!in_array($key, $addList)) && (!in_array($key, $exList)) ) {
-                $add .= "$key=".urlencode($val).'&';
-                $addList[] = $key;
+                foreach ($_GET as $key => $val) {
+                    if ( (!in_array($key, $addList)) && (!in_array($key, $exList)) ) {
+                    $add .= "$key=".urlencode($val).'&';
+                    $addList[] = $key;
+                    }
                 }
-            }
             }
             elseif (sizeof($_POST)) {
-            foreach ($_POST as $key => $val) {
-                if ( (!in_array($key, $addList)) && (!in_array($key, $exList)) ) {
-                $add .= "$key=".urlencode($val).'&';
-                $addList[] = $key;
+                foreach ($_POST as $key => $val) {
+                    if ( (!in_array($key, $addList)) && (!in_array($key, $exList)) ) {
+                    $add .= "$key=".urlencode($val).'&';
+                    $addList[] = $key;
+                    }
                 }
-            }
             }
             $add = substr($add,0,-1);
         }
