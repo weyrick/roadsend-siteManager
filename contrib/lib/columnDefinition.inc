@@ -462,15 +462,35 @@ class columnDefinition {
         // if it's a link to another table, change it's type to dbSelect
         // we tell this by looking for "_idxNum" on the end of a field name
         if (preg_match("/(\w+)_idxNum\$/",$this->getname(),$m)) {
-            $this->setSfType('dbSelect');
-            $this->setTableName($m[1]);
-            $this->setDataField('idxNum');
-    
-            // handle dbOverride on table lookup
-            $overRide = $this->getDbOverRide();
-            if (!empty($overRide)) {
-                $this->setTableName("$overRide.{$m[1]}");
+            global $SM_siteManager;
+
+            if (isset($SM_siteManager->dbHL[$dbID])) {
+                $dbH = $SM_siteManager->dbHL[$dbID];
+            } elseif (isset($SM_siteManager->dbH)) {
+                $dbH = $SM_siteManager->dbH;
             }
+            else {
+                $dbH = NULL;
+                SM_debugLog("no valid database connection to lookup viewfield for $this->name, will change to text",$this);
+            }
+            // only do this if there are less than 100 rows
+            $SQL = "SELECT COUNT(*) AS cnt FROM $m[1]";
+            $rh = $dbH->query($SQL);
+            if ($rh) {
+                $rr = $rh->fetch();
+                if ($rr['cnt'] < 100) {
+                    $this->setSfType('dbSelect');
+                    $this->setTableName($m[1]);
+                    $this->setDataField('idxNum');
+            
+                    // handle dbOverride on table lookup
+                    $overRide = $this->getDbOverRide();
+                    if (!empty($overRide)) {
+                        $this->setTableName("$overRide.{$m[1]}");
+                    }
+                }
+            }
+            
             return;
         }
     
