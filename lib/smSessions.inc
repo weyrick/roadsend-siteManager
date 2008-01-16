@@ -693,7 +693,7 @@ class SM_session extends SM_object {
         // Loop thru all the values passsed to us
         if (isset($varList) && is_array($varList)) {
             foreach($varList as $key => $val) {
-            if ( (!in_array($key, $addList)) && (!in_array($key, $exList)) ) {
+            if (!in_array($key, $addList)) {
                 $add .= "$key=" . urlencode($val) . '&';
             }
             }
