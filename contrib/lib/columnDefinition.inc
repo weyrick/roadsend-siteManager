@@ -478,7 +478,7 @@ class columnDefinition {
             $rh = $dbH->query($SQL);
             if ($rh) {
                 $rr = $rh->fetch();
-                if ($rr['cnt'] < 100) {
+                if ($rr['cnt'] < 1000) {
                     $this->setSfType('dbSelect');
                     $this->setTableName($m[1]);
                     $this->setDataField('idxNum');
