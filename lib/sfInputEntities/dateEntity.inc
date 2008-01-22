@@ -156,6 +156,14 @@ class dateEntity extends SM_inputTypeEntity {
             $this->fixMessage = "Year is invalid";
         }
 
+        if (!empty($this->mSel) &&
+            !empty($this->dSel) &&
+            !empty($this->ySel) &&
+            !checkdate($this->mSel, $this->dSel, $this->ySel)) {
+            $this->isValid = false;
+            $this->fixMessage = "The date is invalid";
+        }
+
     }
 
 
