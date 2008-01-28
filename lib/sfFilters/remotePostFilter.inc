@@ -47,7 +47,7 @@ class remotePostFilter extends SM_entityFilter {
             curl_setopt($ch, CURLOPT_URL, $this->directive['postURL']);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch,CURLOPT_POSTFIELDS, $this->directive['postField'],"=$this->data");
+            curl_setopt($ch,CURLOPT_POSTFIELDS, $this->directive['postField']."=".$this->data);
             
             // grab URL and pass it to the browser
             $rVal = curl_exec($ch);
