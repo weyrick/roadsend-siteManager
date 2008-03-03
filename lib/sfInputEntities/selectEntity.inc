@@ -86,6 +86,8 @@ class selectEntity extends SM_inputTypeEntity {
         $this->directive['noOptionDisplay']     = "-----";
         $this->directive['optionList']          = NULL;
 
+        $this->directive['enableOnSubmit']      = false;
+        
         $this->directive['allowCommaValues']    = true;
         $this->directive['cutoff']              = 0;
         $this->directive['cutoffPad']           = '...';
@@ -208,8 +210,12 @@ class selectEntity extends SM_inputTypeEntity {
             }
         }        
 
+        if ($this->directive['enableOnSubmit']) {
+            $onSubmit = "onchange='this.form.submit()'";
+        }
+        
         $attr = $this->getCommonAttr();
-        $this->say("<select name=\"{$this->varName}{$braces}\" $attr $mult size=\"{$this->directive['size']}\">\n");
+        $this->say("<select name=\"{$this->varName}{$braces}\" $attr $mult $onSubmit size=\"{$this->directive['size']}\">\n");
 
         if ($this->directive['addNoOption']){
 
