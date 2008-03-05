@@ -1676,6 +1676,22 @@ class SM_smartForm extends SM_object {
 
     }
 
+    /**
+     * determine if the given button element was pressed.
+     * @param $varName the name of the button element that has already been added to the form
+     * @return bool 
+     */
+    function buttonPressed($varName) {
+        
+        // sanity
+        if (!isset($this->entityList[$varName])) {
+            $this->debugLog("buttonPressed: variable not found: $varName");
+            return false;
+        }
+
+        return ($this->getVar($varName) == $this->entityList[$varName]->inputEntity->directive['value']);
+        
+    }
 
 }
 
