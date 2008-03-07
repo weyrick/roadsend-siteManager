@@ -710,6 +710,7 @@ class SM_smartForm extends SM_object {
       * change a set default value for an input entity    
       * @param string $varName the variable to set
       * @param mixed $default the new value to display
+      * @param bool $forceNotFTL when true, it will set default value even if we're not FTL
       * @return bool true on success, false on error      
       */
     function setDefaultValue($varName, $default, $forceNotFTL=false) {
@@ -728,6 +729,19 @@ class SM_smartForm extends SM_object {
             return false;
         }
     
+    }
+
+    /**
+     * set default values for all matching entities in varHash
+     * @param array $varHash key/value pairs of entityName/default values
+     * @param bool $forceNotFTL when true, it will set default value even if we're not FTL
+     */
+    function setDefaults($varHash, $forceNotFTL=false) {
+        foreach ($varHash as $k => $v) {
+            if (isset($this->entityList[$varName])) {
+                $this->setDefaultValue($k, $v, $forceNotFTL);
+            }
+        }
     }
 
     /**
