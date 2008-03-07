@@ -738,7 +738,7 @@ class SM_smartForm extends SM_object {
      */
     function setDefaults($varHash, $forceNotFTL=false) {
         foreach ($varHash as $k => $v) {
-            if (isset($this->entityList[$varName])) {
+            if (isset($this->entityList[$k])) {
                 $this->setDefaultValue($k, $v, $forceNotFTL);
             }
         }
