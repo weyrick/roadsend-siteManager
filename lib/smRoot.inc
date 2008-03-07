@@ -421,18 +421,18 @@ class SM_siteManagerRoot extends SM_object {
                 foreach ($path as $p) {
                     $check1 = $p.'/'.$fName;
                     $check2 = $p.'/'.$fName.'.'.$extension;
-                    if (lib_include_exists($check1)) {
+                    if (re_lib_include_exists($check1)) {
                         $realPath = $check1;
                         break;
                     }
-                    elseif (lib_include_exists($check2)) {
+                    elseif (re_lib_include_exists($check2)) {
                         $realPath = $check2;
                         break;
                     }
                 }
             }
             else {
-                if (lib_include_exists($path.'/'.$fName)) {
+                if (re_lib_include_exists($path.'/'.$fName)) {
                     $realPath = $path.'/'.$fName;
                 }
             }

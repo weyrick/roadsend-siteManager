@@ -23,7 +23,7 @@ $intro .= 'If all tests do not pass, check your PHP version (Zend PHP 5+ or Road
            <a href="http://code.roadsend.com" target="_new">Roadsend Community Site</a>.';
 
 if (defined('ROADSEND_PCC')) {
-    $stats = pcc_memo_stats();
+    $stats = re_memo_stats();
     $intro .= "<br><br>Roadsend AST Cache Stats:<br>Hits: {$stats['hits']}<br>Misses: {$stats['misses']}<br>Resets: {$stats['resets']}<br>";
 }
 
