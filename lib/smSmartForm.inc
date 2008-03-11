@@ -232,6 +232,9 @@ class SM_smartForm extends SM_object {
         $this->directive['useJS']               = true;         // when true, we'll output javascript code. if it's turned off
                                                                 // we won't. note that some input entities and filters
                                                                 // won't work without it.
+
+
+        $this->directive['onSubEvent']      = '';           // Set a specific event for the form as a whole
                                                                 
         // script to POST to. normally $PHP_SELF. if you change this, all validation functionality goes
         // out the window.
@@ -1249,7 +1252,7 @@ class SM_smartForm extends SM_object {
         if (($this->directive['useJS'] == true)&&($this->jsOutput != ''))
             $onSub =  "onSubmit=\"return check_{$this->formID}_data();\"";
         else
-            $onSub = '';
+            $onSub = $this->directive['onSubEvent'];
         
         // specify enctype if required
         if (!empty($this->directive['enctype']))
