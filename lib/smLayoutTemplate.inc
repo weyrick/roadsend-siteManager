@@ -620,7 +620,7 @@ class SM_layoutTemplate extends SM_object {
       * @param string $areaName the arbitrary area name this module should appear in
       *
       */
-    function addModule(&$module, $areaName) {
+    function addModule($module, $areaName) {
             
         // error checking
         if (!is_object($module))
@@ -644,7 +644,7 @@ class SM_layoutTemplate extends SM_object {
       * @param SM_layoutTemplate $template a template object
       * @param string $areaName the arbitrary area name this template (and it's contents) should appear in
       */
-    function addTemplate(&$template, $areaName) {
+    function addTemplate($template, $areaName) {
     
         // error checking
         if (!is_object($template))
