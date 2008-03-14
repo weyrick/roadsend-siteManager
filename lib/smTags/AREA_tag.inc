@@ -36,9 +36,9 @@ class SM_smTag_AREA extends SM_smTag {
 
     /**
      * a method for adding an item to this area's object list
-     * @param mixed &$data data to added to the area, such as module, template, or string
+     * @param mixed $data data to added to the area, such as module, template, or string
      */
-    function addItem(&$data) {
+    function addItem($data) {
         $this->itemList[] = $data;
     }
 
