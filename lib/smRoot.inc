@@ -481,6 +481,7 @@ class SM_siteManagerRoot extends SM_object {
                     $check1 = $p.'/'.$fName;
                     if (file_exists($check1) && !is_dir($check1)) {
                         //If we found something, we're done.
+                        $this->debugLog("found: $check1");
                          return $check1;
                     }
                 }
@@ -493,7 +494,9 @@ class SM_siteManagerRoot extends SM_object {
             } else if(file_exists($path.'/'.$fName)) {
 
                     // Only one place to check. If it's there, we're done.
-                    return $path.'/'.$fName;
+                    $p = $path.'/'.$fName;
+                    $this->debugLog("found: $p");
+                    return $p;
 
             } else if($fatalFNF) {
 
@@ -509,6 +512,7 @@ class SM_siteManagerRoot extends SM_object {
             if (file_exists($fName)) {
 
                 // found file
+                $this->debugLog("found: $fName");
                 return $fName;
 
             } else if ($fatalFNF) {
