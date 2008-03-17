@@ -123,7 +123,7 @@ class SM_formEntity extends SM_object {
       * @param string $iA input entity alignment
       * @param bool $uJS use javascript or not for this form entity
       */
-    function SM_formEntity($vn, $tt, $ty, $req, &$parentSmartForm, $lay=0, $val='', $tA="LEFT", $iA="LEFT", $uJS=true) {
+    function SM_formEntity($vn, $tt, $ty, $req, $parentSmartForm, $lay=0, $val='', $tA="LEFT", $iA="LEFT", $uJS=true) {
 
         // setup handlers
         $this->_smoConfigure();

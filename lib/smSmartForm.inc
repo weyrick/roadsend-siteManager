@@ -330,7 +330,7 @@ class SM_smartForm extends SM_object {
 
         // attempt to load the template file
         $this->template = $SM_siteManager->loadTemplate($templateFile);
-        $this->template->addDirective('SF', array('parentForm' => &$this));
+        $this->template->addDirective('SF', array('parentForm' => $this));
         return $this->template;
 
     }
@@ -350,7 +350,7 @@ class SM_smartForm extends SM_object {
      */
     function useTemplate($templateObj) {
         $this->template = $templateObj;
-        $this->template->addDirective('SF', array('parentForm' => &$this));
+        $this->template->addDirective('SF', array('parentForm' => $this));
     }
 
      /**
@@ -803,7 +803,7 @@ class SM_smartForm extends SM_object {
       * @param SM_inputEntity $ent a reference to the entity to commit to the form
       * @return bool true on success, false on error
       */
-    function commit($varName, &$ent) {
+    function commit($varName, $ent) {
         
         if (!isset($this->entityList[$varName])) {
             $this->debugLog("commit: variable not found for entity commit: $varName");
@@ -1216,7 +1216,7 @@ class SM_smartForm extends SM_object {
      
         // create a new template, set it's template data to the template we just made
         $this->template = new SM_layoutTemplate();
-        $this->template->addDirective('SF', array('parentForm' => &$this));
+        $this->template->addDirective('SF', array('parentForm' => $this));
         $this->template->setTemplateData($template);
 
      }

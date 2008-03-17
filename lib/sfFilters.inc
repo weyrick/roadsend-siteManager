@@ -68,7 +68,7 @@ class SM_entityFilter extends SM_object {
      * use filterConfig() for class initialization.     
      * @param SM_Object $pE  parent input entity of this filter
      */
-    function SM_entityFilter(&$pE) {
+    function SM_entityFilter($pE) {
             
         // setup handlers
         $this->_smoConfigure();

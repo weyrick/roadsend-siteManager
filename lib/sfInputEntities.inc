@@ -93,7 +93,7 @@ class SM_inputTypeEntity extends SM_object {
       * use entityConfig() for class initialization
       * @param SM_inputTypeIntity $fE parent form entity reference
       */
-    function SM_inputTypeEntity(&$fE) {
+    function SM_inputTypeEntity($fE) {
     
         // setup handlers
         $this->_smoConfigure();

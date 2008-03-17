@@ -84,7 +84,7 @@ class SM_configReader extends SM_Object {
     * set the user of the reader
     */
      
-    function setUser(&$user) {
+    function setUser($user) {
         $this->userObject = $user;
     }
 
@@ -437,7 +437,7 @@ class SM_configReader extends SM_Object {
  * @param SM_configReader $user the user of the reader
  * @return SM_configReader reference to newly created reader
  */
-function SM_loadConfigReader($rName, &$user, $rFile='') {
+function SM_loadConfigReader($rName, $user, $rFile='') {
     
     // globalize
     global $SM_siteManager;

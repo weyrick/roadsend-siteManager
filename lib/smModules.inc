@@ -129,7 +129,7 @@ class SM_module extends SM_object {
         // run postconfig methods
         if ((isset($this->postConfigList))&&(is_array($this->postConfigList))) {
             foreach ($this->postConfigList as $method) {
-                call_user_func(array(&$this,$method));
+                call_user_func(array($this,$method));
             }
         }
 
@@ -236,7 +236,7 @@ class SM_module extends SM_object {
         // run prethink methods
         if ((isset($this->preThinkList))&&(is_array($this->preThinkList))) {
             foreach ($this->preThinkList as $method) {
-                call_user_func(array(&$this,$method));
+                call_user_func(array($this,$method));
             }
         }
 
@@ -246,7 +246,7 @@ class SM_module extends SM_object {
         // run postthink methods
         if ((isset($this->postThinkList))&&(is_array($this->postThinkList))) {
             foreach ($this->postThinkList as $method) {
-                call_user_func(array(&$this,$method));
+                call_user_func(array($this,$method));
             }
         }
 
@@ -445,7 +445,7 @@ class SM_module extends SM_object {
      * @param string $rID resource ID
      * @param SM_Module &$data the variable to use as a resource
      */
-    function addResource($rID, &$data) {
+    function addResource($rID, $data) {
         
         // sanity
         if (isset($this->resourceList[$rID]))

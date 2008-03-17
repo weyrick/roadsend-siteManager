@@ -43,7 +43,7 @@ class SM_sessionContainer extends SM_object {
     * session container startup
     */
      
-    function SM_sessionContainer(&$sessionH, $cType) {
+    function SM_sessionContainer($sessionH, $cType) {
 
         // SM_object config
         $this->_smoConfigure();

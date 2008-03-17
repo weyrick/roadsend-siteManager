@@ -42,7 +42,7 @@ class SM_inVarClient extends SM_object {
      * create a new inVar client
      * @param SM_inVarClient:mixed $parent parent who is creating this resource
      */
-    function SM_inVarClient(&$parent) {
+    function SM_inVarClient($parent) {
         $this->_smoConfigure();
         $this->directive['dieOnBadInVarType'] = true;
         $this->parent = $parent;

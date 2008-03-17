@@ -85,7 +85,7 @@ class SM_smTag extends SM_object {
     /**
      * set parent template
      */
-    function setParent(&$template) {
+    function setParent($template) {
 
         $this->parentTemplate = $template;
 
