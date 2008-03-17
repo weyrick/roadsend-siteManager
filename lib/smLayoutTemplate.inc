@@ -705,6 +705,9 @@ class SM_layoutTemplate extends SM_object {
      * reset on clone
      */
     function __clone() {
+        foreach (array_keys($this->smTagList) as $areaName) {
+            $this->smTagList[$areaName] = clone $this->smTagList[$areaName];
+        }
         $this->resetTemplate();
     }
 
