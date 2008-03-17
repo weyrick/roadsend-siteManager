@@ -48,29 +48,6 @@ class SM_smTag_AREA extends SM_smTag {
       
     function tagReset () {
         
-        // run through all objects in this area
-        foreach ($this->itemList as $key => $areaData) {
-
-            // is this actually a module or a subtemplate/codeplate?
-            if ($this->itemList[$key] instanceof SM_layoutTemplate) {
-
-                // reset it
-                $this->itemList[$key]->resetTemplate();
-
-            }
-            elseif ($this->itemList[$key] instanceof SM_module) {
-
-                // module
-                $this->itemList[$key]->_resetModule();
-
-            }
-
-            $this->itemList[$key] = NULL;
-            unset($this->itemList[$key]);
-            
-        }
-        
-        // final unset
         unset($this->itemList);
         $this->itemList=array();
 
