@@ -565,7 +565,7 @@ class SM_session extends SM_object {
             $a = $anchor;
         }
         
-        $output = "$link$connect".$sVars.$a;
+        $output = $link.$connect.$sVars.$a;
         return($output);
         
         
