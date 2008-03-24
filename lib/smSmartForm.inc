@@ -246,6 +246,10 @@ class SM_smartForm extends SM_object {
         // submit button image
         $this->directive['submitImage']         = '';
 
+        // a flag used by SF tag to say that the end form tag has been written
+        // so that we don't duplicate it
+        $this->directive['formIsEnded']         = false;
+        
         // header is blank by default
         $this->header                           = '';
         
@@ -1317,8 +1321,9 @@ class SM_smartForm extends SM_object {
         // run template, which runs all entityThinks
         $this->sfOutput .= $templateOutput;
         
-        // end form     
-        $this->sfOutput .= "\n</form>\n";
+        // end form
+        if (!$this->directive['formIsEnded'])     
+            $this->sfOutput .= "\n</form>\n";
         
         // return final output
         return $this->sfOutput;

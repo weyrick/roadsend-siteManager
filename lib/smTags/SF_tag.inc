@@ -42,6 +42,10 @@ class SM_smTag_SF extends SM_smTag {
         }
 
         switch ($this->attributes['DATA']) {
+        case 'ENDFORM':
+            $myForm->addDirective('formIsEnded',true);
+            $this->say('</form>');
+            break;
         case 'HEADER':
             $this->say($myForm->header);
             break;
