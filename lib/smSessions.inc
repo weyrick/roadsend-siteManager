@@ -71,6 +71,11 @@ class SM_session extends SM_object {
      * @var string
      */
     var $PHP_SELF;
+
+    /**
+     * this is the current page name, without path
+     */
+    var $currentPage;
     
     /**
      * a variable set to thwart caching mechanisms out to destroy the idea of a dynamic page
@@ -105,6 +110,7 @@ class SM_session extends SM_object {
         
     // setup PHP_SELF
     $this->PHP_SELF = (isset($_SERVER['REDIRECT_URL'])) ? $_SERVER['REDIRECT_URL'] : $_SERVER['PHP_SELF'];
+    $this->currentPage = basename($this->PHP_SELF);
         
     // retrieve session configuration
     $this->directive            = $this->siteConfig->getSection('sessions');
