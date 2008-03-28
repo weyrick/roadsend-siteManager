@@ -24,6 +24,7 @@ define('SM_TAG_IDENTIFIER','SM'); // if you want something other than <SM> tags,
 define('SM_TAG_PREGEXP','/<\s*'.SM_TAG_IDENTIFIER.'\s(.+)\s*\/*>/Ui');
 define('SM_TAG_EXTD_PREGEXP','/<\s*'.SM_TAG_IDENTIFIER.'\s(.+)\s*>(.*?)<\/'.SM_TAG_IDENTIFIER.'\s*>/Ui');
 define('SM_TAG_ATTR_PREGEXP','/(\w+)\s*=\s*[\"\'](.+)[\"\']/SUi');
+define('SM_TAG_EMBEDDEDTPT','/%%%(\w+)%%%(.+)%%%\\1%%%/si');
 define('SM_AREAID_KEY','_SMarea-');
 define('SM_TAG_CLASS','SM_smTag_');
 
@@ -47,10 +48,16 @@ class SM_layoutTemplate extends SM_object {
     /** (string) the actual HTML template file name, with encoded AREA information */
     var $htmlTemplateFile = NULL;
     
-    /** (string) the block of text that will be parsed. this could come from a file (htmlTemplateFile) or
+    /** (array) template broken on newlines. this could come from a file (htmlTemplateFile) or
                  set through the setTemplateData() method */
     var $htmlTemplate = '';
 
+    /** (string) the raw block of text our template uses */
+    var $htmlRawTemplate = '';
+
+    /** (array) subtemplates extracted from this template */
+    var $subTemplateList = array();
+    
     /** (string) the html output before tags are run, but after parsing is done. one big string. */
     var $htmlParsedOutput = '';
 
@@ -201,14 +208,61 @@ class SM_layoutTemplate extends SM_object {
      * @param $templateData (string) the text to parse     
      * @param $parse (bool) when true, the text will be parsed after it's set. otherwise you must
      *                      call parseTemplate() yourself
+     * @param $doSubTemplates (bool) when true, extra sub templates from templateData
      */
-    function setTemplateData($templateData, $parse=true) {
-        $this->htmlTemplate = split("\n",$templateData);
-        if ($parse)
+    function setTemplateData($templateData, $parse=true, $doSubTemplates=true) {
+        $this->htmlRawTemplate = $templateData;
+        if ($doSubTemplates)
+            $this->extractSubTemplates();
+        $this->htmlTemplate = split("\n",$this->htmlRawTemplate);
+        if ($parse) {
             return $this->parseTemplate();
+        }
     }
 
 
+    /**
+     * extract any sub templates within this template. these are named as part of the 
+     * sub template specificatino: %%%SUBTEMPLATENAME%%%
+     * we store a hash, keyed by the sub template name, of SM_layoutTemplate objects which
+     * are created as needed
+     *
+     * after creating the sub template, the main template will have the sub template code extracted,
+     * and in it's place a new SM AREA tag is inserted, with the same name as the sub template
+     * 
+     */
+    function extractSubTemplates() {
+
+        if (preg_match_all(SM_TAG_EMBEDDEDTPT, $this->htmlRawTemplate, $m)) {
+                
+            for ($i=0; $i < sizeof($m[0]); $i++) {
+                
+                // create sub template
+                $subTpt = new SM_layoutTemplate();
+                $subTpt->setTemplateData($m[2][$i]);
+                $this->subTemplateList[$m[1][$i]] = $subTpt;
+                
+                // replace with area tag
+                $this->htmlRawTemplate = str_replace($m[0][$i],'<sm type="area" name="'.$m[1][$i].'">', $this->htmlRawTemplate);
+                
+            }
+            
+        }
+        
+    }
+
+    /**
+     * fetch a sub template, if it exists.
+     * @param $name (string) the sub template name, as specified in the sub template tag
+     * @return (mixed) the SM_layoutTemplate object of the sub template, or NULL if not found
+     */
+    function getSubTemplate($name) {
+        if (isset($this->subTemplateList[$name]))
+            return $this->subTemplateList[$name];
+        else
+            return NULL;
+    }
+    
     /**
      * initial parse template routine. if siteManager php extension is available, it will be
      * used for parsing and output. otherwise, use the builtin PHP code
@@ -258,8 +312,12 @@ class SM_layoutTemplate extends SM_object {
                 die();
             }
 
-            // load the template in     
-            $this->htmlTemplate = file($this->htmlTemplateFile);
+            // load the template in
+            $this->htmlRawTemplate = file_get_contents($this->htmlTemplateFile);
+            // extra sub templates, if any
+            $this->extractSubTemplates();
+            // setup for parsing
+            $this->htmlTemplate = explode("\n", $this->htmlRawTemplate);
 
         }
 
@@ -707,6 +765,9 @@ class SM_layoutTemplate extends SM_object {
     function __clone() {
         foreach (array_keys($this->smTagList) as $areaName) {
             $this->smTagList[$areaName] = clone $this->smTagList[$areaName];
+        }
+        foreach ($this->subTemplateList as $stName => $tptH) {
+            $this->subTemplateList[$stName] = clone $this->subTemplateList[$stName];
         }
         $this->resetTemplate();
     }
