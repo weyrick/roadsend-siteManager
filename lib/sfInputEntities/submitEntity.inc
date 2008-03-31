@@ -51,6 +51,7 @@ class submitEntity extends SM_inputTypeEntity {
         // SUBMIT or IMG
         $this->directive['image'] = false;
         $this->directive['button'] = false;
+        $this->directive['class'] = NULL;
         $this->directive['value'] = NULL;
         $this->directive['extra'] = NULL;
         $this->directive['src'] = NULL;
@@ -69,8 +70,14 @@ class submitEntity extends SM_inputTypeEntity {
         else
             $sType = 'submit';
 
+        if ($this->directive['class'])
+            $class = '<span class="'.$this->directive['class'].'">';
+
+        if ($this->directive['class'])
+            $eclass = '</span>';
+
         $attr = $this->getCommonAttr();
-        $this->say("<input $attr border=\"0\" type=\"".$sType.'" name="'.$this->varName.'"');
+        $this->say($class."<input $attr border=\"0\" type=\"".$sType.'" name="'.$this->varName.'"');
 
         if (isset($this->directive['value']))
             $this->say(" value=\"{$this->directive['value']}\" ");
@@ -81,7 +88,7 @@ class submitEntity extends SM_inputTypeEntity {
         if (isset($this->directive['src']))
             $this->say(" src=\"{$this->directive['src']}\" ");
 
-        $this->say(' />');
+        $this->say(' />'.$eclass);
 
     }
 

@@ -646,6 +646,8 @@ class jsDatePickerEntity extends SM_inputTypeEntity {
         $this->addDirective('format', 'ymd');
         $this->addDirective('separator', '-');
         $this->addDirective('size', '12');
+        $this->directive['class'] = NULL;
+        
         
     }
 
@@ -657,7 +659,15 @@ class jsDatePickerEntity extends SM_inputTypeEntity {
             $this->sayJS($SM_DP_JSOUT);
             $SM_DP_JSOUT_B = true;
         }
-        $this->say("<input name=\"{$this->varName}\" value=\"{$this->value}\" size=\"{$this->directive['size']}\"><input type=button value=\"select\" onclick=\"displayDatePicker('{$this->varName}',this,'{$this->directive['format']}','{$this->directive['separator']}');\">");
+
+
+        if ($this->directive['class'])
+            $class = '<span class="'.$this->directive['class'].'">';
+
+        if ($this->directive['class'])
+            $eclass = '</span>';
+
+        $this->say("<input name=\"{$this->varName}\" value=\"{$this->value}\" size=\"{$this->directive['size']}\">$class<input type=button value=\"select\" onclick=\"displayDatePicker('{$this->varName}',this,'{$this->directive['format']}','{$this->directive['separator']}');\">$eclass");
         
     }
     
