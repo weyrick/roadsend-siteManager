@@ -139,8 +139,8 @@ class SM_smTag_VAR extends SM_smTag {
                 $op = SM_fromMysqlDate($op);
                if (!empty($formatOption)) {
                     $format = $formatOption;
-                    $op = date($format,strtotime(SM_fromMysqlDate($op)));
-                }                
+                    $op = date($format,strtotime($op));
+                } 
                 break;
             case 'm/d/y':
                 $format = 'm/d/y';
