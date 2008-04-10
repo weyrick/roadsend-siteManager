@@ -214,7 +214,7 @@ class SM_layoutTemplate extends SM_object {
         $this->htmlRawTemplate = $templateData;
         if ($doSubTemplates)
             $this->extractSubTemplates();
-        $this->htmlTemplate = split("\n",$this->htmlRawTemplate);
+        $this->htmlTemplate = explode("\n",$this->htmlRawTemplate);
         if ($parse) {
             return $this->parseTemplate();
         }
@@ -334,6 +334,9 @@ class SM_layoutTemplate extends SM_object {
         
         // for each line in the file...
         foreach ($this->htmlTemplate as $line) {
+
+            // add our newline in (was removed during load)
+            $line .= "\n";
             
             // use this to determine what kind of tag we're dealing with
             $tagType = '';
