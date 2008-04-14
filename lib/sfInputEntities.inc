@@ -107,6 +107,10 @@ class SM_inputTypeEntity extends SM_object {
 
     }
 
+    function isLegacyLayout() {
+        return !($this->parentFormEntity->parentSmartForm->directive['legacyLayout'] === false);
+    }
+    
     /**
      * a method for retrieving common attributes for input entities     
      * @return string attribute list suitable for adding to an input entities tag
@@ -114,9 +118,6 @@ class SM_inputTypeEntity extends SM_object {
     function getCommonAttr() {
 
         $attrs = '';
-
-        if ($this->directive['entityAttributeClassTag'] != '')
-            $attrs .= ' class="'.$this->directive['entityAttributeClassTag'].'" ';
 
         if ($this->directive['javaScript'] != '') {
             $attrs .= ' '.$this->directive['javaScript'].' ';
@@ -126,6 +127,14 @@ class SM_inputTypeEntity extends SM_object {
             $attrs .= ' '.$this->directive['extraAttributes'].' ';
         }
 
+        if (!$this->isLegacyLayout()) {
+            // new css forms: add id to input entities
+            $attrs .= ' id="'.$this->varName.'" ';
+        }
+        elseif ($this->directive['entityAttributeClassTag'] != '') {
+            $attrs .= ' class="'.$this->directive['entityAttributeClassTag'].'" ';
+        }
+        
         return $attrs;
 
     }

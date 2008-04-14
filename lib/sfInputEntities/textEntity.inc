@@ -91,7 +91,13 @@ class textEntity extends SM_inputTypeEntity {
         }
 
         $attr = $this->getCommonAttr();
-        $this->say("<input $attr type=\"$type\" name=\"$this->varName\" size=\"{$this->directive['size']}\" maxlength=\"{$this->directive['maxLength']}\" value=\"$val\" />");
+        if ($this->isLegacyLayout()) {
+            $this->say("<input $attr type=\"$type\" name=\"$this->varName\" size=\"{$this->directive['size']}\" maxlength=\"{$this->directive['maxLength']}\" value=\"$val\" />");
+        }
+        else {
+            // new layout specifies most of this stuff in css
+            $this->say("<input $attr value=\"$val\" />");
+        }
     
     }
 

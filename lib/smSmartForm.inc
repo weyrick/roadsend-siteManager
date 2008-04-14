@@ -176,6 +176,9 @@ class SM_smartForm extends SM_object {
         $this->directive['requiredClassTag']    = 'sfNormal';   // class tag for required tag
         $this->directive['entityClassTag']      = '';           // default class tag for input entity text
 
+        // css style
+        $this->directive['legacyLayout']        = true;         // whether to use the latest and greatest CSS technology
+        
         // if this is set to true, ALL entities will be presetText, regardless of what is
         // specified as the entity type in the add() call
         $this->directive['readOnly']            = false;
@@ -270,7 +273,16 @@ class SM_smartForm extends SM_object {
         $this->ftl = !isset($ftlVal);
             
     }   
-     
+
+    function addDirective($key, $val) {
+        parent::addDirective($key, $val);
+        // CSS compatibility
+        if (($key == 'legacyLayout') && ($val == false)) {
+            // new style layout. make sure some settings are correct for this style
+            $this->directive['titleWrapTag'] = NULL;
+        }
+    }
+    
      /**
       * add a block of text in the input form
       * @param string $text the text to add. may contain HTML
@@ -1232,7 +1244,7 @@ class SM_smartForm extends SM_object {
       * @return string the final output of the form, including all HTML, suitable for output to client
       */
     function output($submit="", $hiddens=NULL) {
-    
+
         // add the ftl last
         $this->addHidden($this->formID.'_ftl','1');
 

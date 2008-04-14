@@ -264,8 +264,15 @@ class SM_formEntity extends SM_object {
 
         $titleWrapTag = $this->directive['titleWrapTag'];
         if (empty($titleWrapTag)) {
-            if ($this->inputEntity->isValid){        
-                $title .= $prefix.$this->title;
+            if ($this->inputEntity->isValid){
+                if ($this->parentSmartForm->directive['legacyLayout']) {
+                    // legacy style
+                    $title .= $prefix.$this->title;
+                }
+                else {
+                    // new style: label tag
+                    $title .= $prefix.'<label for="'.$this->varName.'">'.$this->title.'</label>';
+                }
             }
             else {
                 $title .= $prefix.$this->title.'<br/>'.$this->inputEntity->fixMessage;
