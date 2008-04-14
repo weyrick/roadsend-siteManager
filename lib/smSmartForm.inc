@@ -1282,7 +1282,13 @@ class SM_smartForm extends SM_object {
         else
             $fClass = '';
 
-        $this->sfOutput  = "\n\n<form $onSub $enctype $fClass name=\"{$this->directive['formName']}\" action=\"{$this->directive['postScript']}\" method=\"post\"";        
+        if ($this->directive['legacyLayout']) {
+            $this->sfOutput  = "\n\n<form $onSub $enctype $fClass name=\"{$this->directive['formName']}\" action=\"{$this->directive['postScript']}\" method=\"post\"";
+        }
+        else {
+            $this->sfOutput  = "\n\n<form $onSub $enctype $fClass id=\"{$this->directive['formName']}\" action=\"{$this->directive['postScript']}\" method=\"post\"";
+        }
+   
         if (!empty($this->directive['formParams']))
             $this->sfOutput .= ' '.$this->directive['formParams'].' ';
         $this->sfOutput .= ">\n";
