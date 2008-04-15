@@ -96,7 +96,7 @@ class textEntity extends SM_inputTypeEntity {
         }
         else {
             // new layout specifies most of this stuff in css
-            $this->say("<input $attr value=\"$val\" />");
+            $this->say("<input $attr name=\"$this->varName\" value=\"$val\" />");
         }
     
     }
