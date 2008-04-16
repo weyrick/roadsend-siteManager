@@ -23,6 +23,9 @@ define("SM_PAGETRACK_PVAR", "__SM_ppv__");      //persistent last page acces var
 define("SM_AUTOCOOKIE_VAR", "SMC");  // auto cookie check var
 define("SM_FORCE_SESSID", "SF"); // force session id session variable
 
+// rewrite rule operations
+define('SM_REWRITEURL_ADD_ABSOLUTE_BASE', 1);
+
 /**
  *
  * the SM_session class is used to maintain a user session, in which is can store
@@ -96,6 +99,11 @@ class SM_session extends SM_object {
      * @var bool
      */
     var $hasCookies = NULL;
+
+    /**
+     * an array of regex rewriting rules to apply to links created in hLink
+     */
+    var $urlRewriteRules = NULL;
     
     /**
      * constructor. initialize, define persistents
@@ -372,7 +380,15 @@ class SM_session extends SM_object {
     
     
     //*************************** LINKS **********************************
-    
+
+    /**
+     * @param string $regex a pcre regex rule to match a URL against
+     * @param array  $rule an array, where $rule[0] specifies the rewrite operation,
+     *                     and further entries in the array of operation specific
+     */
+    function addURLRewriteRule($regex, $rule) {
+        $this->urlRewriteRules[$regex] = $rule;
+    }
     
     /**
      * generate a url encoded list of persistents suitable for passing in a URL
@@ -572,7 +588,32 @@ class SM_session extends SM_object {
         }
         
         $output = $link.$connect.$sVars.$a;
-        return($output);
+
+        /** URL REWRITING **/
+        if ($this->urlRewriteRules) {
+            foreach ($this->urlRewriteRules as $regex => $rules) {
+                if ($regex{0} == '!') {
+                    $match = !preg_match(substr($regex, 1),$output);
+                }
+                else {
+                    $match = preg_match($regex, $output);
+                }
+                if ($match) {
+                    // matched a rewrite regex, handle rewrite operation
+                    switch ($rules[0]) {
+                        case SM_REWRITEURL_ADD_ABSOLUTE_BASE:
+                            $output = $rules[1].$output;
+                            break;
+                        default:
+                            $this->debugLog(print_r($rules,true));
+                            $this->debugLog('unknown rewrite rule');
+                            break;
+                    }
+                }
+            }
+        }
+        
+        return $output;
         
         
     }
