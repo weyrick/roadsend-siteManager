@@ -23,7 +23,7 @@ include($SM_rootDir.'lib/smTags.inc');
 define('SM_TAG_IDENTIFIER','SM'); // if you want something other than <SM> tags, change this
 define('SM_TAG_PREGEXP','/<\s*'.SM_TAG_IDENTIFIER.'\s(.+)\s*\/*>/Ui');
 define('SM_TAG_EXTD_PREGEXP','/<\s*'.SM_TAG_IDENTIFIER.'\s(.+)\s*>(.*?)<\/'.SM_TAG_IDENTIFIER.'\s*>/Ui');
-define('SM_TAG_ATTR_PREGEXP','/(\w+)\s*=\s*[\"\'](.+)[\"\']/SUi');
+define('SM_TAG_ATTR_PREGEXP','/([-_a-zA-Z0-9]+)\s*=\s*[\"\'](.*)[\"\']/SUi');
 define('SM_TAG_EMBEDDEDTPT','/%%%(\w+)%%%(.+)%%%\\1%%%/si');
 define('SM_AREAID_KEY','_SMarea-');
 define('SM_TAG_CLASS','SM_smTag_');
