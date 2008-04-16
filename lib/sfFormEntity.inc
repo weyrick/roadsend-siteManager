@@ -275,7 +275,13 @@ class SM_formEntity extends SM_object {
                 }
             }
             else {
-                $title .= $prefix.$this->title.'<br/>'.$this->inputEntity->fixMessage;
+                if ($this->parentSmartForm->directive['legacyLayout']) {
+                    $title .= $prefix.$this->title.'<br/>'.$this->inputEntity->fixMessage;
+                }
+                else {
+                    // new style
+                    $title .= $prefix.'<label for="'.$this->varName.'">'.$this->title.'</label>'.$this->inputEntity->fixMessage;
+                }
             }            
         }
         else {
