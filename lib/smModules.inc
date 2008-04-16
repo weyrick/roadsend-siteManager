@@ -794,6 +794,14 @@ class SM_module extends SM_object {
         $this->moduleOutput .= $text;
     }
 
+     /**
+      * like say, but adds a newline
+      * @param string $text text to be added to final output
+      * @param string $sName internal style name to use for this output. will wrap in SPAN tag
+      */
+    function saynl($text, $sName='') {
+        $this->say($text."\n", $sName);
+    }
 
      /**
       * same as say(), but adds a <BR> to the end of the output
