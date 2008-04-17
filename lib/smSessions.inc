@@ -111,116 +111,116 @@ class SM_session extends SM_object {
     
     function SM_session() {
         
-    global $SM_siteManager;
-        
-    // configure
-    $this->_smoConfigure();
-        
-    // setup PHP_SELF
-    $this->PHP_SELF = (isset($_SERVER['REDIRECT_URL'])) ? $_SERVER['REDIRECT_URL'] : $_SERVER['PHP_SELF'];
-    $this->currentPage = basename($this->PHP_SELF);
-        
-    // retrieve session configuration
-    $this->directive            = $this->siteConfig->getSection('sessions');
-    $this->directive['pVars']   = $this->siteConfig->getSection('pVars');
-    $this->directive['members'] = $this->siteConfig->getSection('members');
+        global $SM_siteManager;
+            
+        // configure
+        $this->_smoConfigure();
+            
+        // setup PHP_SELF
+        $this->PHP_SELF = (isset($_SERVER['REDIRECT_URL'])) ? $_SERVER['REDIRECT_URL'] : $_SERVER['PHP_SELF'];
+        $this->currentPage = basename($this->PHP_SELF);
+            
+        // retrieve session configuration
+        $this->directive            = $this->siteConfig->getSection('sessions');
+        $this->directive['pVars']   = $this->siteConfig->getSection('pVars');
+        $this->directive['members'] = $this->siteConfig->getSection('members');
 
-    // backwards compatibility < 2.5.2
-    if (empty($this->directive['useCookies'])) {
-        if (empty($this->directive['sessionCookie']))
-        $this->directive['useCookies'] = 'none';
-        else
-        $this->directive['useCookies'] = 'auto';
-    }
-    
-    // check to see if we are in cli mode and if so, turn off cookies (gollum 6/18/2004)
-    if (php_sapi_name() === 'cli') {
-        $this->directive['useCookies'] = 'none';
-        $this->debugLog("useCookies set to 'none' in CLI mode");
-    }
-    
-    // setup session container
-    $this->_loadContainer();
-        
-    // try cookies first
-    if ($this->_useCookies()) {
-            
-        // yes we should check the client for a session cookie
-        $sC = $this->directive['sessionCookie'];
-        $sCV = $this->inVarH->getCookieVar($sC);
-            
-        // now if it's a valid session, use that
-        if (!empty($sCV)&&(preg_match(SM_SESSION_REGEXP,$sCV))) {
-        $this->hasCookies = true;
-        $this->sessionID = $sCV;
-        $this->debugLog("valid session ID obtained through cookie");
+        // backwards compatibility < 2.5.2
+        if (empty($this->directive['useCookies'])) {
+            if (empty($this->directive['sessionCookie']))
+                $this->directive['useCookies'] = 'none';
+            else
+                $this->directive['useCookies'] = 'auto';
         }
-            
-    }
-            
-    // if we don't have it yet...
-    // setup local sessionID variable. it will attempt to retrieve it via GET/POST
-    // but only if we don't *require* cookies
-    if (empty($this->sessionID) && ($this->directive['useCookies'] != 'require')) {
-        $this->sessionID = $this->inVarH->getVar($this->directive['sessionIDName']);
-        // now if it's a valid session, use that
-        if (!empty($this->sessionID)&&(preg_match(SM_SESSION_REGEXP,$this->sessionID))) {
-        $this->debugLog("valid session ID obtained through GET/POST");
+        
+        // check to see if we are in cli mode and if so, turn off cookies (gollum 6/18/2004)
+        if (php_sapi_name() === 'cli') {
+            $this->directive['useCookies'] = 'none';
+            $this->debugLog("useCookies set to 'none' in CLI mode");
         }
-    }
-
-    // if we *still* don't have it, we'll be setting up a new session
-    // possibly using auto cookies 
-    if (!preg_match(SM_SESSION_REGEXP, $this->sessionID)) {
-
-        // if there is no sessionID yet, and autoCookies is on, try to determine if they
-        // have cookies by setting the session ID as a cookie and reloading with a special
-        // variable so that next time we will know if cookies are not on
+        
+        // setup session container
+        $this->_loadContainer();
+            
+        // try cookies first
         if ($this->_useCookies()) {
-        $this->_doAutoCookies();
+                
+            // yes we should check the client for a session cookie
+            $sC = $this->directive['sessionCookie'];
+            $sCV = $this->inVarH->getCookieVar($sC);
+                
+            // now if it's a valid session, use that
+            if (!empty($sCV)&&(preg_match(SM_SESSION_REGEXP,$sCV))) {
+                $this->hasCookies = true;
+                $this->sessionID = $sCV;
+                $this->debugLog("valid session ID obtained through cookie");
+            }
+                
         }
-        else {
-        $this->_createSession();
-        $this->debugLog('creating new session without use of cookies'); 
+                
+        // if we don't have it yet...
+        // setup local sessionID variable. it will attempt to retrieve it via GET/POST
+        // but only if we don't *require* cookies
+        if (empty($this->sessionID) && ($this->directive['useCookies'] != 'require')) {
+            $this->sessionID = $this->inVarH->getVar($this->directive['sessionIDName']);
+            // now if it's a valid session, use that
+            if (!empty($this->sessionID)&&(preg_match(SM_SESSION_REGEXP,$this->sessionID))) {
+                $this->debugLog("valid session ID obtained through GET/POST");
+            }
         }
-    }
+
+        // if we *still* don't have it, we'll be setting up a new session
+        // possibly using auto cookies 
+        if (!preg_match(SM_SESSION_REGEXP, $this->sessionID)) {
+
+            // if there is no sessionID yet, and autoCookies is on, try to determine if they
+            // have cookies by setting the session ID as a cookie and reloading with a special
+            // variable so that next time we will know if cookies are not on
+            if ($this->_useCookies()) {
+                $this->_doAutoCookies();
+            }
+            else {
+                $this->_createSession();
+                $this->debugLog('creating new session without use of cookies'); 
+            }
+        }
+                
+        // now add the name of the session ID variable as a persistent. this one is required.
+        $sN = $this->directive['sessionIDName'];
+        $this->addPersistent($sN,$this->sessionID);
             
-    // now add the name of the session ID variable as a persistent. this one is required.
-    $sN = $this->directive['sessionIDName'];
-    $this->addPersistent($sN,$this->sessionID);
-        
-    if ($this->directive['members']['usePersistentMembers']) {
-        // add persistent member pvar
-        $this->addPersistent(SM_MEMBER_PVAR);
-        // for security, dont let user POST or GET this variable
-        $this->inVarH->addBadVar(SM_MEMBER_PVAR);
-    }
-        
-    //If we are tracking the last page access time,
-    //add our persistant var to the list.
-    if ($this->directive['trackLastPageAccess']) {
-        // add persistent member pvar
-        $this->addPersistent(SM_PAGETRACK_PVAR);
-        // for security, dont let user POST or GET this variable
-        $this->inVarH->addBadVar(SM_PAGETRACK_PVAR);
-    }
-        
-    // read in persistents from siteconfig
-    if (is_array($this->directive['pVars'])) {
-        foreach ($this->directive['pVars'] as $pV=>$val) {
-        $this->addPersistent($pV,$val);
+        if ($this->directive['members']['usePersistentMembers']) {
+            // add persistent member pvar
+            $this->addPersistent(SM_MEMBER_PVAR);
+            // for security, dont let user POST or GET this variable
+            $this->inVarH->addBadVar(SM_MEMBER_PVAR);
         }
-    }
-        
-    // double check - we need at least 1 persistant (session ID)
-    if (sizeof($this->persistentVars) == 0)
-        $this->fatalErrorPage("persistentVars not set for session config");
-        
-    // anti cache?
-    if (!empty($this->directive['forceAntiCacheVar'])) {
-        $this->inVarH->addInVarP($this->directive['forceAntiCacheVar']);
-        $this->inVarH->setInVar($this->directive['forceAntiCacheVar'], rand());
-    }
+            
+        //If we are tracking the last page access time,
+        //add our persistant var to the list.
+        if ($this->directive['trackLastPageAccess']) {
+            // add persistent member pvar
+            $this->addPersistent(SM_PAGETRACK_PVAR);
+            // for security, dont let user POST or GET this variable
+            $this->inVarH->addBadVar(SM_PAGETRACK_PVAR);
+        }
+            
+        // read in persistents from siteconfig
+        if (is_array($this->directive['pVars'])) {
+            foreach ($this->directive['pVars'] as $pV=>$val) {
+                $this->addPersistent($pV,$val);
+            }
+        }
+            
+        // double check - we need at least 1 persistant (session ID)
+        if (sizeof($this->persistentVars) == 0)
+            $this->fatalErrorPage("persistentVars not set for session config");
+            
+        // anti cache?
+        if (!empty($this->directive['forceAntiCacheVar'])) {
+            $this->inVarH->addInVarP($this->directive['forceAntiCacheVar']);
+            $this->inVarH->setInVar($this->directive['forceAntiCacheVar'], rand());
+        }
         
     } // end constructor
 
@@ -228,8 +228,8 @@ class SM_session extends SM_object {
      * utility function
      */
     function _useCookies() {
-    return ($this->directive['useCookies'] == 'auto' ||
-        $this->directive['useCookies'] == 'require');
+        return ($this->directive['useCookies'] == 'auto' ||
+                $this->directive['useCookies'] == 'require');
     }
     
     /**
@@ -238,23 +238,23 @@ class SM_session extends SM_object {
     
     function _loadContainer() {
         
-    // backwards compatibility
-    if ($this->siteConfig->getVar('compatibility','2.2.x')) {
-        // 2.2.0 functionality: check for useDatabase in sessions section
-        if (isset($this->directive['useDatabase']) && $this->directive['useDatabase']) {
-        $this->directive['containerType'] = 'database';
+        // backwards compatibility
+        if ($this->siteConfig->getVar('compatibility','2.2.x')) {
+            // 2.2.0 functionality: check for useDatabase in sessions section
+            if (isset($this->directive['useDatabase']) && $this->directive['useDatabase']) {
+                $this->directive['containerType'] = 'database';
+            }
         }
-    }
 
-    // try setup the session container
-    SM_loadSessionContainer($this->directive['containerType']);
-        
-    // instantiate
-    $cName = 'SM_sessionContainer_'.$this->directive['containerType'];
-    if (!class_exists($cName)) {
-        $this->fatalErrorPage("could not load requested session container: $cName");
-    }
-    $this->sessionContainer = new $cName($this, $this->directive['containerType']);
+        // try setup the session container
+        SM_loadSessionContainer($this->directive['containerType']);
+            
+        // instantiate
+        $cName = 'SM_sessionContainer_'.$this->directive['containerType'];
+        if (!class_exists($cName)) {
+            $this->fatalErrorPage("could not load requested session container: $cName");
+        }
+        $this->sessionContainer = new $cName($this, $this->directive['containerType']);
         
     }
     
@@ -264,41 +264,41 @@ class SM_session extends SM_object {
      */
     function _doAutoCookies() {
         
-    // see if auto cookie var exists
-    $acv = $this->inVarH->getGET(SM_AUTOCOOKIE_VAR);
-        
-    // if it doesn't set it, create a new session cookie, and reload
-    if (empty($acv)) {
-        $this->_createSession();
-        $this->_setSessionCookie();
-            $this->reloadPage(array(SM_AUTOCOOKIE_VAR=>1), 
-                  NULL, 
-                  array($this->directive['sessionIDName']), // exclude
-                  true, // keep all vars
-                  NULL,
-                  false); // no save session
-    }
-    else {
-        // if we get here, they don't have cookies
-        // if we are *requiring* cookies, show them the door
-        if ($this->directive['useCookies'] == 'require') {
-        // forward to nice page if specified, otherwise an error page
-        if (!empty($this->directive['cookiesRequiredPage'])) {
-            $this->transferToPage($this->directive['cookiesRequiredPage']);
+        // see if auto cookie var exists
+        $acv = $this->inVarH->getGET(SM_AUTOCOOKIE_VAR);
+            
+        // if it doesn't set it, create a new session cookie, and reload
+        if (empty($acv)) {
+            $this->_createSession();
+            $this->_setSessionCookie();
+                $this->reloadPage(array(SM_AUTOCOOKIE_VAR=>1), 
+                    NULL, 
+                    array($this->directive['sessionIDName']), // exclude
+                    true, // keep all vars
+                    NULL,
+                    false); // no save session
         }
         else {
-            $this->fatalErrorPage("Sorry, this site requires cookies. Please turn them on and reload.");
+            // if we get here, they don't have cookies
+            // if we are *requiring* cookies, show them the door
+            if ($this->directive['useCookies'] == 'require') {
+                // forward to nice page if specified, otherwise an error page
+                if (!empty($this->directive['cookiesRequiredPage'])) {
+                    $this->transferToPage($this->directive['cookiesRequiredPage']);
+                }
+                else {
+                    $this->fatalErrorPage("Sorry, this site requires cookies. Please turn them on and reload.");
+                }
+            }
+            else {
+                // use GET/POST sessionID
+                $this->hasCookies = false;
+                $this->directive['forceSessionID'] = true;
+                $this->_createSession();
+                $this->addPersistent(SM_FORCE_SESSID, 1);
+                $this->debugLog('auto cookies found user did not have cookies. creating new GET/POST session.');
+            }
         }
-        }
-        else {
-        // use GET/POST sessionID
-        $this->hasCookies = false;
-        $this->directive['forceSessionID'] = true;
-        $this->_createSession();
-        $this->addPersistent(SM_FORCE_SESSID, 1);
-        $this->debugLog('auto cookies found user did not have cookies. creating new GET/POST session.');
-        }
-    }
         
     }
     
@@ -310,16 +310,16 @@ class SM_session extends SM_object {
      * @param string $varValue default value for this variable
      */
     function addPersistent($varName, $varValue='') {
-    // if it's not already in the list, add it
-    if (!in_array($varName, $this->persistentVars)) {
-        $this->persistentVars[] = $varName;
-        $this->inVarH->addSessionVar($varName, $varValue);
-    }
+        // if it's not already in the list, add it
+        if (!in_array($varName, $this->persistentVars)) {
+            $this->persistentVars[] = $varName;
+            $this->inVarH->addSessionVar($varName, $varValue);
+        }
         
-    // special hook for session container 'none'
-    // need this to pull value of new persistent into sessions from $_REQUEST
-    if ($this->directive['containerType'] == 'none')
-        $this->sessionContainer->loadSession();
+        // special hook for session container 'none'
+        // need this to pull value of new persistent into sessions from $_REQUEST
+        if ($this->directive['containerType'] == 'none')
+            $this->sessionContainer->loadSession();
         
     }
     
