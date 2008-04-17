@@ -129,7 +129,8 @@ class SM_inputTypeEntity extends SM_object {
 
         if (!$this->isLegacyLayout()) {
             // new css forms: add id to input entities
-            $attrs .= ' id="'.$this->varName.'" ';
+            $id = ($this->varName{0} == '_') ? substr($this->varName,1) : $this->varName; // id's break when they start with a _
+            $attrs .= ' id="'.$id.'" ';
         }
         elseif ($this->directive['entityAttributeClassTag'] != '') {
             $attrs .= ' class="'.$this->directive['entityAttributeClassTag'].'" ';
