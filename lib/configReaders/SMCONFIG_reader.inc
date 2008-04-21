@@ -185,6 +185,9 @@ class SM_configReader_SMCONFIG extends SM_configReader {
      * may be overridden by readers
      *
      */
+    /*
+       XXX deprecated 04/08 for xcache version (weyrick)
+    
     function writeCache($cacheFile, $data) {
 
         // open the file
@@ -210,6 +213,7 @@ class SM_configReader_SMCONFIG extends SM_configReader {
         fclose($cFile);
 
     }
+    */
 
 }
 

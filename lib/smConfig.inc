@@ -506,7 +506,7 @@ class SM_config extends SM_object {
     * a list of files loaded into this config. used only for caching 
     * @var string
     */
-    var $fileLoadList = array();
+    var $fileLoadList = NULL;
 
     /**
      * constructor accepts config file to read, parses it.
@@ -555,31 +555,27 @@ class SM_config extends SM_object {
         // set replace
         $this->cfgReader->addDirective('replace',$replace);
 
-        if (($tryCache)&&($this->cfgReader->useCache())) {
+        if ($tryCache && $this->cfgReader->useCache()) {
 
-            // add to fileloadlist
-            $this->fileLoadList[] = $file;
-
-            $willCache = true;
-            $cachedConfig = $this->cfgReader->getCachedContents($this->fileLoadList);
-
-            if ($cachedConfig != NULL) {           
-                // successfull load
-                $this->debugLog("loadSite: [$file] loaded from cache",2);
-                $this->sectionList = $cachedConfig;
+            $cvarName = ($replace) ? $file : ($this->fileLoadList.$file);
+            if (xcache_isset($cvarName)) {
+                SM_debugLog("loading cached xsm file: $cvarName");
+                $this->sectionList = unserialize(xcache_get($cvarName));
                 return;
             }
 
+            // fall through
+            $willCache = true;
+
         }
 
-        
         // fall through. either caching is off, cache didn't exist, or cache was stale
         // read in config, setting my properties at the same time
         $this->cfgReader->readConfigXML($file);
-
+        
         // should we cache the config file?
-        if (($tryCache)&&($willCache)) {
-            $this->cfgReader->cacheContents($this->fileLoadList, $this->sectionList);
+        if ($tryCache && $willCache) {
+            xcache_set($cvarName, serialize($this->sectionList), $this->cfgReader->directive['cacheTTL']);
         }
 
     }
@@ -724,7 +720,7 @@ class SM_config extends SM_object {
             return NULL;
         }
     }
-
+    
     /**
      * dump info for debug purposes
      */                                                                           

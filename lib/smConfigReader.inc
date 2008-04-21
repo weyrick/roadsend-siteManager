@@ -68,10 +68,9 @@ class SM_configReader extends SM_Object {
         $readerName = substr($className, strlen('SM_configReader_'));
 
         // defaults
-        $this->directive['useCache']   = false;  // whether to use this cache at all or not
-        $this->directive['autoExpire'] = true;   // auto recache if file was modified after we cached it
-        $this->directive['cacheTTL']   = 86400;  // TTL of 1 day
-
+        $this->directive['useCache']   = true;  // whether to use this cache at all or not
+        $this->directive['cacheTTL']   = 3600;  // TTL of 1 hour
+        
         // get cache configuration from GCS (only if siteConfig exists at this point)
         if (isset($this->siteConfig)) {
             $cacheConfig = $this->siteConfig->getSection('cacheConfig',$readerName);
@@ -123,6 +122,7 @@ class SM_configReader extends SM_Object {
      * full path and file name of a file to be cached
      * @param mixed $fileName full path and file name of file to be cached
      */
+    /*
     function getCacheFileName($fileName) {
 
         if (is_array($fileName)) {
@@ -141,27 +141,31 @@ class SM_configReader extends SM_Object {
         return $cacheDir.$fileID.'.inc';
 
     }
+    */
 
     /**
      * determine if this reader should cache it's contents or not, based on GCS settings
      */
     function useCache() {
-        return $this->directive['useCache'];
+        return ($this->directive['useCache'] && function_exists('xcache_set'));
     }
 
     /**
      * determine if a file has been cached
      * @param mixed $fileName full path and file name of file to be cached
      */
+    /*
     function isFileCached($fileName) {
         $cacheFile = $this->getCacheFileName($fileName);
         return (is_file($cacheFile));
     }
+    */
 
     /**
      * determine if a file needs to be recached
      * @param mixed $fileName full path and file name of file to be cached
      */
+    /*
     function isCacheStale($fileName) {
 
         // if file isn't cached..
@@ -227,12 +231,14 @@ class SM_configReader extends SM_Object {
         return false;
 
     }
+    */
 
     /** 
      * cache the contents of our reader to a PHP include file
      * @param mixed $fileName full path and file name of file to be cached
      * @param mixed $data data to be cached, passed by controlling object
      */
+    /*
     function cacheContents($fileName, $data) {
 
         // if we're told not to cache in GCS, don't
@@ -244,11 +250,13 @@ class SM_configReader extends SM_Object {
         return $this->writeCache($this->getCacheFileName($fileName), $data);
 
     }
+    */
 
     /**
      * return contents from a cached file
      * @param mixed $fileName full path and file name of file to be cached
      */
+    /*
     function getCachedContents($fileName) {
 
         // check for stale (or non-existant) cache file
@@ -268,13 +276,13 @@ class SM_configReader extends SM_Object {
         return $SM_READER_CACHECONTENTS;
 
     }
-
+    */
 
     /**
     * cache an SM_config file to PHP includable data
     * may be overridden by readers, default uses serialization
     */
-     
+    /*
     function writeCache($cacheFile, $data) {
 
         // open the file
@@ -295,7 +303,8 @@ class SM_configReader extends SM_Object {
         fclose($cFile);
 
     }
-
+    */
+    
     /**
     * function triggered when an XML start element appears
     * here we will parse tag's we recognize from the config file

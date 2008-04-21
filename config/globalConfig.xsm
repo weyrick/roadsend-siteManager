@@ -46,16 +46,11 @@
             <VAR name="sendNoCacheHeaders"      value="false"   desc="if this is true, a header will be sent to stop browsers from caching pages" />
         </SECTION>
         <SECTION name="cache">
-            <VAR name="useCache"            value="false"   desc="master switch for using the caching system" />            
-            <VAR name="cacheSMConfig"       value="true"    desc="(deprecate) when true, SiteManager will attempt to cache SMCONFIG files to the cache directory" />            
-            <VAR name="cacheSMLanguage"     value="true"    desc="(deprecate) when true, SiteManager will attempt to cache SMLANGUAGE files to the cache directory" />            
-            <VAR name="cacheSMObject"       value="true"    desc="(deprecate) when true, SiteManager will attempt to cache SMOBJECT files to the cache directory" />
-            <VAR name="cacheSmartForm"      value="true"    desc="(deprecate) when true, SiteManager will attempt to cache SMARTFORM files to the cache directory" />
+            <VAR name="useCache"            value="true"   desc="master switch for using the caching system" />
         </SECTION>
         <SECTION name="cacheConfig" id="smconfig">
-            <VAR name="useCache"            value="false"  desc="cache this file type" />
-            <VAR name="autoExpire"          value="true"  desc="if true, the file will auto-recache if the file change time is later than the cache file change time" />
-            <VAR name="cacheTTL"            value="86400" desc="maximum length of time (in seconds) before a file should be recached" />
+            <VAR name="useCache"            value="true"  desc="cache this file type" />
+            <VAR name="cacheTTL"            value="3600" desc="maximum length of time (in seconds) before a file should be recached" />
         </SECTION>
         <SECTION name="debug">   
             <VAR name="debugLevel"          value="0"       desc="debugLog messages of this verbosity and lower will be shown in the debugLog - all else ommitted." />
