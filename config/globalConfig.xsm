@@ -46,10 +46,10 @@
             <VAR name="sendNoCacheHeaders"      value="false"   desc="if this is true, a header will be sent to stop browsers from caching pages" />
         </SECTION>
         <SECTION name="cache">
-            <VAR name="useCache"            value="true"   desc="master switch for using the caching system" />
+            <VAR name="useCache"            value="false"   desc="master switch for using the caching system" />
         </SECTION>
         <SECTION name="cacheConfig" id="smconfig">
-            <VAR name="useCache"            value="true"  desc="cache this file type" />
+            <VAR name="useCache"            value="false"  desc="cache this file type" />
             <VAR name="cacheTTL"            value="3600" desc="maximum length of time (in seconds) before a file should be recached" />
         </SECTION>
         <SECTION name="debug">   

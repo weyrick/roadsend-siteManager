@@ -68,7 +68,7 @@ class SM_configReader extends SM_Object {
         $readerName = substr($className, strlen('SM_configReader_'));
 
         // defaults
-        $this->directive['useCache']   = true;  // whether to use this cache at all or not
+        $this->directive['useCache']   = false;  // whether to use this cache at all or not
         $this->directive['cacheTTL']   = 3600;  // TTL of 1 hour
         
         // get cache configuration from GCS (only if siteConfig exists at this point)
