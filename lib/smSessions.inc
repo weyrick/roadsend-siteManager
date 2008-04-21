@@ -21,7 +21,6 @@ define("SM_SESSION_REGEXP","/^[0-9a-f]{32}$/");  // session regexp pattern
 define("SM_MEMBER_PVAR"   ,"__SM_mpv__");           // persistent member data pvar
 define("SM_PAGETRACK_PVAR", "__SM_ppv__");      //persistent last page acces var
 define("SM_AUTOCOOKIE_VAR", "SMC");  // auto cookie check var
-define("SM_FORCE_SESSID", "SF"); // force session id session variable
 
 // rewrite rule operations
 define('SM_REWRITEURL_ADD_ABSOLUTE_BASE', 1);
@@ -94,12 +93,17 @@ class SM_session extends SM_object {
 
 
     /**
-     * if we do auto cookie check, we set this depending on the determined cookie status
-     * if value is NULL, it's undetermined
+     * if we received a session cookie, this is true. otherwise, we don't know if they have
+     * cookies so it's false
      * @var bool
      */
-    var $hasCookies = NULL;
+    var $hasCookies = false;
 
+    /**
+     * whether this is a new session (newly created sessionID) this load or not
+     */
+    var $newSession = false;
+    
     /**
      * an array of regex rewriting rules to apply to links created in hLink
      */
@@ -170,19 +174,11 @@ class SM_session extends SM_object {
         }
 
         // if we *still* don't have it, we'll be setting up a new session
-        // possibly using auto cookies 
         if (!preg_match(SM_SESSION_REGEXP, $this->sessionID)) {
 
-            // if there is no sessionID yet, and autoCookies is on, try to determine if they
-            // have cookies by setting the session ID as a cookie and reloading with a special
-            // variable so that next time we will know if cookies are not on
-            if ($this->_useCookies()) {
-                $this->_doAutoCookies();
-            }
-            else {
-                $this->_createSession();
-                $this->debugLog('creating new session without use of cookies'); 
-            }
+            // new session
+            $this->_createSession();
+
         }
                 
         // now add the name of the session ID variable as a persistent. this one is required.
@@ -255,50 +251,6 @@ class SM_session extends SM_object {
             $this->fatalErrorPage("could not load requested session container: $cName");
         }
         $this->sessionContainer = new $cName($this, $this->directive['containerType']);
-        
-    }
-    
-    /**
-     * attenpt to determine if client has cookies enabled
-     *
-     */
-    function _doAutoCookies() {
-        
-        // see if auto cookie var exists
-        $acv = $this->inVarH->getGET(SM_AUTOCOOKIE_VAR);
-            
-        // if it doesn't set it, create a new session cookie, and reload
-        if (empty($acv)) {
-            $this->_createSession();
-            $this->_setSessionCookie();
-                $this->reloadPage(array(SM_AUTOCOOKIE_VAR=>1), 
-                    NULL, 
-                    array($this->directive['sessionIDName']), // exclude
-                    true, // keep all vars
-                    NULL,
-                    false); // no save session
-        }
-        else {
-            // if we get here, they don't have cookies
-            // if we are *requiring* cookies, show them the door
-            if ($this->directive['useCookies'] == 'require') {
-                // forward to nice page if specified, otherwise an error page
-                if (!empty($this->directive['cookiesRequiredPage'])) {
-                    $this->transferToPage($this->directive['cookiesRequiredPage']);
-                }
-                else {
-                    $this->fatalErrorPage("Sorry, this site requires cookies. Please turn them on and reload.");
-                }
-            }
-            else {
-                // use GET/POST sessionID
-                $this->hasCookies = false;
-                $this->directive['forceSessionID'] = true;
-                $this->_createSession();
-                $this->addPersistent(SM_FORCE_SESSID, 1);
-                $this->debugLog('auto cookies found user did not have cookies. creating new GET/POST session.');
-            }
-        }
         
     }
     
@@ -403,13 +355,13 @@ class SM_session extends SM_object {
                 
             // if forceSessionID isn't on, just return (rely on cookie)
             if ($this->directive['forceSessionID'] == false)
-            return '';
+                return '';
                 
             // otherwise, add sessionID
             if ($retType == 'form')
-            return "<input type=\"hidden\" name=\"".$this->directive['sessionIDName']."\" value=\"".$this->sessionID."\">\n";
+                return "<input type=\"hidden\" name=\"".$this->directive['sessionIDName']."\" value=\"".$this->sessionID."\">\n";
             else
-            return $this->directive['sessionIDName'].'='.$this->sessionID;
+                return $this->directive['sessionIDName'].'='.$this->sessionID;
                 
         }
             
@@ -868,7 +820,7 @@ class SM_session extends SM_object {
      * @return bool true if the current session is a valid member session
      */
     function isMember() {
-        if ($this->directive['useMemberSystem'])
+        if ($this->directive['useMemberSystem'] && $this->hasCookies)
             return $this->memberSystem->isMember();
     }
     
@@ -899,7 +851,7 @@ class SM_session extends SM_object {
      * @return bool true if the user authenticated succesfully, false otherwise
      */
     function attemptLogin($userName, $passWord) {
-        if ($this->directive['useMemberSystem'])
+        if ($this->directive['useMemberSystem'] && $this->hasCookies)
             return $this->memberSystem->attemptLogin($userName, $passWord);
         else
             return false;
@@ -954,6 +906,9 @@ class SM_session extends SM_object {
      * @return string new 32 character MD5'd session string
      */
     function _createSession() {
+
+        // new
+        $this->newSession = true;
         
         // create a session ID. hopefully unique!
         $this->sessionID = md5(uniqid(rand(),true));
@@ -1024,7 +979,8 @@ class SM_session extends SM_object {
         }
             
         // use database structure to save and load persistent variable ?
-        $this->sessionContainer->saveSession($this->persistentVars);
+        if ($this->hasCookies)
+            $this->sessionContainer->saveSession($this->persistentVars);
             
         if ($this->_useCookies() && $this->directive['sessionCookie'] != '') {
             $this->_setSessionCookie();
@@ -1049,7 +1005,7 @@ class SM_session extends SM_object {
 
             $prob = mt_rand(0, $this->directive['gcDivisor']);
             if ($prob <= $this->directive['gcProbability']) {
-            $this->sessionContainer->garbageCollect($this->directive['gcMaxLifeTime']);
+                $this->sessionContainer->garbageCollect($this->directive['gcMaxLifeTime']);
             }
             
         }
@@ -1057,15 +1013,10 @@ class SM_session extends SM_object {
         // use container to save and load persistent variables
         // if it returns false, the sessionID was invalid and we should create
         // a new one
-        if (!$this->sessionContainer->loadSession())
+        if (!$this->newSession && !$this->sessionContainer->loadSession())
             $this->_createSession();            
             
         // by the time we get here, we have a session ID and know if we're a guest or member
-
-        // if our special SM_FORCE_SESSID is 1, we need to force session ID's in urls and forms
-        // this means we detected they didn't have cookies when they started their session
-        if ($this->getPersistent(SM_FORCE_SESSID) === 1)
-            $this->directive['forceSessionID'] = true;
         
         // setup global $SM_sessionVars variable for the rest of the scripts to use
         global $SM_sessionVars;
@@ -1078,13 +1029,16 @@ class SM_session extends SM_object {
             $this->_loadMemberSystem();
                 
             // load up the member info if this is a member session
-            $this->memberSystem->attemptLoadMember();
+            if ($this->hasCookies && !$this->newSession)
+                $this->memberSystem->attemptLoadMember();
                 
             // if a user defined function was specified for loading additional member information,
             // run here
-            if ($this->memberSystem->isMember && isset($this->directive['memberLoadFunction']) && function_exists($this->directive['memberLoadFunction']) ) {
-            $mlF = $this->directive['memberLoadFunction'];
-            $mlF($this->memberSystem->memberData);
+            if ($this->memberSystem->isMember &&
+                isset($this->directive['memberLoadFunction']) &&
+                function_exists($this->directive['memberLoadFunction']) ) {
+                $mlF = $this->directive['memberLoadFunction'];
+                $mlF($this->memberSystem->memberData);
             }
                 
             // maintain tables

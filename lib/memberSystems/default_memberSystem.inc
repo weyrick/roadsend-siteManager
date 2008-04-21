@@ -67,6 +67,9 @@ class SM_memberSystem_default extends SM_memberSystem {
      * @return bool true if the user authenticated succesfully, false otherwise
      */
     function attemptLogin($userName, $passWord) {
+
+        if (!$this->sessionH->hasCookies)
+            return false;
         
         // define some configured variables we'll be using
         $memberTable            = $this->directive['memberTable'];
@@ -183,7 +186,7 @@ class SM_memberSystem_default extends SM_memberSystem {
 
         // issue query
         $rh = $this->dbHL[$this->dbID]->query($SQL);
-        $sessionRemoved = $this->dbH->affectedRows($rh);
+        $sessionRemoved = $rh->rowCount();
         $this->dbErrorCheck($rh);
 
         // member session removed
@@ -342,6 +345,9 @@ class SM_memberSystem_default extends SM_memberSystem {
      *
      */
     function attemptLoadMember() {
+        
+        if (!$this->sessionH->hasCookies)
+            return false;
 
         // if using persistent members, try that first
         if ($this->directive['usePersistentMembers']) {

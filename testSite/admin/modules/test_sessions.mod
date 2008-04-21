@@ -85,7 +85,7 @@ class test_sessions extends testBase {
         // set persistent
         // get persistent
         $val = $this->sessionH->getSessionVar('testPersistent');
-        if ($val != 'bar') {
+        if ($val != 'bar' && $this->sessionH->hasCookies) {
             $this->sessionH->setSessionVar('testPersistent','bar');
             $this->sessionH->reloadPage();
         }
