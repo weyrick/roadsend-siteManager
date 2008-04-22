@@ -211,7 +211,8 @@ class SM_layoutTemplate extends SM_object {
      * @param $doSubTemplates (bool) when true, extra sub templates from templateData
      */
     function setTemplateData($templateData, $parse=true, $doSubTemplates=true) {
-        $this->htmlRawTemplate = $templateData;
+        // capture template, normalizing line endings
+        $this->htmlRawTemplate = str_replace(array("\r\n","\n\r","\r"),"\n",$templateData);
         if ($doSubTemplates)
             $this->extractSubTemplates();
         $this->htmlTemplate = explode("\n",$this->htmlRawTemplate);
@@ -312,8 +313,8 @@ class SM_layoutTemplate extends SM_object {
                 die();
             }
 
-            // load the template in
-            $this->htmlRawTemplate = file_get_contents($this->htmlTemplateFile);
+            // load the template in, normalizing line endings
+            $this->htmlRawTemplate = str_replace(array("\r\n","\n\r","\r"),"\n",file_get_contents($this->htmlTemplateFile));
             // extra sub templates, if any
             $this->extractSubTemplates();
             // setup for parsing
