@@ -57,7 +57,7 @@ class SM_siteConfig {
      * load a local site configuration into $localConfig object
      * @param string $file the SMCONFIG XSM file to load
      */
-    function loadSite($file) {
+    function loadSite($file,$tryCache=true) {
 
         if (!isset($this->localConfig)) {
 	    // if we can't find it, set SM_develState by hand
@@ -68,7 +68,7 @@ class SM_siteConfig {
             $this->localConfig = new SM_config($file);
         }
         else {
-            $this->localConfig->loadSite($file);
+            $this->localConfig->loadSite($file,$tryCache);
         }
 
     }

@@ -113,9 +113,9 @@ class SM_siteManagerRoot extends SM_object {
      * load local site configuration file
      * @param string $file the site file to load. must specify path
      */
-    function loadSite($file) {
+    function loadSite($file,$tryCache=true) {
 
-        $this->siteConfig->loadSite($file);
+        $this->siteConfig->loadSite($file,$tryCache);
 
         // check for new error handler loaded in site
         $newErrorHandler = $this->siteConfig->getVar('debug','errorHandler');

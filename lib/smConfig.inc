@@ -117,6 +117,11 @@ class SM_sectionTag {
     function SM_sectionTag($sectionName) {
         $this->sectionName = $sectionName;
     }
+    
+    function __sleep() {
+        // don't serialize reqCache
+        return array('sectionName','varList');
+    }
 
      /**
      * serialize to PHP includeable data
@@ -543,9 +548,6 @@ class SM_config extends SM_object {
      */
     function loadSite($file, $tryCache=true, $replace=false) {
 
-        // check cache?
-        $willCache = false;
-
         // if we dont have a reader yet, make it
         if ($this->cfgReader == NULL) {
             global $SM_rootDir;
@@ -554,18 +556,19 @@ class SM_config extends SM_object {
 
         // set replace
         $this->cfgReader->addDirective('replace',$replace);
+        $tryCache = $tryCache && $this->cfgReader->useCache(); 
 
-        if ($tryCache && $this->cfgReader->useCache()) {
+        if ($tryCache) {
 
-            $cvarName = ($replace) ? $file : ($this->fileLoadList.$file);
-            if (xcache_isset($cvarName)) {
-                SM_debugLog("loading cached xsm file: $cvarName");
-                $this->sectionList = unserialize(xcache_get($cvarName));
+            // XXX this may not return the correct results if you have two different config objects that load the 
+            //     same base file, and then the same consecutive file where one objects uses replace and one doesn't
+            //     we never do that so i'm ignoreing that case
+            $this->fileLoadList .= $file;
+            if (xcache_isset($this->fileLoadList)) {
+                $this->debugLog("loading cached xsm file: {$this->fileLoadList}");
+                $this->sectionList = unserialize(xcache_get($this->fileLoadList));
                 return;
             }
-
-            // fall through
-            $willCache = true;
 
         }
 
@@ -574,8 +577,8 @@ class SM_config extends SM_object {
         $this->cfgReader->readConfigXML($file);
         
         // should we cache the config file?
-        if ($tryCache && $willCache) {
-            xcache_set($cvarName, serialize($this->sectionList), $this->cfgReader->directive['cacheTTL']);
+        if ($tryCache) {
+            xcache_set($this->fileLoadList, serialize($this->sectionList), $this->cfgReader->directive['cacheTTL']);
         }
 
     }
