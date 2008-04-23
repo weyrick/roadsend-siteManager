@@ -567,7 +567,9 @@ class SM_config extends SM_object {
             if (xcache_isset($this->fileLoadList)) {
                 $this->debugLog("loading cached xsm file: {$this->fileLoadList}");
                 $this->sectionList = unserialize(xcache_get($this->fileLoadList));
-                return;
+                if ($this->sectionList)
+                    return;
+                // if we get here, we couldn't unserialize, so fall through
             }
 
         }
