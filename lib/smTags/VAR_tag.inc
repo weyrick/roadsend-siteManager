@@ -152,6 +152,9 @@ class SM_smTag_VAR extends SM_smTag {
             case 'title':
                 $op = ucwords(strtolower($op));
                 break;
+            case 'escaped':
+                $op = addslashes($op);
+                break;
             case 'prettyName':
                 $f= substr($op,0,1);
                 if($f == strtolower($f)) {
