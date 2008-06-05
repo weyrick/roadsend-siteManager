@@ -268,7 +268,10 @@ class SM_smartForm extends SM_object {
 
         // the FORM NAME
         $this->directive['formName']            = $this->formID;
-              
+
+        // global frob list. if non empty, add each frobber to each entity
+        $this->directive['globalFrobList']      = NULL;
+        
         // setup FTL
         $myFTL = $this->formID.'_ftl';
         $ftlVal = $this->inVarH->getPOST($myFTL);
@@ -447,7 +450,14 @@ class SM_smartForm extends SM_object {
         // if they passed args, do them here
         if (is_array($args))
             $this->entityList[$varName]->inputEntity->configure($args);
-            
+
+        // global frobbers?
+        if (!empty($this->directive['globalFrobList'])) {
+            foreach ($this->directive['globalFrobList'] as $frobber) {
+                $this->entityList[$varName]->inputEntity->addFrobber($frobber);
+            }
+        }
+        
         // success, return reference to formEntity
         return $this->entityList[$varName]->inputEntity;
 
