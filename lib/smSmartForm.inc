@@ -31,6 +31,9 @@ define("SF_LAYOUT_UNDEFINED",  100);
 
 global $SM_siteManager;
 
+// input frobbers
+$SM_siteManager->includeLib('sfInputFrob');
+
 // include input entities
 $SM_siteManager->includeLib('sfInputEntities');
 
@@ -39,6 +42,7 @@ $SM_siteManager->includeLib('sfFilters');
 
 // form entities
 $SM_siteManager->includeLib('sfFormEntity');
+
 
 /**
  * SmartForms abstract HTML forms to code.
@@ -61,7 +65,7 @@ class SM_smartForm extends SM_object {
      */
     var $entityList = NULL;
 
-    /** 
+    /**
      * double hash of groups of form variables 
      * @var array 
      */
@@ -857,9 +861,11 @@ class SM_smartForm extends SM_object {
             
         foreach ($this->entityList as $ent) {
         
-            // apply filters if this isn't a ftl (ie, dont do server side if this is a first time load)
-            if (!$this->ftl)
+            // apply filters/frobbers if this isn't a ftl (ie, dont do server side if this is a first time load)
+            if (!$this->ftl) {
                 $ent->applyFilters();
+                $ent->inputEntity->applyFrobbers();
+            }
                                    
         }
 
@@ -1354,7 +1360,17 @@ class SM_smartForm extends SM_object {
       * @param string $varName the variable to retrieve
       */
     function getVar($varName) {
-        return $this->inVarH->getPOST($varName);
+        // if we have the entity listed, use its getValue which applies frobs.
+        // otherwise just get the POST value, which maintains backwards compatibility
+        // and allows for internalVarList
+        $v = NULL;
+        if (isset($this->entityList[$varName])) {
+            $v = $this->entityList[$varName]->inputEntity->getValue();
+        }
+        if (empty($v)) {
+            $v = $this->inVarH->getPOST($varName);
+        }
+        return $v;
     }
     
     /**
@@ -1479,9 +1495,9 @@ class SM_smartForm extends SM_object {
         
         $varList = $this->getVarList();
         $output = '';
-        foreach ($varList as $formVar) {        
+        foreach ($varList as $formVar) {
             if (isset($_POST[$formVar])) {
-                $output .= $formVar." => ".$_POST[$formVar]."<br />";
+                $output .= $formVar." => ".$this->getVar($formVar).'|'.$_POST[$formVar]."<br />";
             }
             else {
                 $output .= $formVar.' => [NOT PASSED IN POST]<br />';

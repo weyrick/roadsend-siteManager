@@ -32,6 +32,12 @@ class SM_inputTypeEntity extends SM_object {
     * @var SM_inputTypeEntity
     */
     var $filterList = array(); 
+
+    /**
+    * the frobber list for this entity
+    * @var SM_inputFrobber
+    */
+    var $frobberList = array();
     
     /** 
     * the current value of this entity 
@@ -364,6 +370,32 @@ class SM_inputTypeEntity extends SM_object {
     
         // virtual
     
+    }
+
+    public function addFrobber($f) {
+
+        // XXX we do this by string for now to be consistent with e.g. filters and entites,
+        // but we may switch to passing a new SM_frobber object directly
+        $cName = 'SM_'.$f.'Frob';
+        if (!class_exists($cName))
+            $this->fatalErrorPage("unknown frobber: $f");
+        $fH = new $cName();
+        $this->frobberList[] = $fH;
+
+    }
+
+    public function applyFrobbers() {
+
+        foreach ($this->frobberList as $fH) {
+            $this->value = $fH->frobInput($this->value);
+        }
+
+    }
+    
+    public function getValue() {
+
+        return $this->value;
+
     }
     
 }

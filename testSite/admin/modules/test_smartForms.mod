@@ -139,8 +139,10 @@ class test_smartForms extends testBase {
         //$myForm->setArgs('submit2',array('image'=>true,'src'=>'pointR.gif'));
 
         // add a regular text entity. this uses most of the (optional) parameters of the add() method
-        $myForm->add('userName','User Name','text',true,'start name',array('size'=>'50','maxLength'=>'100'));        
-
+        $ent = $myForm->add('userName','User Name','text',true,'start name',array('size'=>'50','maxLength'=>'100'));        
+        $ent->addFrobber('trim');
+        $ent->addFrobber('toLatin1');
+        
         // some simpler examples
         $myForm->add('firstName','First Name','text',false);
         $myForm->add('lastName','Last Name','text',false);
@@ -161,7 +163,8 @@ class test_smartForms extends testBase {
         $eA->addDirective('entityAttributeClassTag','sfNormal1');
 
         // text area example
-        $myForm->add('desc','Description','textArea',true);
+        $ent = $myForm->add('desc','Description','textArea',true);
+        $ent->addFrobber('toLatin1');
         
         // phone number, with filter
         $myForm->add('phone','Phone Number','text',false);
