@@ -755,7 +755,8 @@ class SM_smartForm extends SM_object {
 
         // we only set defaults on FTL, unless force is on
         if ($this->ftl || $forceNotFTL) {
-            $this->entityList[$varName]->inputEntity->setDefaultvalue($default);
+            // we set force to true on the inputEntity setDefaultValue, to avoid another ftl check
+            $this->entityList[$varName]->inputEntity->setDefaultvalue($default,true);
             return true;
         }
         else {

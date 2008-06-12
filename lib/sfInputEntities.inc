@@ -240,14 +240,24 @@ class SM_inputTypeEntity extends SM_object {
      /**
       * change a set default value for an input entity    
       * @param   $default the new value to display
+      * @param bool $forceNotFTL when true, it will set default value even if we're not FTL
       */
-    function setDefaultValue($default) {
+    function setDefaultValue($default, $forceNotFTL=false) {
    
-        // set the value
-        $this->value = $default;
-    
-        // run eventNewValue method
-        $this->eventNewValue();
+        // we only set defaults on FTL, unless force is on
+        if ($this->parentFormEntity->parentSmartForm->ftl || $forceNotFTL) {
+
+            // set the value
+            $this->value = $default;
+        
+            // run eventNewValue method
+            $this->eventNewValue();
+            
+            return true;
+        }
+        else {
+            return false;
+        }
 
     }
 
