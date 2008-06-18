@@ -861,9 +861,6 @@ class SM_smartForm extends SM_object {
       */
     function runForm() {
             
-        // loop through each entity
-        $jso = '';
-
         // blank form?      
         if (empty($this->entityList)) {
             $this->debugLog('form was blank!');
