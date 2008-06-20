@@ -166,6 +166,11 @@ class dateEntity extends SM_inputTypeEntity {
 
     }
 
+    function getValue() {
+        // we override input entity and always return POST version, which is set in eventNewValue
+        return $_POST[$this->varName];
+    }
+
 
     /**
     * output
