@@ -860,7 +860,10 @@ class SM_smartForm extends SM_object {
       * called to apply filters and "execute" the form
       */
     function runForm() {
-            
+
+        if ($this->formHasRun)
+            return;
+        
         // blank form?      
         if (empty($this->entityList)) {
             $this->debugLog('form was blank!');
