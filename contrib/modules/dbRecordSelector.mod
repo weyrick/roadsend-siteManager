@@ -126,11 +126,7 @@ class SM_dbRecordSelector extends SM_module {
                                 'whereClause'   =>$this->directive['whereClause']));
         
         //raido button options
-        $action = $this->getVar($this->directive['actionVar']);
-        if (empty($action)) {
-            $action = $this->directive['defaultAction'];
-        }
-        $st = $myForm->add($this->directive['actionVar'],'Action','radio',true,$action);
+        $st = $myForm->add($this->directive['actionVar'],'Action','radio',true, $this->directive['defaultAction']);
 
         if($this->directive['allowAdd'])
             $st->addOption('add');
