@@ -101,7 +101,7 @@ class Excel_XML
      * @param array 1-dimensional array
      * @todo Row-creation should be done by $this->addArray
      */
-    private function addRow ($array)
+    public function addRow ($array)
     {
 
         // initialize all cells for this row
