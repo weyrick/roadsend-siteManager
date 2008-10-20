@@ -950,6 +950,7 @@ class SM_smartForm extends SM_object {
                 continue;
         
             if (!$ent->inputEntity->isValid) {
+                $this->debugLog("entity [{$ent->varName}] failed filter check");
                 return false;
             }
         
