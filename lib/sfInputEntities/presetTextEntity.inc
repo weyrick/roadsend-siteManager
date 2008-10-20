@@ -42,6 +42,7 @@ class presetTextEntity extends SM_inputTypeEntity {
 
         // Some defaults
         $this->directive['style']       = "<B>";
+        $this->directive['endStyle']       = "</B>";
 
         // if makeHidden is true, this entity will output a hidden based on the varName/value
         $this->directive['makeHidden']  = false;
@@ -55,7 +56,7 @@ class presetTextEntity extends SM_inputTypeEntity {
     function entityThink() {
 
         // output text
-        $this->say($this->directive['style'] . $this->value);
+        $this->say($this->directive['style'] . $this->value.$this->directive['endStyle']);
 
         // output hidden, if turned on
         if ($this->directive['makeHidden']) {
