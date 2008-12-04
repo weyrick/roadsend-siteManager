@@ -97,7 +97,15 @@ class eg_row {
         return $this->rowTemplateData;
     }
 
+    function getEntity($colID) {
 
+        if (!isset($this->entityList[$colID])) {
+            SM_debugLog("output: entity is NULL for this column",$this);
+            return NULL;
+        }
+        return $this->entityList[$colID];
+        
+    }
 
     /**
     * loop through entities and gather their output, placing each entities output in a <TD></TD> column
@@ -315,6 +323,16 @@ class entityGridEntity extends SM_inputTypeEntity {
         // Set custom template data
         $this->rowList[$rowID]->setRowTemplateData($data);
 
+    }
+
+    /**
+     * get the SM_formEntity at row, col
+     */
+    function getRowEntity($rowID, $colID) {
+        if (isset($this->rowList[$rowID]))
+            return $this->rowList[$rowID]->getEntity($colID);
+        else
+            return NULL;
     }
     
     /**
