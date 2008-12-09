@@ -174,7 +174,6 @@ class SM_formEntity extends SM_object {
         $entityClass = $eClass."Entity";
         $newEntity = new $entityClass($this);
 
-        // if $val isn't set, but $$vn is, use that
         if (isset($_POST[$vName])) {
             if (!is_array($_POST[$vName]))
                 $val = stripslashes($_POST[$vName]);      // prevent recuring slashes

@@ -396,6 +396,9 @@ class SM_inputTypeEntity extends SM_object {
 
     public function applyFrobbers() {
 
+        if (empty($this->value))
+            return;
+
         foreach ($this->frobberList as $fH) {
             $this->value = $fH->frobInput($this->value);
         }
@@ -404,7 +407,18 @@ class SM_inputTypeEntity extends SM_object {
     
     public function getValue() {
 
-        return $this->value;
+        // if the form is not ftl, but we weren't in POST at all, then we make sure
+        // to return NULL here and not our default value
+        // this is the proper action for e.g. check boxes which may have a default, but
+        // won't be in the POST if they weren't checked
+
+        // if an entity needs to do something funky with varName in POST (see dateEntity), it should
+        // set the proper _POST variable in entityConfig (again, see dateEntity)
+        if (!$this->parentSmartForm->ftl && !isset($_POST[$this->varName]))
+            return NULL;
+        else
+            // otherwise, our value has been determined already
+            return $this->value;
 
     }
     
