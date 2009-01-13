@@ -177,7 +177,7 @@ function SM_makeErrorPage() {
               $SM_siteManager->siteConfig->getVar('debug','showNotices')))) {        
 
             $output .= "<b>NOTICE LOG:</b><br />\n";
-            foreach ($SM_noticeLog as $line) {
+            foreach ($SM_noticeLog as $line => $_d) {
                 $output .= "$line<br />\n";
             }
 
@@ -240,7 +240,11 @@ function SM_dumpVars() {
  
 function SM_errorHandler($errno, $errstr, $errfile, $errline) {
 
-    global $SM_noticeLog;
+    global $SM_noticeLog, $SM_develState;
+
+    // if not in devel mode we ignore
+    if (!$SM_develState)
+        return;
 
     switch ($errno) {
     case E_PARSE:
@@ -258,16 +262,18 @@ function SM_errorHandler($errno, $errstr, $errfile, $errline) {
     case E_CORE_WARNING:
     case E_WARNING:
     case E_RECOVERABLE_ERROR:
-        $msg = "<b>SiteManager PHP WARNING:</b> $errstr on line $errline in $errfile<br />\n";
+        $msg = "<b>PHP WARNING:</b> $errstr on line $errline in $errfile<br />\n";
         SM_debugLog($msg);
         break;
     case E_STRICT:
-        $msg = "<b>STRICT:</b> $errstr on line $errline in $errfile<br />\n";
+        $msg = "<b>PHP STRICT:</b> $errstr on line $errline in $errfile<br />\n";
         SM_debugLog($msg);
         break;
     case E_NOTICE:
     case E_USER_NOTICE:
-        $SM_noticeLog[] = '<b>SiteManager PHP NOTICE:</b> '.$errstr." on line $errline in $errfile\n";
+        // only unique notices
+        $msg = '<b>PHP NOTICE:</b> '.$errstr." on line $errline in $errfile\n";
+        $SM_noticeLog[$msg] = true; 
         break;
     default:
         SM_fatalErrorPage("Unkown error type: [$errno] $errstr on line $errline in $errfile<br />\n");
