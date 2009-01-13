@@ -128,7 +128,16 @@ function SM_getDebugBackTrace($stripTags = false, $exception=NULL) {
 if (!function_exists('SM_fatalErrorPage')) {
 function SM_fatalErrorPage($msg='', $obj=NULL) {
     
-    global $SM_outputBuffer, $SM_develState;
+    global $SM_outputBuffer, $SM_develState, $SM_shortFatalError, $SM_debugOutput, $SM_noticeLog;
+
+    // SM_shortError means we don't display any notice or previous debugLog
+    // we just show the current error and debug trace
+    if ($SM_shortFatalError) {
+        $dcnt = sizeof($SM_debugOutput);
+        $SM_debugOutput = array();
+        $SM_noticeLog = array();
+        SM_debugLog("** NOTE: SM_shortFatalError is ON: turn off to see $dcnt more lines of debug output");
+    }
 
     // add backtrace, if available (php 4.3+)
     if ($SM_develState) {
@@ -142,9 +151,11 @@ function SM_fatalErrorPage($msg='', $obj=NULL) {
 
     SM_debugLog("<font color=\"red\">$msg</font>",$obj);
 
-    $SM_outputBuffer = ob_get_contents();
-    ob_end_clean();
-
+    if (ob_get_level() > 0) {
+        $SM_outputBuffer = ob_get_contents();
+        ob_end_clean();
+    }
+    
     echo SM_makeErrorPage();
     exit;
     
@@ -202,7 +213,8 @@ function SM_makeErrorPage() {
     else
         $verLine = "(PHP v".PHP_VERSION.'/'.PHP_OS.')';
     
-    $output .= "<hr /><b>Roadsend SiteManager v".SM_VERSION." (<a href=\"http://www.roadsend.com/siteManager\">http://www.roadsend.com/siteManager</a>) ".$verLine;
+    if (PHP_SAPI != 'cli')
+        $output .= "<hr /><b>Roadsend SiteManager v".SM_VERSION." (<a href=\"http://www.roadsend.com/siteManager\">http://www.roadsend.com/siteManager</a>) ".$verLine;
     $output .= "</b><br /></body></html>\n";
 
     if (PHP_SAPI == 'cli')
