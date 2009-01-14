@@ -279,7 +279,7 @@ function SM_errorHandler($errno, $errstr, $errfile, $errline) {
         break;
     case E_STRICT:
         $msg = "<b>PHP STRICT:</b> $errstr on line $errline in $errfile<br />\n";
-        SM_debugLog($msg);
+        $SM_noticeLog[$msg] = true;
         break;
     case E_NOTICE:
     case E_USER_NOTICE:

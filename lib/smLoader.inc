@@ -32,7 +32,7 @@ function SM_loadComponent($cID) {
 
     if (isset($SM_componentMap[$cID])) {
         $includeFile = $SM_componentMap[$cID];
-        SM_debugLog("loading SiteManager component [$cID] from $includeFile",NULL,1);
+        SM_debugLog("loading SiteManager component [$cID] from $includeFile",NULL,6);
         $SM_siteManager->includeLib($includeFile);
         $SM_componentCache[$cID] = true;
     }

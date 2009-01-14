@@ -153,7 +153,7 @@ class SM_inVarClient extends SM_object {
         // throw a warning if it's already there
         // no longer need the global, use inVarH
         if ($this->inVarH->isInVarP($varName)) {
-            $this->debugLog("warning: inVar [$varName] in resource [".get_class($this->parent)."] is already used as an inVar in another resource (possible conflict?)");
+            $this->debugLog("warning: inVar [$varName] in resource [".get_class($this->parent)."] is already used as an inVar in another resource (possible conflict?)",6);
         }
         else {
             // not already used, so add this to the list of propagated vars via inVarH if $propagate is true

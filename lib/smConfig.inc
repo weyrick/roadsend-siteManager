@@ -403,7 +403,7 @@ class SM_sectionTag {
             }
             else {            
                 // otherwise, not found.
-                SM_debugLog("getSection ($this->sectionName): requested sectionID [$sectionID] wasn't found: ignoreing",$this,1);
+                SM_debugLog("getSection ($this->sectionName): requested sectionID [$sectionID] wasn't found: ignoreing",$this,6);
                 return NULL;
             }
         }

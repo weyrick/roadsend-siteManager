@@ -455,7 +455,7 @@ class SM_siteManagerRoot extends SM_object {
     function _findSMfile_disk($fName, $GCSpath, $extension='', $fatalFNF=true) {
         
         // debug log at verbose level 1
-        $this->debugLog("attempting to load SiteManager resource file from disk: $fName ($GCSpath, $extension)",1);
+        $this->debugLog("attempting to load SiteManager resource file from disk: $fName ($GCSpath, $extension)",6);
 
         // check for a common error of passing an array as filename
         if (is_array($fName)) {
@@ -481,7 +481,7 @@ class SM_siteManagerRoot extends SM_object {
                     $check1 = $p.'/'.$fName;
                     if (file_exists($check1) && !is_dir($check1)) {
                         //If we found something, we're done.
-                        $this->debugLog("found: $check1");
+                        $this->debugLog("found: $check1", 6);
                          return $check1;
                     }
                 }
@@ -495,7 +495,7 @@ class SM_siteManagerRoot extends SM_object {
 
                     // Only one place to check. If it's there, we're done.
                     $p = $path.'/'.$fName;
-                    $this->debugLog("found: $p");
+                    $this->debugLog("found: $p", 6);
                     return $p;
 
             } else if($fatalFNF) {
@@ -512,7 +512,7 @@ class SM_siteManagerRoot extends SM_object {
             if (file_exists($fName)) {
 
                 // found file
-                $this->debugLog("found: $fName");
+                $this->debugLog("found: $fName", 6);
                 return $fName;
 
             } else if ($fatalFNF) {
