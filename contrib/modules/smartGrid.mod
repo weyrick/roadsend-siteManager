@@ -6,8 +6,8 @@
 **********************************************************************
 *
 * This source file is subject to version 1.0 of the Roadsend Public
-* License, that is bundled with this package in the file 
-* LICENSE, and is available through the world wide web at 
+* License, that is bundled with this package in the file
+* LICENSE, and is available through the world wide web at
 * http://www.roadsend.com/license/rpl1.txt
 *
 **********************************************************************
@@ -53,7 +53,7 @@ class smartGrid extends SM_module {
 
     /** hash to keep track of column configuration options **/
     var $columnConfig = array();
-     
+
     /** Holds the actual query **/
     var $SQL = '';
 
@@ -102,7 +102,7 @@ class smartGrid extends SM_module {
         $this->directive['columnToLink']        = NULL;
         $this->directive['gridLinkClassTag']    = NULL;
         $this->directive['gridLinkExtraTag']    = NULL; //Any extra stuff for the link tag
-        
+
         // Header & footer
         $this->directive['showHeader']       = true;
         $this->directive['showFooter']       = true;
@@ -117,11 +117,11 @@ class smartGrid extends SM_module {
     }
 
      /**
-      * This function actually runs the SQl query and generates the 
-      * resulting grid. 
+      * This function actually runs the SQl query and generates the
+      * resulting grid.
       */
     function moduleThink() {
-    
+
         // Do some setup
         if(isset($this->directive['columnHeaderClassTag'])){
             $columnHeaderClassTag = " class='{$this->directive['columnHeaderClassTag']}'";
@@ -133,12 +133,12 @@ class smartGrid extends SM_module {
         if(empty($start))
             $start =0;
 
-        // Get the reslts      
+        // Get the reslts
         $max = $this->directive['maxPerPage'] * $this->directive['maxPages'];
         if($start > $max)
             return;
 
-        $rh = $this->dbHL[$this->directive['dataBaseID']]->limitQuery($this->SQL, $start, $this->directive['maxPerPage']);
+        $rh = $this->dbHL[$this->directive['dataBaseID']]->query($this->SQL. 'LIMIT '.$start.', '.$this->directive['maxPerPage']);
         SM_dbErrorCheck($rh, $this);
 
         // If they want it, build & show the header
@@ -186,7 +186,7 @@ class smartGrid extends SM_module {
                     } else {
                         $this->say("<td{$width}>{$name}</td>");
                     }
-                    
+
                 }
                 $this->say("</tr>\n");
                 $ft = false;
@@ -195,7 +195,7 @@ class smartGrid extends SM_module {
 
 
             //set up the class tag to be initally empty
-            $normalClassTag = "";            
+            $normalClassTag = "";
 
             // alternate row color
             if(!empty($this->directive['rowColorAlt1'])){
@@ -266,7 +266,7 @@ class smartGrid extends SM_module {
                 if($this->directive['columnToLink'] == $name) {
 
                     if (!empty($this->directive['linkField'])) {
-    
+
                         // Create a link for the data based on the 'linkField'
                         $field = $this->directive['linkField'];
 
@@ -278,7 +278,7 @@ class smartGrid extends SM_module {
                         $link = $rr[$field];
 
                     } else if (!empty($this->directive['linkRedirectPage'])) {
-    
+
                         // Create a link to the 'redirect' page
                         $field = $this->directive['dataField'];
 
@@ -290,7 +290,7 @@ class smartGrid extends SM_module {
                         $link = $this->directive['linkRedirectPage']."?{$this->directive['dataField']}={$rr[$field]}";
 
                     }
-    
+
                     // Output the link
                     $this->say("<td{$width}{$style}>".$this->hLink($link,"{$prefix}{$data}{$postfix}",$this->directive['gridLinkClassTag'],$this->directive['gridLinkExtraTag'])."</td>");
 
@@ -353,7 +353,7 @@ class smartGrid extends SM_module {
                     $footer .= " " . $this->hLink($_SERVER['PHP_SELF'] . '?start=' . $i, $pageNum++);
                 }
             }
-            
+
         } else {
 
             $max = $this->directive['maxPerPage'] * $this->directive['maxPages'];
@@ -378,7 +378,7 @@ class smartGrid extends SM_module {
             // if there is less than 5, only go to the last page.
             $last = $i-($this->directive['maxPerPage']*5);
             $diff = floor(($end % $last)/$this->directive['maxPerPage']);
-            
+
             if($diff > 0) {
                 $newStart = ($last+($this->directive['maxPerPage']*$diff));
                 if($start == $newStart) {
@@ -399,11 +399,11 @@ class smartGrid extends SM_module {
      * This Function generates the code for the "header" of the grid
      * and returns it as a string of HTML code. This function can be
      * overridden to change the look and feel of the header. In addition,
-     * the directive 'showHeader' can be turned on or off to set wether 
+     * the directive 'showHeader' can be turned on or off to set wether
      * it actually gets displayed.
      *
      * @param $start - The starting point for this page
-     * 
+     *
      * @return $header - string containing the HTML to output
      */
     function buildHeader($start) {
@@ -424,7 +424,7 @@ class smartGrid extends SM_module {
 
         $header = "<table width=\"{$this->directive['tableWidth']}\">\n";
         $header .= "<tr $headerClassTag><td colspan=3>$this->total matches were found for your search<br/>";
-        
+
         //make sure we don't get too ridiculous
         $max = $this->directive['maxPerPage'] * $this->directive['maxPages'];
         if($max < $this->total) {
@@ -454,7 +454,7 @@ class smartGrid extends SM_module {
         } else {
             $header .= "&nbsp;";
         }
-        
+
         $header .= "</td>\n<td align=center>Displaying matches " . ($start+1) . " to $end</td>\n<td align=right>";
 
         // If we are not on the last page, show a 'next' link
@@ -476,9 +476,9 @@ class smartGrid extends SM_module {
      * as the "SELECT count(*)" query for totals. This function is
      * in the pre-think list and always runs befor the think.
      */
-    function buildSQL() {       
+    function buildSQL() {
 
-        // Start the inital countSQL 
+        // Start the inital countSQL
         $this->countSQL = "SELECT count(*) FROM {$this->directive['tableName']} ";
 
         // Start the regular SQL
@@ -505,7 +505,7 @@ class smartGrid extends SM_module {
             // Otherwise, selecte everything
             $this->SQL = "SELECT * FROM {$this->directive['tableName']} ";
 
-        }        
+        }
 
         // Where clause
         if(!empty($this->directive['whereClause'])) {
@@ -522,7 +522,7 @@ class smartGrid extends SM_module {
             $this->countSQL .= "GROUP BY {$this->directive['groupBy']} ";
 
         }
-        
+
         // Order by
         $orderBy = $this->getVar('sColumn');
         if(!empty($orderBy)) {
@@ -588,7 +588,7 @@ class smartGrid extends SM_module {
     function setColumnDisplayName($columnName, $name){
         $this->columnConfig[$columnName]['display'] = $name;
     }
-    
+
 }
 
 ?>
