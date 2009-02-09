@@ -182,6 +182,7 @@ class SM_smartForm extends SM_object {
 
         // css style
         $this->directive['legacyLayout']        = true;         // whether to use the latest and greatest CSS technology
+        $this->directive['noCorrectMsgBR']      = false;        // set to true to remove <br /> after Fix Message
         
         // if this is set to true, ALL entities will be presetText, regardless of what is
         // specified as the entity type in the add() call

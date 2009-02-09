@@ -279,7 +279,15 @@ class SM_formEntity extends SM_object {
                 }
                 else {
                     // new style
-                    $title .= $prefix.'<label for="'.$this->varName.'">'.$this->title.'</label>'.$this->inputEntity->fixMessage;
+                    $title .= $prefix.'<label for="'.$this->varName.'">'.$this->title.'</label>';
+                    if ($this->directive['correctMsgClassTag']) {
+                        $title .= "<span class=\"{$this->directive['correctMsgClassTag']}\">".
+                                   $this->inputEntity->fixMessage.
+                                   "</span>";
+                    }
+                    else {
+                        $title .= $this->inputEntity->fixMessage;
+                    }
                 }
             }            
         }
