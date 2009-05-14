@@ -249,6 +249,10 @@ class SM_inVarManager extends SM_object {
         if ($type != '')
             $this->_checkType($varName, $varVal, $type, $dieOnBadType);
 
+        // XSS check
+        if (preg_match('#<\s*(script|about|applet|activex|chrome)#is', $varVal))
+            return '';
+        
         // return value
         return $varVal;
 
