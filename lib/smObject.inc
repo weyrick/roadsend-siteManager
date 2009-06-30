@@ -45,7 +45,7 @@ class SM_object {
 
     /** 
     * current default database handler 
-    * @var PEAR::DB
+    * @var SM_dbWrapper
     */
     var $dbH = NULL;
 

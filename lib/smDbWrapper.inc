@@ -179,7 +179,7 @@ class SM_dbWrapper
         $timer->stop();
         $td = $timer->getProfiling();
         $this->queryTimes[$query]['total'] = $td[1]['total'];
-        if (is_object($rh) && (!DB::isError($rh)))
+        if (is_object($rh))
             $this->queryTimes[$query]['numRows'] = $rh->rowCount();
         
         if (stristr($query,'select')) {
