@@ -155,6 +155,9 @@ class SM_dbWrapper
             return $rh;
         }
         
+        $bt = debug_backtrace(false);
+        
+        $this->queryTimes[$query]['caller'] =  $bt[1]['file'].':'.$bt[1]['line'];
         $this->queryTimes[$query]['SQL'] = $query;
         $this->queryTimes[$query]['id'] = ++$GLOBALS['DB_PROFILE_ID'];
 
@@ -263,7 +266,7 @@ class SM_dbWrapper
             $pot = round(($data['total']/$totalDBtime) * 100,3);
             $data['SQL'] = str_replace('INSERT','<b>INSERT</b>',$data['SQL']);
             $data['SQL'] = str_replace('UPDATE','<b>UPDATE</b>',$data['SQL']);
-            $msg .= "<div class='row{$rNum}'>query #{$data['id']} ".$data['total']." secs ({$pot}%), {$data['numRows']} rows, {$data['sent']}b sent/{$data['recv']}b rcvd<br>".$SQL."</div>\n";
+            $msg .= "<div class='row{$rNum}'>query #{$data['id']} ".$data['total']." secs ({$pot}%), {$data['numRows']} rows, {$data['sent']}b sent/{$data['recv']}b rcvd<br>{$data['caller']}<br>".$SQL."</div>\n";
         }
         return $msg;
         

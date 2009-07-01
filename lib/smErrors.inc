@@ -243,7 +243,7 @@ function SM_makeErrorPage() {
     }
 
     if ($SM_siteManager->dbH->benchMarking) {
-        $output .= '<h3>DB Benchmarks:</h3>(<a href="#" onClick="document.getElementById(\'dbBenchmark\').style.display=\'hide\';">hide</a>)<span id="dbBenchmark">'.$SM_siteManager->dbH->getProfileReport().'</span>';
+        $output .= '<h3>DB Benchmarks:</h3><span id="dbBenchmark">'.$SM_siteManager->dbH->getProfileReport().'</span>';
     }
     else {
         $chr = (strstr($_SERVER['REQUEST_URI'],'?')) ? '&' : '?';
