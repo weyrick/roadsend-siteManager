@@ -26,7 +26,7 @@ class SM_dbWrapper
     /**
      * are we benchmarking?
      */
-    private $benchMarking = false;
+    public $benchMarking = false;
     
     /**
      * last query we made
@@ -254,7 +254,8 @@ class SM_dbWrapper
             $SQL = preg_replace("/\s+/",' ',$SQL);
             if ($_GET['SM_dbpTrunc'] == 1)
                 $SQL = substr($SQL,0,50);
-            $msg .= "# {$data['id']}: [".$SQL."]: ".$data['total']." secs, {$data['numRows']} rows, {$data['sent']} bytes sent / {$data['recv']} bytes received<br>\n";
+            $rNum = ($rNum) ? 0 : 1;            
+            $msg .= "<div class='row{$rNum}'># {$data['id']}: [".$SQL."]: ".$data['total']." secs, {$data['numRows']} rows, {$data['sent']} bytes sent / {$data['recv']} bytes received</div>\n";
         }
         return $msg;
         

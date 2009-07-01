@@ -814,16 +814,14 @@ class SM_siteManagerRoot extends SM_object {
         header("X-Powered-By: Roadsend PHP SiteManager ".SM_VERSION);
         
         // if debugOnVar, output the debug_log first
-        if (($fatalDebug) || ($this->siteConfig->getVar('debug','debugOnVar')) && ($this->inVarH->getVar('SM_debug')==1)) {
+        if (($fatalDebug) || ($this->siteConfig->getVar('debug','debugOnVar')) && ($this->inVarH->getGET('SM_debug')==1)) {
 
             // output buffer
             if (trim($SM_outputBuffer) != '')
                 $this->debugLog('<br /><b>OUTPUT BUFFER:</b><br /><pre>['.$SM_outputBuffer.']</pre>');
 
             // don't output page contents if fatalDebug, just debug info
-            if (!$fatalDebug)
-                $this->debugLog("<b>PAGE OUTPUT:</b><br />$pageOutput");
-            else
+            if ($fatalDebug)
                 $this->debugLog($debugOutput);
 
             $pageOutput = SM_makeErrorPage();
@@ -831,12 +829,14 @@ class SM_siteManagerRoot extends SM_object {
         }
 
         // send headers to stop browsers from caching page?
+        /*
         if ($this->siteConfig->getVar('flags','sendNoCacheHeaders')) {
             header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
             header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");                                                                                                              // always modified
             header("Cache-Control: no-cache, must-revalidate");  // HTTP/1.1
             header("Pragma: no-cache");                          // HTTP/1.0
-        } 
+        }
+        */
 
         // echo page
         echo $pageOutput;

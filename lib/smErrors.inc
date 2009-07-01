@@ -40,7 +40,7 @@ function SM_debugLog($msg, $obj=NULL, $verbosity=0) {
     }
 
     if (is_object($obj)) {
-        $msg = get_class($obj).":: ".$msg;
+        $msg = '<span class="caller">'.get_class($obj)."::</span> ".$msg;
     }
 
     $SM_debugOutput[] = array('msg'=>$msg,'verbosity'=>$verbosity);
@@ -177,8 +177,35 @@ function SM_makeErrorPage() {
     if ($SM_siteID == '')
         $SM_siteID = 'UNKNOWN SITEID';
     
-    $output = "<html><body bgcolor=ffffff><br /><b><font color=\"red\">\n";
-    $output .= "$SM_siteName ($SM_siteID) :: ".$_SERVER['PHP_SELF']."<br /></font><hr />\n";
+    $output = "<html><head>
+               <style type=\"text/css\">
+               body {
+                 color: black;
+                 background-color: white;
+                 font-family: monospace;
+                 font-size: 9pt;
+               }
+               h2 {
+                 color: red;
+               }
+               .caller {
+                 font-weight: bold;
+               }
+               .row0 {
+                 background-color: #eeeeee;
+                 white-space: pre;
+               }
+               .row1 {
+                 background-color: white;
+                 white-space: pre;
+               }
+               #dbBenchmark {
+                 display: inline;
+               }
+               </style>
+               </head><body>
+               <br /><h2>\n";
+    $output .= "$SM_siteName ($SM_siteID) :: ".$_SERVER['REQUEST_URI']."</h2><hr />\n";
 
     if (!empty($SM_noticeLog)) {
 
@@ -200,12 +227,21 @@ function SM_makeErrorPage() {
             if ($log['verbosity'] > $SM_debugLevel)
                 continue;
             ($log['verbosity'] > 0) ? $v = '['.$log['verbosity'].']' : $v = '';
-            $output .= "$v {$log['msg']}<br />\n";
+            $rNum = ($rNum) ? 0 : 1;
+            $output .= "<div class='row{$rNum}'>$v {$log['msg']}</div>\n";
         }
     }
 
     if (trim($SM_outputBuffer) != '') {
-        $output .= "Output Buffer:<br /><pre>".$SM_outputBuffer."</pre>\n";
+        $output .= "<h3>Output Buffer:</h3><div class='row0'>".$SM_outputBuffer."</div>\n";
+    }
+
+    if ($SM_siteManager->dbH->benchMarking) {
+        $output .= '<h3>DB Benchmarks:</h3>(<a href="#" onClick="document.getElementById(\'dbBenchmark\').style.display=\'hide\';">hide</a>)<span id="dbBenchmark">'.$SM_siteManager->dbH->getProfileReport().'</span>';
+    }
+    else {
+        $chr = (strstr($_SERVER['REQUEST_URI'],'?')) ? '&' : '?';
+        $output .= '<a href="'.$_SERVER['REQUEST_URI'].$chr.'SM_dbBenchmark=1">Reload With DB Benchmarking</a>';
     }
 
     if (defined("ROADSEND_PHPC"))
