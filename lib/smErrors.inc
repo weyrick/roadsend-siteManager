@@ -222,15 +222,21 @@ function SM_makeErrorPage() {
         }
     }
 
+    $skipped = 0;
     if (is_array($SM_debugOutput)) {
         foreach ($SM_debugOutput as $log) {
-            if ($log['verbosity'] > $SM_debugLevel)
+            if ($log['verbosity'] > $SM_debugLevel) {
+                $skipped++;
                 continue;
+            }
             ($log['verbosity'] > 0) ? $v = '['.$log['verbosity'].']' : $v = '';
             $rNum = ($rNum) ? 0 : 1;
-            $output .= "<div class='row{$rNum}'>$v {$log['msg']}</div>\n";
+            $dbLogOutput .= "<div class='row{$rNum}'>$v {$log['msg']}</div>\n";
         }
     }
+
+    $output .= "<h3>Showing Debug Level: ".$SM_debugLevel." ({$skipped} msgs hidden)</h3>";
+    $output .= $dbLogOutput;
 
     if (trim($SM_outputBuffer) != '') {
         $output .= "<h3>Output Buffer:</h3><div class='row0'>".$SM_outputBuffer."</div>\n";
