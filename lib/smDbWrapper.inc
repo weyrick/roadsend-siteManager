@@ -242,9 +242,14 @@ class SM_dbWrapper
                 }
             }
         }
-
         
-        $msg = 'total queries: '.sizeof($this->queryTimes)."<br>\n";
+        // get total DB access time so we can do percents
+        $totalDBtime = 0.0;
+        foreach ($this->queryTimes as $SQL => $data) {
+            $totalDBtime += $data['total'];
+        }
+        
+        $msg = 'total queries: '.sizeof($this->queryTimes)." in {$totalDBtime} secs of DB time<br>\n";
         $msg .= 'total bytes sent: '.$totalSent."<br>\n";
         if ($_GET['SM_dbpSort'] == 'bytes') {
             $msg .= 'largest 20 queries comprise '.$topcnt." bytes<br>\n";
@@ -254,8 +259,11 @@ class SM_dbWrapper
             $SQL = preg_replace("/\s+/",' ',$SQL);
             if ($_GET['SM_dbpTrunc'] == 1)
                 $SQL = substr($SQL,0,50);
-            $rNum = ($rNum) ? 0 : 1;            
-            $msg .= "<div class='row{$rNum}'># {$data['id']}: [".$SQL."]: ".$data['total']." secs, {$data['numRows']} rows, {$data['sent']} bytes sent / {$data['recv']} bytes received</div>\n";
+            $rNum = ($rNum) ? 0 : 1;
+            $pot = round(($data['total']/$totalDBtime) * 100,3);
+            $data['SQL'] = str_replace('INSERT','<b>INSERT</b>',$data['SQL']);
+            $data['SQL'] = str_replace('UPDATE','<b>UPDATE</b>',$data['SQL']);
+            $msg .= "<div class='row{$rNum}'>query #{$data['id']} ".$data['total']." secs ({$pot}%), {$data['numRows']} rows, {$data['sent']}b sent/{$data['recv']}b rcvd<br>".$SQL."</div>\n";
         }
         return $msg;
         
