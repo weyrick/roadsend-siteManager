@@ -287,7 +287,7 @@ class SM_dbWrapper
             $bt = '';
             array_reverse($btData);
             foreach ($data['backTrace'] as $btData) {
-                $bt .= $btData['class'].'::'.$btData['function'].' '.$btData['file'].':'.$btData['line']."\n";
+                $bt .= $btData['file'].':'.$btData['line'].' calls '.$btData['class'].'::'.$btData['function']."\n";
             }
             
             $msg .= "<a name='bt{$data['id']}'><div class='sm_querybox'><div class='sm_sqlstats'>query #{$data['id']} ".$data['total']." secs ({$pot}%), {$data['numRows']} rows, {$data['sent']}b sent/{$data['recv']}b received\n";
