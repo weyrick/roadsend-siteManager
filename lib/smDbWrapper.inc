@@ -157,9 +157,6 @@ class SM_dbWrapper
         
         $bt = debug_backtrace(false);
         foreach ($bt as $btid => $btdata) {
-            // skip SM_dbWrapper
-            if ($btid == 0)
-                continue;
             // chop from admin/ or from smPortal/
             $file = strstr($btdata['file'],'admin/');
             if (empty($file))
