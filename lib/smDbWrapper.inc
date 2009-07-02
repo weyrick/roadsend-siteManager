@@ -275,7 +275,7 @@ class SM_dbWrapper
         $msg .= "sorted by $sortby:<br>\n";
         foreach ($this->queryTimes as $SQL => $data) {
             
-            $SQL = preg_replace("/\s+/",' ',$SQL);
+            //$SQL = preg_replace("/\s+/",' ',$SQL);
             if ($_GET['SM_dbpTrunc'] == 1)
                 $SQL = substr($SQL,0,50);                
             $SQL = str_replace('INSERT','<b>INSERT</b>',$SQL);
