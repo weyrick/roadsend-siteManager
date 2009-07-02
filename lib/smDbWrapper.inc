@@ -156,8 +156,23 @@ class SM_dbWrapper
         }
         
         $bt = debug_backtrace(false);
-        
-        $this->queryTimes[$query]['caller'] =  $bt[1]['file'].':'.$bt[1]['line'];
+        foreach ($bt as $btid => $btdata) {
+            // skip SM_dbWrapper
+            if ($btid == 0)
+                continue;
+            // chop from admin/ or from smPortal/
+            $file = strstr($btdata['file'],'admin/');
+            if (empty($file))
+                $file = strstr($btdata['file'],'smPortal/');
+            if (empty($file))
+                $file = $btdata['file'];
+            $qBT[$btid]['file'] = $file;
+            $qBT[$btid]['line'] = $btdata['line'];
+            $qBT[$btid]['function'] = $btdata['function'];
+            $qBT[$btid]['class'] = $btdata['class'];
+        }
+
+        $this->queryTimes[$query]['backTrace'] =  $qBT;
         $this->queryTimes[$query]['SQL'] = $query;
         $this->queryTimes[$query]['id'] = ++$GLOBALS['DB_PROFILE_ID'];
 
@@ -259,14 +274,27 @@ class SM_dbWrapper
         }    
         $msg .= "sorted by $sortby:<br>\n";
         foreach ($this->queryTimes as $SQL => $data) {
+            
             $SQL = preg_replace("/\s+/",' ',$SQL);
             if ($_GET['SM_dbpTrunc'] == 1)
-                $SQL = substr($SQL,0,50);
-            $rNum = ($rNum) ? 0 : 1;
+                $SQL = substr($SQL,0,50);                
+            $SQL = str_replace('INSERT','<b>INSERT</b>',$SQL);
+            $SQL = str_replace('UPDATE','<b>UPDATE</b>',$SQL);
+            $SQL = str_replace('UPDATE','<b>REPLACE INTO</b>',$SQL);
+            
             $pot = round(($data['total']/$totalDBtime) * 100,3);
-            $data['SQL'] = str_replace('INSERT','<b>INSERT</b>',$data['SQL']);
-            $data['SQL'] = str_replace('UPDATE','<b>UPDATE</b>',$data['SQL']);
-            $msg .= "<div class='row{$rNum}'>query #{$data['id']} ".$data['total']." secs ({$pot}%), {$data['numRows']} rows, {$data['sent']}b sent/{$data['recv']}b rcvd<br>{$data['caller']}<br>".$SQL."</div>\n";
+            
+            $bt = '';
+            array_reverse($btData);
+            foreach ($data['backTrace'] as $btData) {
+                $bt .= $btData['class'].'::'.$btData['function'].' '.$btData['file'].':'.$btData['line']."\n";
+            }
+            
+            $msg .= "<a name='bt{$data['id']}'><div class='sm_querybox'><div class='sm_sqlstats'>query #{$data['id']} ".$data['total']." secs ({$pot}%), {$data['numRows']} rows, {$data['sent']}b sent/{$data['recv']}b received\n";
+            $msg .= "<a href='#bt{$data['id']}' onClick='document.getElementById(\"bt{$data['id']}\").style.display=\"inline\"'>show backtrace</a></div>";
+            $msg .= "<div class='sm_sqlbt' id='bt{$data['id']}' style='display: none;'>$bt</div>";
+            $msg .= "<div class='sm_sql'>$SQL</div></div>\n";
+            
         }
         return $msg;
         

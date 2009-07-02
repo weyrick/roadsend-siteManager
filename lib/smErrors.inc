@@ -202,6 +202,22 @@ function SM_makeErrorPage() {
                #dbBenchmark {
                  display: inline;
                }
+               .sm_sqlstats {
+                 background-color: #eeeeee;
+                 white-space: pre;
+               }
+               .sm_sqlbt {
+                 background-color: white;
+                 white-space: pre;
+               }
+               .sm_sql {
+                 background-color: white;
+                 white-space: pre;
+               }
+               .sm_querybox {
+                 border: solid 1px;
+                 margin: 2px;
+               }
                </style>
                </head><body>
                <br /><h2>\n";
