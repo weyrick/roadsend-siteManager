@@ -56,7 +56,7 @@ class stateListEntity extends selectEntity {
         $this->addOption("Colorado",'CO');
         $this->addOption("Connecticut",'CT');
         $this->addOption("Delaware",'DE');
-        $this->addOption("District of Columbia",'DC');
+        $this->addOption("D.C.",'DC');
         $this->addOption("Florida",'FL');
         $this->addOption("Georgia",'GA');
         $this->addOption("Hawaii",'HI');
