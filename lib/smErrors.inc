@@ -225,7 +225,7 @@ function SM_makeErrorPage() {
     
     if (!$SM_siteManager->dbH->benchMarking) {
         $chr = (strstr($_SERVER['REQUEST_URI'],'?')) ? '&' : '?';
-        $output .= '<a href="'.$_SERVER['REQUEST_URI'].$chr.'SM_dbBenchmark=1">Reload With DB Benchmarking</a>';
+        $output .= '<a href="'.$_SERVER['REQUEST_URI'].$chr.'SM_dbBenchmark=1">Reload With DB Benchmarking</a><br>';
     }
 
     if (!empty($SM_noticeLog)) {
