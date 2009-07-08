@@ -223,10 +223,12 @@ function SM_makeErrorPage() {
                <br /><h2>\n";
     $output .= "$SM_siteName ($SM_siteID) :: ".$_SERVER['REQUEST_URI']."</h2><hr />\n";
     
+    /*
     if (!$SM_siteManager->dbH->benchMarking) {
         $chr = (strstr($_SERVER['REQUEST_URI'],'?')) ? '&' : '?';
         $output .= '<a href="'.$_SERVER['REQUEST_URI'].$chr.'SM_dbBenchmark=1">Reload With DB Benchmarking</a><br>';
     }
+    */
 
     if (!empty($SM_noticeLog)) {
 
@@ -263,9 +265,11 @@ function SM_makeErrorPage() {
         $output .= "<h3>Output Buffer:</h3><div class='row0'>".$SM_outputBuffer."</div>\n";
     }
 
+    /*
     if ($SM_siteManager->dbH->benchMarking) {
         $output .= '<h3>DB Benchmarks:</h3><span id="dbBenchmark">'.$SM_siteManager->dbH->getProfileReport().'</span>';
     }
+    */
 
     if (defined("ROADSEND_PHPC"))
         $verLine = "(".RAVEN_VERSION_TAG.'/'.PHP_OS.')';
