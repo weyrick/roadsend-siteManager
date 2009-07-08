@@ -102,7 +102,7 @@ function SM_getDebugBackTrace($stripTags = false, $exception=NULL) {
         else
             $caller = $val['function'];
         $file = dirname($val['file']).'/<font color="brown">'.basename($val['file']).'</font>';
-        $text .= $file.' (<font color="darkred">'.$val['line'].'</font>): <font color="darkorange">'.$caller.'</font>'.$args."<br />\n";
+        $text .= $file.' (<font color="darkred">'.$val['line'].'</font>): <font color="darkorange">'.$caller.'</font>'.$args."\n";
     }
 
     $text .= "</font>";
@@ -222,6 +222,11 @@ function SM_makeErrorPage() {
                </head><body>
                <br /><h2>\n";
     $output .= "$SM_siteName ($SM_siteID) :: ".$_SERVER['REQUEST_URI']."</h2><hr />\n";
+    
+    if (!$SM_siteManager->dbH->benchMarking) {
+        $chr = (strstr($_SERVER['REQUEST_URI'],'?')) ? '&' : '?';
+        $output .= '<a href="'.$_SERVER['REQUEST_URI'].$chr.'SM_dbBenchmark=1">Reload With DB Benchmarking</a>';
+    }
 
     if (!empty($SM_noticeLog)) {
 
@@ -261,10 +266,6 @@ function SM_makeErrorPage() {
     if ($SM_siteManager->dbH->benchMarking) {
         $output .= '<h3>DB Benchmarks:</h3><span id="dbBenchmark">'.$SM_siteManager->dbH->getProfileReport().'</span>';
     }
-    else {
-        $chr = (strstr($_SERVER['REQUEST_URI'],'?')) ? '&' : '?';
-        $output .= '<a href="'.$_SERVER['REQUEST_URI'].$chr.'SM_dbBenchmark=1">Reload With DB Benchmarking</a>';
-    }
 
     if (defined("ROADSEND_PHPC"))
         $verLine = "(".RAVEN_VERSION_TAG.'/'.PHP_OS.')';
@@ -273,7 +274,9 @@ function SM_makeErrorPage() {
     
     if (PHP_SAPI != 'cli')
         $output .= "<hr /><b>Roadsend SiteManager v".SM_VERSION." (<a href=\"http://www.roadsend.com/siteManager\">http://www.roadsend.com/siteManager</a>) ".$verLine;
-    $output .= "</b><br /></body></html>\n";
+    $output .= "</b><br />";
+
+    $output .= "</body></html>\n";
 
     if (PHP_SAPI == 'cli')
         $output = strip_tags($output);
