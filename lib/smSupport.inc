@@ -247,6 +247,34 @@ function SM_prettyName($name) {
 
 }
 
+function SM_pluralize($word, $count=NULL) {
+
+    $alreadyPlural = array('news' => true,
+                           'audio' => true,
+                          );
+
+    // if count isn't given, always pluralize
+    if (!$count)
+        $count = 2;
+
+    if ($count == 1) {
+        // singular
+        return $word;
+    }
+    else {
+        // pluralize
+        if (isset($alreadyPlural[strtolower($word)]))
+            return $word;
+        if (substr($word, 0, -1) == 's') {
+            return $word.'es';
+        }
+        else {
+            return $word.'s';
+        }
+    }
+    
+}
+
 /** 
 * debug function used in array_walk (smObject.inc)
 */
