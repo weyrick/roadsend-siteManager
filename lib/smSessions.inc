@@ -108,6 +108,11 @@ class SM_session extends SM_object {
      * an array of regex rewriting rules to apply to links created in hLink
      */
     var $urlRewriteRules = NULL;
+
+    /**
+     * whether we've emitted javascript for the popup function
+     */
+    var $jsPopDefined = false;
     
     /**
      * constructor. initialize, define persistents
@@ -628,9 +633,9 @@ class SM_session extends SM_object {
         else
             $connect = '?';
             
-        if (empty($this->jsOutput)) {
+        if (!$this->jsPopDefined) {
                 
-            $this->jsOutput = "
+            $this->jsOutput .= "
                 
                 <script language=\"JavaScript\">
                 // popup window
@@ -640,6 +645,7 @@ class SM_session extends SM_object {
                 </script>
 
                 ";
+            $this->jsPopDefined = true;
                 
         }
             
