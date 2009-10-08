@@ -91,7 +91,7 @@ class SM_dbRecordSelector extends SM_module {
       * this function contains the core functionality entry point for the module.
       */
     function moduleThink() {
-                        
+   
         //build extra where clause based on the
         //dynamic where clause field
         if ($this->directive['allowDynamicWhere'])
@@ -125,7 +125,10 @@ class SM_dbRecordSelector extends SM_module {
                                 'orderBy'       =>$this->directive['orderBy'],
                                 'whereClause'   =>$this->directive['whereClause']));
         
-        //raido button options
+        //radio button options
+        if ($this->getVar($this->directive['actionVar']) != '') {
+            $this->directive['defaultAction'] = $this->getVar($this->directive['actionVar']);
+        }
         $st = $myForm->add($this->directive['actionVar'],'Action','radio',true, $this->directive['defaultAction']);
 
         if($this->directive['allowAdd'])
