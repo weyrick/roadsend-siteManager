@@ -442,8 +442,21 @@ function SM_sfLoadEntity($iName) {
     // globalize
     global $SM_siteManager;
 
-    // find file
-    $iName = $SM_siteManager->findSMfile($iName.'Entity', 'sfEntities', 'inc', true);
+    // allow for a local prefix
+    $prefix = $SM_siteManager->siteConfig->getVar('smartForms','localInputEntityPrefix');
+    if ($prefix) {
+        $ptName = $SM_siteManager->findSMfile($prefix.'_'.$iName.'Entity', 'sfEntities', 'inc', false);
+        if ($ptName) {
+            $iName = $ptName;
+        }
+        else {
+            $iName = $SM_siteManager->findSMfile($iName.'Entity', 'sfEntities', 'inc', true);
+        }
+    }
+    else {
+        // find file
+        $iName = $SM_siteManager->findSMfile($iName.'Entity', 'sfEntities', 'inc', true);    
+    }
 
     // load it up
     // include_once will not let duplicate modules be loaded
