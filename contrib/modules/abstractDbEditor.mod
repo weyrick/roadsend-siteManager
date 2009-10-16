@@ -83,8 +83,7 @@ class SM_abstractDbEditor extends SM_module {
         $this->useSmartForm("myForm");
 
         // must include function to define a form
-        //$this->postConfigList[] = 'setInVars';
-        $this->preThinkList[] = 'setInVars';
+        $this->postConfigList[] = 'setInVars';
         $this->preThinkList[] = 'defineForm';
 
     }
