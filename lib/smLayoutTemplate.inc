@@ -332,12 +332,17 @@ class SM_layoutTemplate extends SM_object {
         // you CAN have multiple SM tags on one line
         // but you CANNOT break them across multiple lines!
         $this->htmlParsedOutput   = '';
+
+        // as long as we have more than one line, we add newslines back in
+        // if there was only one line, we didn't have any
+        $addNewlines = (sizeof($this->htmlTemplate) > 1);
         
         // for each line in the file...
         foreach ($this->htmlTemplate as $line) {
 
             // add our newline in (was removed during load)
-            $line .= "\n";
+            if ($addNewlines)
+                $line .= "\n";
             
             // use this to determine what kind of tag we're dealing with
             $tagType = '';
