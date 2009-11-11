@@ -3,7 +3,7 @@
 
     <SITE siteid="GLOBAL">                                       
         <SECTION name="dirs">
-            <VAR name="smRoot"      value = "/usr/lib/roadsend/siteManager/" />
+            <VAR name="smRoot"      value = "/usr/lib/roadsend/siteManager6/" />
             <VAR name="base"        value = "{$smRoot}"/>            
             <VAR name="redist"      value = "{$base}redist/" />
             <VAR name="pear"        value = "{$redist}pear/" />
