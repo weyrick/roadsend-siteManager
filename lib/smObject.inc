@@ -3,7 +3,7 @@
 /**
  *  Roadsend SiteManager
  *******************************************************************
- *  Copyright (c) 2001-2003 Roadsend, Inc.(http://www.roadsend.com)
+ *  Copyright (c) 2001-2009 Roadsend, Inc.(http://www.roadsend.com)
  *******************************************************************
  *
  * This source file is subject to version 1.0 of the Roadsend Public
@@ -151,8 +151,9 @@ class SM_object {
     /**
      * call fatalErrorPage from current error handler
      * @param string $msg message to display
+     * @param object $obj calling object
      */
-    function fatalErrorPage($msg='unknown fatal error') {
+    function fatalErrorPage($msg='unknown fatal error', $obj=NULL) {
         if (isset($this->errorHandler)) {
             $this->errorHandler->fatalErrorPage($msg, $this);
         }
@@ -181,7 +182,7 @@ class SM_object {
      * call dbErrorCheck from error handler
      * @param result handle $rh result handle to check
      */
-    function dbErrorCheck($rh, $fatal=true) {
+    function dbErrorCheck($rh, $obj=NULL, $fatal=true) {
         if (isset($this->errorHandler)) {
             return $this->errorHandler->dbErrorCheck($rh, $this, $fatal);
         }

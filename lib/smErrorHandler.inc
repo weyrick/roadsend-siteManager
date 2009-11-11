@@ -41,7 +41,7 @@ class SM_errorHandler extends SM_object {
     * the base method simply calls SM_fatalErrorPage
     */
      
-    function fatalErrorPage($msg, $obj=NULL) {
+    function fatalErrorPage($msg='unknown fatal error', $obj=NULL) {
         SM_fatalErrorPage($msg, $obj);
     }
 
@@ -62,7 +62,7 @@ class SM_errorHandler extends SM_object {
      * @param SM_errorHandler $obj calling object
      * @param bool $fatal if true, and $rh is a PEAR error, we issue a fatalErrorPage()
      */
-    function dbErrorCheck($rh, $obj, $fatal=true) {
+    function dbErrorCheck($rh, $obj=NULL, $fatal=true) {
 
         global $SM_develState;
 
