@@ -2,7 +2,7 @@
 
 /*********************************************************************
 *  Roadsend SiteManager
-*  Copyright (c) 2001-2003 Roadsend, Inc.(http://www.roadsend.com)
+*  Copyright (c) 2001-2009 Roadsend, Inc.(http://www.roadsend.com)
 **********************************************************************
 *
 * This source file is subject to version 1.0 of the Roadsend Public
@@ -32,8 +32,8 @@ $SM_rootDir = '';   // when set, make sure it ends with a slash!
 // -----------------------------------------------------------------------------
 
 // Version
-$SM_versionTag = "4.1.0";
-define('SM_VERSION', '4.1.0');
+$SM_versionTag = "6.0.0";
+define('SM_VERSION', '6.0.0');
 
 // main global config file
 define('SM_GLOBAL_CONFIG_FILE','config/globalConfig.xsm');
