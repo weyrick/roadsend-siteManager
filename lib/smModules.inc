@@ -3,7 +3,7 @@
 /**
  *  Roadsend SiteManager
  *******************************************************************
- *  Copyright (c) 2001-2003 Roadsend, Inc.(http://www.roadsend.com)
+ *  Copyright (c) 2001-2009 Roadsend, Inc.(http://www.roadsend.com)
  *******************************************************************
  *
  * This source file is subject to version 1.0 of the Roadsend Public
@@ -81,12 +81,6 @@ class SM_module extends SM_object {
     * @var array
     */
     var $postConfigList = array();
-
-    /** 
-    * list of resource objects used by this module 
-    * @var array
-    */
-    var $resourceList = array();
 
     /**
      * construction. does some initializing. will run moduleConfig() method if it
@@ -323,152 +317,6 @@ class SM_module extends SM_object {
 
     }
 
-    /**
-     * load a module for use in this module. searches module paths
-     *
-     * @param string $rID resource ID to associate with this resource
-     * @param string $moduleFile the module file to load (.mod file)
-     * @param string $moduleName if the class name is different from the module
-     *                             file name, specify it here
-     * @return SM_module the loaded module
-     */
-    function useModule($rID, $moduleFile='', $moduleName='') {
-        
-        // sanity
-        if (isset($this->resourceList[$rID]))
-            $this->debugLog("useModule: resource ID $rID was already in use");
-
-        if ($moduleFile == '') {
-            $moduleFile = $rID;
-        }
-
-        // load the module
-        // use $this->loadModule instead of $SM_siteManager->loadModule
-        // because it gives the module a chance to override the method
-        // and do things with the module before it's used (directives, etc)
-        $newModule = $this->loadModule($moduleFile,$moduleName);
-
-        // add it to our resource list
-        $this->resourceList[$rID] = $newModule;
-
-        return $newModule;
-
-    }
-
-
-    /**
-     * load a template for use in this module. searches template paths
-     *     
-     * @param string $rID resource ID to associate with this resource
-     * @param string $templateFile the template file to load (.tpt file)
-     * @return SM_layoutTemplate the loaded template
-     */
-    function useTemplate($rID, $templateFile='') {
-
-        // sanity
-        if (isset($this->resourceList[$rID]))
-            $this->debugLog("useTemplate: resource ID $rID was already in use");
-
-        if ($templateFile == '') {
-            $templateFile = $rID;
-        }
-
-        // new template
-        // use $this->loadTemplate instead of $SM_siteManager->loadModule
-        // because it gives the module a chance to override the method
-        // and do things with the module before it's used (directives, etc)
-        $newTemplate = $this->loadTemplate($templateFile);
-
-        // add it to our resource list
-        $this->resourceList[$rID] = $newTemplate;
-
-        return $newTemplate;
-
-    }
-
-
-    /**
-     * load a (sub) codePlate for use in this module. searches codePlate paths
-     *
-     * @param string $rID resource ID to associate with this resource     
-     * @param string $codePlateFile the codeplate to load
-     * @return SM_codePlate the loaded codePlate
-     */
-    function useCodePlate($rID, $codePlateFile='') {
-
-        // sanity
-        if (isset($this->resourceList[$rID]))
-            $this->debugLog("useCodePlate: resource ID $rID was already in use");
-
-        if ($codePlateFile == '') {
-            $codePlateFile = $rID;
-        }
-
-        // load the code plate
-        // use $this->loadCodePlate instead of $SM_siteManager->loadModule
-        // because it gives the module a chance to override the method
-        // and do things with the module before it's used (directives, etc)
-        $newCodePlate = $this->loadCodePlate($codePlateFile);
-        
-        // add it to our resource list
-        $this->resourceList[$rID] = $newCodePlate;
-
-        return $newCodePlate;
-
-    }
-
-
-    /**
-     * create a SmartForm for use in this module as a resource
-     *
-     * @param string $rID resource ID to associate with this resource     
-     * @return SM_smartForm a new smartForm
-     */
-    function useSmartForm($rID) {
-
-        // sanity
-        if (isset($this->resourceList[$rID]))
-            $this->debugLog("useSmartForm: resource ID $rID was already in use");
-
-        // load the code plate
-        $newSmartForm = $this->newSmartForm();
-        
-        // add it to our resource list
-        $this->resourceList[$rID] = $newSmartForm;
-
-        return $newSmartForm;
-
-    }
-
-    /**
-     * add misc user data as a module resource
-     * @param string $rID resource ID
-     * @param SM_Module &$data the variable to use as a resource
-     */
-    function addResource($rID, $data) {
-        
-        // sanity
-        if (isset($this->resourceList[$rID]))
-            $this->debugLog("useSmartForm: resource ID $rID was already in use");
-
-        $this->resourceList[$rID] = $data;
-
-    }
-
-    /**
-     * return a resource for use in moduleThink() that was loaded in moduleConfig()
-     * @param string $rID the resource ID assigned when the resource was loaded
-     */
-    function getResource($rID) {
-
-        if (!isset($this->resourceList[$rID])) {
-            $this->debugLog("getResource: resource ID $rID wasn't defined");
-            return NULL;
-        }
-
-        return $this->resourceList[$rID];
-
-    }
 
     /**
      * load a module for use in this module. searches module paths
