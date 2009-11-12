@@ -47,18 +47,6 @@ class SM_module extends SM_object {
     var $inVarClient = NULL;
 
     /** 
-    * a hash of styles to be used in this module  
-    * @var array
-    */
-    var $style = array();
-
-    /** 
-    * the final output of the java script section of the module 
-    * @var string
-    */
-    var $jsOutput = '';
-
-    /** 
     * a list of smart forms this module contains. array of references to smartform objects 
     * @var array
     */
@@ -83,34 +71,33 @@ class SM_module extends SM_object {
     var $postConfigList = array();
 
     /**
+     * serialize the module ids
+     */
+    static private $moduleCount = 0;
+
+    /**
+     * different output wrappers
+     */
+    const WRAP_NONE = 0;
+    const WRAP_SPAN = 1;
+    const WRAP_DIV  = 2;
+    const WRAP_P    = 3;
+
+    /**
      * construction. does some initializing. will run moduleConfig() method if it
      * exists in this class
      */
     function SM_module() {
             
-        // increate module count
-        global $SM_MODULE_COUNT;
-
         // smobject setup
         $this->_smoConfigure();
 
         // configure module
-        $this->moduleID     = "SM".$SM_MODULE_COUNT++;
+        $this->moduleID     = "SM".self::$moduleCount++;
 
-        // setup default required directive
-        $this->directive['tableBorder']         = 0;
-        $this->directive['tableWidth']          = "100%";
-        $this->directive['tableCellPadding']    = 0;
-        $this->directive['tableCellSpacing']    = 0;
-        $this->directive['tableBgColor']        = '';
-        $this->directive['tableBorderColor']    = '';
-		
-        $this->directive['tableAlignment']      = '';
-        $this->directive['centerInTable']       = false;
-        
-        $this->directive['outputInTable']       = true;
-        $this->directive['outputInSpan']        = true;
-        $this->directive['outputInDiv']        = false;
+        // setup default required directive        
+        $this->directive['outputWrapper']       = self::WRAP_DIV;
+        $this->directive['outputClass']         = 'sm mod';
     
         $this->directive['dieOnBadInVarType']   = true;
     
@@ -145,24 +132,6 @@ class SM_module extends SM_object {
             $this->_requireInVarClient();
             $this->inVarClient->addDirective($key,$val);
             break;
-        case 'outputInSpan':
-            $this->directive['outputInSpan'] = $val;
-            // don't want them both
-            if (($this->directive['outputInSpan'])&&($this->directive['outputInDiv']))
-                $this->directive['outputInDiv'] = false;
-            break;
-        case 'outputInDiv':
-            $this->directive['outputInDiv'] = $val;
-            // don't want them both
-            if (($this->directive['outputInSpan'])&&($this->directive['outputInDiv']))
-                $this->directive['outputInSpan'] = false;
-            break;
-        case 'cleanOutput':
-            // set other directives
-            parent::addDirective('outputInSpan',false);
-            parent::addDirective('outputInDiv',false);
-            parent::addDirective('outputInTable',false);
-            return;
         }
 
         // call parent
@@ -187,37 +156,22 @@ class SM_module extends SM_object {
             return '';
         }
 
-        // make the start of our table to wrap the output in
-        if ($this->directive['outputInSpan'])
-            $this->moduleOutput = "<span id=\"$this->moduleID\">\n";
-        elseif ($this->directive['outputInDiv'])
-            $this->moduleOutput = "<div id=\"$this->moduleID\">\n";
-
-        if ($this->directive['outputInTable']) {
-        
-            $this->moduleOutput .= "<table width=\"{$this->directive['tableWidth']}\" border=\"{$this->directive['tableBorder']}\" cellspacing=\"{$this->directive['tableCellSpacing']}\" cellpadding=\"{$this->directive['tableCellPadding']}\"";
-            if ($this->directive['tableBgColor'] != '')
-                $this->moduleOutput .= " bgcolor=\"{$this->directive['tableBgColor']}\" ";
-                
-				
-            // added by pvh 2003/03/15
-            if ($this->directive['tableBorderColor'] != '')
-                $this->moduleOutput .= " bordercolor=\"{$this->directive['tableBorderColor']}\" ";
-			
-                
-            if (!empty($this->directive['tableHeight']))
-                $this->moduleOutput .= " height=\"{$this->directive['tableHeight']}\" ";
-            $this->moduleOutput .= "><tbody>\n";
-                                
-            $this->moduleOutput .= "<tr>\n";
-
-            if ($this->directive['tableAlignment'] != '')
-                $this->moduleOutput .= '<td align="'.$this->directive['tableAlignment'].'">';
-            elseif ($this->directive['centerInTable'])
-                $this->moduleOutput .= '<td align="center">';
-            else
-                $this->moduleOutput .= '<td>';
-                
+        if ($this->directive['outputWrapper'] != self::WRAP_NONE) {
+            switch ($this->directive['outputWrapper']) {
+                default:
+                case self::WRAP_DIV:
+                    $w = 'div';
+                    break;
+                case self::WRAP_P:
+                    $w = 'p';
+                    break;
+                case self::WRAP_SPAN:
+                    $w = 'span';
+                    break;
+            }
+            if ($this->directive['divClass'] != '')
+                $class = 'class="'.$this->directive['divClass'].'"';
+            $this->moduleOutput = "<{$w} id=\"{$this->moduleID}\" {$class}>\n";
         }
         
         // verify inVars
@@ -243,40 +197,11 @@ class SM_module extends SM_object {
                 call_user_func(array($this,$method));
             }
         }
-
-        // grab javascript output from any of the smartforms
-        if ((isset($this->formList))&&(is_array($this->formList))) {
-            foreach ($this->formList as $theForm) {
-                if ($theForm->jsOutput != '') {
-                    if ($this->jsOutput == '') {
-                        // we need to add <SCRIPT> header since this is first js code
-                        $this->jsOutput = '<script language="JavaScript">';
-                        $this->jsOutput .= "\n\n// ".get_class($this)."\n";                                             
-                        $this->jsOutput .= $theForm->jsOutput;
-                        
-                    }
-                    else {
-                        // we already have stuff in there so <SCRIPT> is already there
-                        $this->jsOutput .= $theForm->jsOutput;
-                    }
-                }
-            }
-        }
-                
-        // if there was any javascript output, we'll automatically add a </SCRIPT>
-        if (($this->jsOutput != '')&&(stristr($this->jsOutput, '</script') === false))
-            $this->jsOutput .= "</script>";
         
-        // end table        
-        if ($this->directive['outputInTable']) {
-            $this->moduleOutput .= "</td></tr></tbody>\n</table>\n";
-        }
                 
-        // end span
-        if ($this->directive['outputInSpan'])
-            $this->moduleOutput .= "</span>\n";
-        elseif ($this->directive['outputInDiv'])
-            $this->moduleOutput .= "</div>\n";
+        // end wrapper
+        if ($this->directive['outputWrapper'] != self::WRAP_NONE)
+            $this->moduleOutput .= "</{$w}>\n";
 
         // that's all, folks.
         return $this->moduleOutput;
@@ -309,7 +234,6 @@ class SM_module extends SM_object {
      */
     function _resetModule() {
 
-        $this->jsOutput = NULL;
         $this->moduleOutput = NULL;
 
         if (method_exists($this, "resetModule"))
@@ -387,16 +311,7 @@ class SM_module extends SM_object {
     function canModuleLoad() {
         return true;
     }
-
-     /**
-      * this function will return any javascript code associated with this module
-      * use $this->sayJS() to add text to the javascript section
-      *
-      * @return string module javascript output
-      */
-    function getJS() {
-        return $this->jsOutput;
-    }
+    
 
     /**
      * this function creates a link to the desired URL, and adds the session information automatically
@@ -592,53 +507,12 @@ class SM_module extends SM_object {
        return $this->inVarClient->dumpInVars();
    }
 
-    /**
-     * declare that a style sheet element will be used in this module
-     * @param string $sName the internal style name to use
-     * @param string $style the style sheet element to reference (external, from template)
-     *                                  defaults to the same name as $sName
-     */
-    function addStyle($sName, $style='') {
-        if ($style == '') {
-            $style = $sName;
-        }
-        $this->style[$sName] = $style;
-    }
-
-    /**
-     * retrieve the currently configured style sheet element (external) based on the
-     * internal named passed
-     * @param string $sName the internal style sheet name
-     * @return string the currently configured style sheet element value (external), or $sName if not found
-     */
-    function getStyle($sName) {
-        if (isset($this->style[$sName]))
-            return $this->style[$sName];
-        else
-            return $sName;
-    }
-
-     /**
-      * override a style sheet value
-      * @param string $sName  the internal module style name
-      * @param string $style  the style element to use for this style name, which is presumably defined in the
-      *                         template's CSS style sheet somewhere
-      */
-    function setStyle($sName, $style) {
-        if (!isset($this->style[$sName]))
-            $this->fatalErrorPage("Style name $sName was not found in this module");
-        else
-            $this->style[$sName] = $style;
-    }
     
      /**
       * a simple wrapper function that adds $text to this modules final output
       * @param string $text text to be added to final output
-      * @param string $sName internal style name to use for this output. will wrap in SPAN tag
       */
-    function say($text, $sName='') {
-        if (($sName != '') && (isset($this->style[$sName])))
-            $text = "<span class=\"{$this->style[$sName]}\">$text</span>\n";        
+    function say($text) {
         $this->moduleOutput .= $text;
     }
 
@@ -658,47 +532,6 @@ class SM_module extends SM_object {
       */
     function saybr($text='',$sName='') {
         $this->say($text."<br />\n",$sName);
-    }
-
-    
-     /**
-      * this wraps the say() function
-      * @param string $text text to be added to final output
-      * @param string $sName internal style name to use for this output. will wrap in SPAN tag
-      */
-    function write($text, $sName='') {
-        $this->say($text,$sName);
-    }
-
-
-     /**
-      * this wraps the saybr() function
-      * @param string $text text to be added to final output. leave blank for just a <BR>
-      * @param string $sName internal style name to use for this output. will wrap in SPAN tag
-      */
-    function writeln($text='',$sName='') {
-        $this->say($text."<br />\n",$sName);
-    }
-
-     /**
-      * a simple wrapper function that adds $text to this modules
-      * javascript final output
-      * if it was blank when we started, we'll automatically add the javascript start tag
-      * it will be ended automatically when we're run
-      * @param string $text text to be added to final javascript output
-      * @param bool $addHeader if true (default), it will attempt to add the <SCRIPT> tags for you
-      */
-    function sayJS($text, $addHeader=true) {
-
-        if (empty($this->jsOutput)&& $addHeader && (stristr($jsOutput,'<script') === false)) {
-        
-            // auto start
-            $this->jsOutput = '<script language="JavaScript">';
-            $this->jsOutput .= "\n\n// ".get_class($this)."\n";
-        
-        }
-    
-        $this->jsOutput .= $text."\n";
     }
 
 
