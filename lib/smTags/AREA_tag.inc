@@ -96,9 +96,6 @@ class SM_smTag_AREA extends SM_smTag {
                 // run template
                 $areaOutput .= $this->itemList[$key]->run();
 
-                // get javascript
-                $this->sayJS($this->itemList[$key]->jsOutput);
-
             }
             elseif ($this->itemList[$key] instanceof SM_module) {
 
@@ -106,9 +103,6 @@ class SM_smTag_AREA extends SM_smTag {
 
                 // run module
                 $areaOutput .= $this->itemList[$key]->run();
-
-                // get javascript code from this module, if any
-                $this->sayJS($this->itemList[$key]->getJS());
 
             }
             else {

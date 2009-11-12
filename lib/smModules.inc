@@ -95,9 +95,9 @@ class SM_module extends SM_object {
         // configure module
         $this->moduleID     = "SM".self::$moduleCount++;
 
-        // setup default required directive        
+        // setup default directives
         $this->directive['outputWrapper']       = self::WRAP_DIV;
-        $this->directive['outputClass']         = 'sm mod';
+        $this->directive['outputClass']         = 'mod '.get_class($this);
     
         $this->directive['dieOnBadInVarType']   = true;
     
@@ -169,8 +169,8 @@ class SM_module extends SM_object {
                     $w = 'span';
                     break;
             }
-            if ($this->directive['divClass'] != '')
-                $class = 'class="'.$this->directive['divClass'].'"';
+            if ($this->directive['outputClass'] != '')
+                $class = 'class="'.$this->directive['outputClass'].'"';
             $this->moduleOutput = "<{$w} id=\"{$this->moduleID}\" {$class}>\n";
         }
         
