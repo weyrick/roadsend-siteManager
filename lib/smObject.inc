@@ -113,12 +113,12 @@ class SM_object {
         global $SM_siteManager;
 
         // setup variables to reference SM_siteManager object
-        $this->dbH          =& $SM_siteManager->dbH;
-        $this->dbHL         =& $SM_siteManager->dbHL;
-        $this->sessionH     =& $SM_siteManager->sessionH;
-        $this->siteConfig   =& $SM_siteManager->siteConfig;
-        $this->inVarH       =& $SM_siteManager->inVarH;
-        $this->errorHandler =& $SM_siteManager->errorHandler;
+        $this->dbH          = $SM_siteManager->dbH;
+        $this->dbHL         = $SM_siteManager->dbHL;
+        $this->sessionH     = $SM_siteManager->sessionH;
+        $this->siteConfig   = $SM_siteManager->siteConfig;
+        $this->inVarH       = $SM_siteManager->inVarH;
+        $this->errorHandler = $SM_siteManager->errorHandler;
 
     }
 
