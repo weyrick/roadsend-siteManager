@@ -47,15 +47,7 @@ class SM_session extends SM_object {
      * @var array
      */
     var $persistentVars = array();
-    
-    /**
-     * output of the java script, to be added to template javaScript section.
-     * the entire page will use this field as it's main javascript output variable
-     * ie, this is the javaScript output for this page in this "session"
-     * @var string
-     */
-    var $jsOutput = '';
-    
+        
     /**
      * the current session ID
      * @var string
@@ -108,11 +100,6 @@ class SM_session extends SM_object {
      * an array of regex rewriting rules to apply to links created in hLink
      */
     var $urlRewriteRules = NULL;
-
-    /**
-     * whether we've emitted javascript for the popup function
-     */
-    var $jsPopDefined = false;
     
     /**
      * constructor. initialize, define persistents
@@ -606,64 +593,7 @@ class SM_session extends SM_object {
         return $this->_urlEncodePersistents($eList,'form').$this->_urlEncodeInVars($eList,'form');
         
     }
-    
-    
-    /**
-     * create a link using java popup window
-     * if you use this function, make sure your template has a TYPE="javascript" SM tag
-     *
-     * @param string $link the URL to link to
-     * @param string $text the text to link
-     * @param string $width the width of the popup window
-     * @param string $height the height of the popup window
-     * @param string $class the CLASS to use for this text (ie, style sheet element)
-     * @param string $extra extra data to stick into the <A> tag. may be CLASS, TARGET, etc.
-     * @param array $exList a list of variables to specifically NOT include in the URL
-     */
-    function puLink($link, $text, $width=640, $height=480, $class='', $extra='', $exList=NULL) {
         
-        // is link blank? use default script
-        if ($link[0] == '?') {
-            $link = $this->directive['defaultScript'].$link;
-        }
-            
-        // include default search location
-        if (eregi($this->directive['scriptWithVars'],$link))
-            $connect = '&';
-        else
-            $connect = '?';
-            
-        if (!$this->jsPopDefined) {
-                
-            $this->jsOutput .= "
-                
-                <script language=\"JavaScript\">
-                // popup window
-                function pop(url,width,height) {
-                        Project = window.open(url, 'Project', 'width='+width+',height='+height+',scrollbars=yes');
-                }
-                </script>
-
-                ";
-            $this->jsPopDefined = true;
-                
-        }
-            
-        if ($class != '') {
-            $cText = 'class="'.$class.'"';
-        }
-        else
-            $cText = '';
-            
-        // generate variable exclude list
-        $eList = $this->_getLinkVars($link);
-            
-        $output = "<a href=\"javascript:pop('$link$connect".$this->getSessionVars($eList)."', '$width','$height')\" $cText $extra>$text</a> ";
-            
-        return $output;
-        
-    }
-    
     
     /**
      * transfer to another page, keeping session variables in tact
