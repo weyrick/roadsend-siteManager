@@ -75,7 +75,7 @@ class SM_smTag_AREA extends SM_smTag {
         $areaOutput = '';
 
         if (sizeof($this->itemList) == 0) {
-            $this->debugLog("tagThink: no items in area [$this->areaName], leaving blank");
+            $this->debugLog("tagThink: no items in area [$this->areaName], leaving blank",6);
             return;
         }
 
