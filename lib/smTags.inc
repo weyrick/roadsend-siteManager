@@ -3,7 +3,7 @@
 /**
  *  Roadsend SiteManager
  *******************************************************************
- *  Copyright (c) 2001-2003 Roadsend, Inc.(http://www.roadsend.com)
+ *  Copyright (c) 2001-2009 Roadsend, Inc.(http://www.roadsend.com)
  *******************************************************************
  *
  * This source file is subject to version 1.0 of the Roadsend Public
@@ -42,12 +42,6 @@ class SM_smTag extends SM_object {
     * @var string
     */
     var $data = '';
-
-    /** 
-    * the javascript output associated with this tag. it will show up in the main javascript section 
-    * @var string
-    */
-    var $jsOutput = '';
 
     /** 
     * the main output this tag will replace itself with in the final template output 
@@ -134,14 +128,6 @@ class SM_smTag extends SM_object {
 
 
     /**
-     * wrapper function for javascript output
-     * @param string $output string to add to main tag output
-     */
-    function sayJS($output) {
-        $this->jsOutput .= $output;
-    }
-
-    /**
      * method for retrieving an attribute from this tag
      * @param string $key the attribute key to retrieve
      * @return string the value of the attribute requested, or NULL
@@ -181,20 +167,11 @@ class SM_smTag extends SM_object {
 
         // derived classes should call me with parent::tagReset();
         $this->tagOutput = NULL;
-        $this->jsOutput = NULL;
 
         if (method_exists($this, "tagReset")) {
             $this->tagReset();
         }
 
-    }
-
-    /**
-     * return the current javascript output
-     * @return string javascript output that should appear in the main javascript section
-     */
-    function getTagJS() {
-        return $this->jsOutput;
     }
 
 }

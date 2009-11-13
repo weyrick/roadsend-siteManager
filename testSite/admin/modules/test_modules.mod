@@ -23,16 +23,9 @@ Modules
         Getting
         Setting
     OutVars
-    Resources
-        Templates
-        Modules
-        SmartForms
-        CodePlates
-        User Defined
     ThinkLists
     ConfigList
     Output Directives
-    JavaScript
     Loading SiteManager Resources
         Templates
         Modules
@@ -42,9 +35,6 @@ Modules
         HLink
         ULink
     SmartForms
-    Styles
-        Getting
-        Settings
     Debug
         dumpInfo    
     Extending
@@ -55,12 +45,6 @@ Modules
 global $SM_siteManager;
 $SM_siteManager->includeModule('testBase');
 
-class myResource {
-    var $foo;
-    function myResource() {
-        $this->foo = 'bar';
-    }
-}
 
 /**
  * extend testBase for testing sitemanager functionality
@@ -80,18 +64,8 @@ class test_modules extends testBase {
 
         // module config stuff here
 
-        // styles
-        $this->addStyle('testStyle','realStyle');
-
         // set invars
         $this->addInVar('modVar1',NULL,'string',true);
-
-        // set resources
-        $this->useModule('modRes','rawHTML');
-        $this->useTemplate('tptRes','test');
-        $this->useSmartForm('sfRes');
-        $this->useCodePlate('cptRes','testCodePlate');
-        $this->addResource('myRes', new myResource());
 
         // think lists
         $this->preThinkList[] = 'modulePreThink';
@@ -153,33 +127,6 @@ class test_modules extends testBase {
 
         $modVar2 = $this->getVar('modVar2');  // will run eventBadInVar
 
-        // get resource
-
-        // module
-        $mod = $this->getResource('modRes');
-        $mod->addDirective('output','lulu');
-        $mod->addDirective('cleanOutput',true);
-        $actual = $mod->run();
-        $expect = 'lulu';
-        $this->addTest('getResource() / module', 
-                       'retrieve a module setup as a resource',
-                       $expect,
-                       $actual);
-
-        // template
-        $tpt = $this->getResource('tptRes');
-        $tpt->addText('boo','areaOne');
-        $actual = $tpt->run();
-        $expect = '<b>Sample Template</b><br>
-boo
-<br>
-Template Test Complete
-';
-        $this->addTest('getResource() / template', 
-                       'retrieve a template setup as a resource',
-                       $expect,
-                       $actual);
-
 
         // load module
         $mod = $this->loadModule('rawHTML');
@@ -223,10 +170,6 @@ Template Test Complete
         $form = $this->newSmartForm();
         $form->add('var','Name','text');
         $this->say($form->output('go'));
-
-        // javascript
-        $this->sayJS('function test(a) { alert("javascript working: "+a); }');
-        $this->saybr("<a href='javascript:test(\"YaY\")'>Test Javascript Output From Module</a>");
 
 
     }

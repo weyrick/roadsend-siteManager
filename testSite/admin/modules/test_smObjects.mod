@@ -88,7 +88,7 @@ class test_smObjects extends testBase {
     
         // TEST
         $actual = gettype($this->dbH).':'.get_class($this->dbH);
-        $expect = 'object:PDO';
+        $expect = 'object:SM_dbWrapper';
         $this->addTest('handler ref: dbH', 
                        'verify $dbH member variable is initialized',
                        $expect,

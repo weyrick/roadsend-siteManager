@@ -114,7 +114,7 @@ class SM_dbGui extends SM_abstractDbEditor {
         // configure the fields
         $this->configureForm();
 
-        $myForm = $this->getResource('myForm');
+        $myForm = $this->myForm;
 
         if(isset($this->directive['smartFormTemplate']))
             $myForm->setTemplate($this->directive['smartFormTemplate']);

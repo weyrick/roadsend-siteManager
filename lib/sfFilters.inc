@@ -3,7 +3,7 @@
 /**
  *  Roadsend SiteManager
  *******************************************************************
- *  Copyright (c) 2001-2003 Roadsend, Inc.(http://www.roadsend.com)
+ *  Copyright (c) 2001-2009 Roadsend, Inc.(http://www.roadsend.com)
  *******************************************************************
  *
  * This source file is subject to version 1.0 of the Roadsend Public
@@ -39,25 +39,6 @@ class SM_entityFilter extends SM_object {
     var $data = NULL;  
 
     /** 
-    * does this filter REQUIRE javascript to work?
-    * @var bool  
-    */
-    var $requiresJS = false; 
-
-    /** 
-     * javascript output. this is the stuff that needs to
-     * go at the top, not the inline stuff
-     * @var string
-     */
-    var $jsOutput = '';
-
-    /** 
-    * use javascript or not
-    * @var bool
-    */
-    var $useJS = false;
-                        
-    /** 
     * my parent input entity
     * @var SM_Object
     */
@@ -85,16 +66,8 @@ class SM_entityFilter extends SM_object {
      * set info on this filter
      * @param string $vN  variable name that contains data we'll be looking at
      * @param string $msg string to display if filter fails
-     * @param bool $uJS  use JavaScript in this filter or not
      */
-    function setInfo($vN, $msg='', $uJS) {
-        
-        // use javascript?
-        $this->useJS = $uJS;
-        
-        // if we're using javascript, load it up
-        if ($uJS)
-            $this->loadJS();
+    function setInfo($vN, $msg='') {
             
         // if the filter fails, this message will be displayed to the user
         if ($msg != '')
@@ -128,48 +101,7 @@ class SM_entityFilter extends SM_object {
      * @return bool whether filter passed or not
      */
     function filterThink() { return true; }
-   
-    /**
-     * return javscript code we might have
-     * check global list to make sure we haven't already been added to this script's js code
-     * @return string JavaScript output, if any
-     */
-    function getJS() {
-        
-        global $filterDefList;
-
-        $cName = get_class($this);
-        
-        if (isset($filterDefList[$cName]))
-            return;
-        else {
-            $filterDefList[$cName] = true;
-            return $this->jsOutput;
-        }
-        
-    }
-    
-    /**
-     * attempt load javascript code for this filter. do this my trying to load
-     * our filter name +.js in the php path. use it as javscript output
-     * FIXME: security hazards??
-     */
-    function loadJS() {
-        
-        $fName = get_class($this).'.js';
-        $fName = $this->siteConfig->getVar('dirs','sfFilters').'/'.str_replace("filter","Filter",$fName); // capitlize Filter, as the class won't for us
-    
-        // load javascript, check include path.
-        // ignore errors
-        if (file_exists($fName))
-            $jsO = file($fName,1);
-        
-        if ((isset($jsO))&&(is_array($jsO))) {
-            $this->jsOutput = implode('',$jsO);
-        }
-    
-    }
-    
+       
 }
 
 

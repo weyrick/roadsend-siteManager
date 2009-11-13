@@ -110,9 +110,6 @@
             <VAR name="SM_debug" value="0" />
             <VAR name="testPersistent" value="foo" />
         </SECTION>
-        <SECTION name="YUI">
-            <VAR name="yuiBase" value="/yui/" desc="root directory of YUI (relative to web root)"/>
-        </SECTION>
     </SITE>
         
 </SMCONFIG>

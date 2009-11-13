@@ -3,7 +3,7 @@
 /**
  *  Roadsend SiteManager
  *******************************************************************
- *  Copyright (c) 2001-2003 Roadsend, Inc.(http://www.roadsend.com)
+ *  Copyright (c) 2001-2009 Roadsend, Inc.(http://www.roadsend.com)
  *******************************************************************
  *
  * This source file is subject to version 1.0 of the Roadsend Public
@@ -85,13 +85,7 @@ class SM_formEntity extends SM_object {
     * @var bool
     */
     var $showBgColor = true;
-        
-    /**
-    * use javascript for this input entity 
-    * @var bool
-    */
-    var $useJS = true;
-    
+
     /** 
     * parent smartform 
     * @var SM_formEntity
@@ -121,9 +115,8 @@ class SM_formEntity extends SM_object {
       * @param mixed $val initial value
       * @param string $tA title alignment
       * @param string $iA input entity alignment
-      * @param bool $uJS use javascript or not for this form entity
       */
-    function SM_formEntity($vn, $tt, $ty, $req, $parentSmartForm, $lay=0, $val='', $tA="LEFT", $iA="LEFT", $uJS=true) {
+    function SM_formEntity($vn, $tt, $ty, $req, $parentSmartForm, $lay=0, $val='', $tA="LEFT", $iA="LEFT") {
 
         // setup handlers
         $this->_smoConfigure();
@@ -143,7 +136,6 @@ class SM_formEntity extends SM_object {
         $this->layout       = $lay;
         $this->titleAlign   = $tA;
         $this->inputAlign   = $iA;
-        $this->useJS        = $uJS;
     
         // configure row color
         $this->rowAltNum    = 1;
@@ -179,10 +171,10 @@ class SM_formEntity extends SM_object {
                 $val = stripslashes($_POST[$vName]);      // prevent recuring slashes
             else 
                 $val = '';
-            $newEntity->setValue($vName, $val, $this->useJS);
+            $newEntity->setValue($vName, $val);
         }
         else {
-            $newEntity->setValue($vName, $this->value, $this->useJS);
+            $newEntity->setValue($vName, $this->value);
         }
 
         // setup default class tag for the entities use
@@ -218,14 +210,6 @@ class SM_formEntity extends SM_object {
 
         return $_prefix.$eOP.$_postfix; 
     }
-    
-    /** 
-     * return any javascript code this entity and filter contains
-     * @return string javascript output from entity and filters
-     */
-    function getJS() {
-        return $this->inputEntity->getJS();
-    }   
   
      /**
       * apply filters that are attatched to this entity

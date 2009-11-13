@@ -3,7 +3,7 @@
 /**
  *  Roadsend SiteManager
  *******************************************************************
- *  Copyright (c) 2001-2003 Roadsend, Inc.(http://www.roadsend.com)
+ *  Copyright (c) 2001-2009 Roadsend, Inc.(http://www.roadsend.com)
  *******************************************************************
  *
  * This source file is subject to version 1.0 of the Roadsend Public
@@ -88,13 +88,7 @@ class SM_smartForm extends SM_object {
      * @var string  
      */
     var $sfOutput = '';
-    
-    /** 
-     * final buffered javascript output, collected from form, entities and filters
-     * @var string  
-     */
-    var $jsOutput = '';
-    
+        
     /** 
      * a header to place at the top of the form table. set with {@link setHeader}
      * @var string  
@@ -159,15 +153,10 @@ class SM_smartForm extends SM_object {
         
         // setup defaults for output
         // setup default required directive
-        $this->directive['tableBorder']         = 0;
-        $this->directive['tableWidth']          = "100%";
-        $this->directive['tableCellPadding']    = 0;
-        $this->directive['tableCellSpacing']    = 0;
-        $this->directive['tableBgColor']        = '';
 
         // visual "required" notification settings
-        $this->directive['showRequiredHelp']    = true; // if this is false, neither Star nor Tag will show up
-        $this->directive['requiredTag']         = true; // should we add a Required Field notice?
+        $this->directive['showRequiredHelp']    = false; // if this is false, neither Star nor Tag will show up
+        $this->directive['requiredTag']         = false; // should we add a Required Field notice?
         $this->directive['requiredStar']        = '*';  // what symbol denotes a required field. may be IMG tag.
         $this->directive['requiredText']        = ' = Required Field'; // text shown to describe what requiredStar means
         $this->directive['requiredBadMsg']      = 'Required Field';  // text for badMsg on required filters
@@ -181,8 +170,8 @@ class SM_smartForm extends SM_object {
         $this->directive['entityClassTag']      = '';           // default class tag for input entity text
 
         // css style
-        $this->directive['legacyLayout']        = true;         // whether to use the latest and greatest CSS technology
-        $this->directive['noCorrectMsgBR']      = false;        // set to true to remove <br /> after Fix Message
+        $this->directive['legacyLayout']        = false;         // whether to use the latest and greatest CSS technology
+        $this->directive['noCorrectMsgBR']      = true;        // set to true to remove <br /> after Fix Message
         
         // if this is set to true, ALL entities will be presetText, regardless of what is
         // specified as the entity type in the add() call
@@ -236,13 +225,8 @@ class SM_smartForm extends SM_object {
         // default layout of form entities
         $this->directive['defaultLayout']       = SF_LAYOUT_NORMAL;
     
-        // use javascript or not
-        $this->directive['useJS']               = true;         // when true, we'll output javascript code. if it's turned off
-                                                                // we won't. note that some input entities and filters
-                                                                // won't work without it.
-
-
-        $this->directive['onSubEvent']      = '';           // Set a specific event for the form as a whole
+        // onSubmit event of form
+        $this->directive['onSubEvent']      = '';
                                                                 
         // script to POST to. normally $PHP_SELF. if you change this, all validation functionality goes
         // out the window.
@@ -887,41 +871,6 @@ class SM_smartForm extends SM_object {
     }
 
     
-    /**
-     * after entities has run entityThink (after buildTemplate), and before form outputs, gather
-     * entity javascript
-     */
-    function buildEntityJS() {
-
-        // check all entities for javascript
-        foreach ($this->entityList as $ent) {
-                        
-            // get javascript code if we've got that turned on
-            if ($this->directive['useJS'] == true) {
-                $jso = $ent->getJS(); 
-                if ($jso != '') {
-                    $entJSlist[] = $ent->varName;
-                }
-                $this->jsOutput .= $jso;
-            }
-                        
-        }        
-            
-        // finally, if we have entities with javascript, we need to run a function to run
-        // them all onSubmit
-        if (($this->directive['useJS'] == true)&&(!empty($entJSlist))&&(is_array($entJSlist))) {
-            $this->jsOutput .= "\n\nfunction check_{$this->formID}_data() {\n\n";
-            
-                foreach ($entJSlist as $entName) {
-                    $this->jsOutput .= "\tif (!check_".$entName."()) return false;\n";
-                }
-            
-            $this->jsOutput .= "\treturn true;\n";
-            $this->jsOutput .= "}\n\n";
-        }
-        
-    }
-
      /**
       * this function should be called AFTER setting up the entire form. it will return TRUE
       * if all the input entities have passed all of their filters, letting the calling script
@@ -1279,15 +1228,8 @@ class SM_smartForm extends SM_object {
         
         // run template, which runs all entityThinks
         $templateOutput = $this->runTemplate();        
-
-        // gather entity javascript
-        $this->buildEntityJS();
         
-        // use javascript if allowed
-        if (($this->directive['useJS'] == true)&&($this->jsOutput != ''))
-            $onSub =  "onSubmit=\"return check_{$this->formID}_data();\"";
-        else
-            $onSub = $this->directive['onSubEvent'];
+        $onSub = $this->directive['onSubEvent'];
         
         // specify enctype if required
         if (!empty($this->directive['enctype']))

@@ -67,9 +67,6 @@ class SM_layoutTemplate extends SM_object {
     /** (array) a hash of tag priority levels, so we know in which order to execute tags: [priority][] = areaName */
     var $tagPriorityList = array();
 
-    /** (string) collection of javascript output used in this template. used by tag system (AREA) */
-    var $jsOutput = '';
-
     /** (array) a list of SM tag TYPE's we will allow in this template. if empty, list is ignored */
     var $validTagTypeList = array();
 
@@ -759,7 +756,6 @@ class SM_layoutTemplate extends SM_object {
         // this leaves htmlParsedOutput in place for
         // re-running the tags
         $this->htmlOutput = NULL;
-        $this->jsOutput = NULL;
 
         // step thru tag list and call tagReset on each
         foreach (array_keys($this->smTagList) as $areaName) {
@@ -856,11 +852,6 @@ class SM_layoutTemplate extends SM_object {
                 // run the tag
                 $this->smTagList[$areaName]->tagThink();
 
-                // grab the tags javascript output
-                if (!empty($this->sessionH)) {
-                    $this->sessionH->jsOutput .= $this->smTagList[$areaName]->getTagJS();
-                }
-
                 // grab and sub the tags output
                 $this->htmlOutput = str_replace($this->smTagList[$areaName]->tagLine, $this->smTagList[$areaName]->tagOutput, $this->htmlOutput);
 
@@ -874,11 +865,6 @@ class SM_layoutTemplate extends SM_object {
             // run the tag
             $this->smTagList[$areaName]->tagThink();
             
-            // grab the tags javascript output
-            if (!empty($this->sessionH)) {
-                $this->sessionH->jsOutput .= $this->smTagList[$areaName]->getTagJS();
-            }
-
             // grab and sub the tags output
             $this->htmlOutput = str_replace($this->smTagList[$areaName]->tagLine, $this->smTagList[$areaName]->tagOutput, $this->htmlOutput);
 

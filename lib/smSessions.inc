@@ -3,7 +3,7 @@
 /**
 *  Roadsend SiteManager
 *******************************************************************
-*  Copyright (c) 2001-2003 Roadsend, Inc.(http://www.roadsend.com)
+*  Copyright (c) 2001-2009 Roadsend, Inc.(http://www.roadsend.com)
 *******************************************************************
 *
 * This source file is subject to version 1.0 of the Roadsend Public

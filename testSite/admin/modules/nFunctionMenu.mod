@@ -26,9 +26,7 @@ class nFunctionMenu extends SM_module {
       */
     function moduleConfig() {
 
-        // declare use of menu module (contrib/modules/ngMenu.mod)
-        // first parameter is a keyword, second is the module name
-        $this->useModule('mainMenu','ngMenu');
+        $this->ngMenu = $this->loadModule('ngMenu');
 
     }
 
@@ -39,7 +37,7 @@ class nFunctionMenu extends SM_module {
     
 
         // get the menu module, using keyword set in moduleConfig()
-        $menu = $this->getResource('mainMenu');
+        $menu = $this->ngMenu;
 
         // build menu
 
@@ -79,10 +77,6 @@ class nFunctionMenu extends SM_module {
         $item = $menu->addItem('Modules');
         $item->addLinkItem('Test Suite','modules.php?modVar2=5&modVar1=pokey');
         
-        // YUI MODULE TESTS
-        $item = $menu->addItem('YUI Modules');
-        $item->addLinkItem('Test Suite','yuiModules.php');
-
         // SMARTFORM TESTS
         $item = $menu->addItem('SmartForms');
         $item->addLinkItem('Test Suite','smartForms.php');

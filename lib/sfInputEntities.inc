@@ -3,7 +3,7 @@
 /**
  *  Roadsend SiteManager
  *******************************************************************
- *  Copyright (c) 2001-2003 Roadsend, Inc.(http://www.roadsend.com)
+ *  Copyright (c) 2001-2009 Roadsend, Inc.(http://www.roadsend.com)
  *******************************************************************
  *
  * This source file is subject to version 1.0 of the Roadsend Public
@@ -62,26 +62,7 @@ class SM_inputTypeEntity extends SM_object {
     * @var string 
     */
     var $fixMessage = '';  
-        
-    /** 
-    * does this input entity REQUIRE javascript to work? 
-    * @var bool
-    */
-    var $requiresJS = false; 
-    
-    /** 
-    * are we allowed to use javascript in this input entity? 
-    * @var bool
-    */
-    var $useJS = true;     
-    
-    /** 
-     * javascript output. this is the stuff that needs to go at the top,
-     * not the inline stuff
-     * @var string
-     */
-    var $jsOutput = ''; 
-     
+
     /**
      * main input entity output string     
      * @var string
@@ -147,14 +128,6 @@ class SM_inputTypeEntity extends SM_object {
     }
 
     /**
-     * wrapper for adding javascript output to entity
-     * @param string $output the javascript text to add
-     */
-    function sayJS($output) {
-        $this->jsOutput .= $output;
-    }
-
-    /**
      * wrapper for adding output to entity output text
      * @param string $output the text to add
      */
@@ -162,58 +135,6 @@ class SM_inputTypeEntity extends SM_object {
         $this->output .= $output;
     }
 
-    /** 
-     * return javascript output from filters attaached to this entity,
-     * as well as our own
-     * @return string javascript output
-     */
-    function getJS() {
-        
-        // if we have no filters, just return our javascript code
-        if (!isset($this->filterList)) {
-            return $this->jsOutput;     
-        }
-            
-        // get javascript from each entity      
-        $fjsOutput = '';
-        $fjsOutputL = '';
-        foreach($this->filterList as $filter) {
-
-            $fjsOutputL .= $filter->getJS();
-            
-            // save list for last use
-            if ($fjsOutputL != '') {
-                $fName = get_class($filter);                
-                $fName = str_replace("filter","Filter",$fName); // capitlize Filter, as the class won't for us
-                $fjsList[] = $fName;
-            }
-            
-            $fjsOutput .= $fjsOutputL;
-        
-        }
-
-        // if we had javascript output, we need to setup a function to run
-        // onSubmit for this entity, to run client side filter functions
-        if ($fjsOutput != '') {
-        
-            $this->jsOutput .= "function check_{$this->varName}() {\n\n";
-            
-            
-            // for each filter that has javascript, fun it's code
-            $formID = $this->parentFormEntity->parentSmartForm->formID;
-            foreach ($fjsList as $filt) {
-                $this->jsOutput .= "\tif (!".$filt."_JS(document.SF{$formID}.".$this->varName.".value)) return false;\n";
-            }   
-            
-            $this->jsOutput .= "\treturn true;\n";
-            $this->jsOutput .= "}\n\n";
-        
-        }
-
-        // return javascript for entites and filters only once
-        return $fjsOutput.$this->jsOutput;
-    
-    }
 
      /**
       * set this entities variable name, and possibly it's originating value
@@ -222,13 +143,11 @@ class SM_inputTypeEntity extends SM_object {
       * THIS FUNCTION SHOULD NOT BE OVERRIDEN
       * @param string $varName the variable we're working with
       * @param string $value initial value
-      * @param bool $uJS use javaScript or not
       */
-    function setValue($varName, $value='', $uJS) {
+    function setValue($varName, $value='') {
 
         $this->varName      = $varName;
         $this->value        = $value;
-        $this->useJS        = $uJS;
                         
         // run entityConfig method if it exists
         if (method_exists($this, 'entityConfig')) {

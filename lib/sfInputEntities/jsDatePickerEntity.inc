@@ -17,7 +17,7 @@
 
 global $SM_DP_JSOUT;
 $SM_DP_JSOUT = <<<DP_JSOUT
-
+<script type="text/javascript">
 /**
 This is a JavaScript library that will allow you to easily add some basic DHTML
 drop-down datepicker functionality to your Notes forms. This script is not as
@@ -516,6 +516,7 @@ function adjustiFrame(pickerDiv, iFrameDiv)
   }
  
 }
+</script>
 DP_JSOUT;
 
 /*
@@ -656,7 +657,7 @@ class jsDatePickerEntity extends SM_inputTypeEntity {
         global $SM_DP_JSOUT, $SM_DP_JSOUT_B;
 
         if (!$SM_DP_JSOUT_B) {
-            $this->sayJS($SM_DP_JSOUT);
+            $this->say($SM_DP_JSOUT);
             $SM_DP_JSOUT_B = true;
         }
 

@@ -109,6 +109,7 @@ class poolSelectEntity extends SM_inputTypeEntity {
         $this->addDirective('sort',true);
         
         $jscript = <<< END_JSCRIPT
+<script type="text/javascript">
 // ===================================================================
 // Author: Matt Kruse <matt@mattkruse.com>
 // WWW: http://www.mattkruse.com/
@@ -169,8 +170,9 @@ function OT_setAutoSort(val){this.autoSort=val;}
 function OT_setStaticOptionRegex(val){this.staticOptionRegex=val;}
 function OT_init(theform){this.form = theform;if(!theform[this.left]){alert("OptionTransfer init(): Left select list does not exist in form!");return false;}if(!theform[this.right]){alert("OptionTransfer init(): Right select list does not exist in form!");return false;}this.left=theform[this.left];this.right=theform[this.right];for(var i=0;i<this.left.options.length;i++){this.originalLeftValues[this.left.options[i].value]=1;}for(var i=0;i<this.right.options.length;i++){this.originalRightValues[this.right.options[i].value]=1;}if(this.removedLeftField!=null){this.removedLeftField=theform[this.removedLeftField];}if(this.removedRightField!=null){this.removedRightField=theform[this.removedRightField];}if(this.addedLeftField!=null){this.addedLeftField=theform[this.addedLeftField];}if(this.addedRightField!=null){this.addedRightField=theform[this.addedRightField];}if(this.newLeftField!=null){this.newLeftField=theform[this.newLeftField];}if(this.newRightField!=null){this.newRightField=theform[this.newRightField];}this.update();}
 function OptionTransfer(l,r){this.form = null;this.left=l;this.right=r;this.autoSort=true;this.delimiter=",";this.staticOptionRegex = "";this.originalLeftValues = new Object();this.originalRightValues = new Object();this.removedLeftField = null;this.removedRightField = null;this.addedLeftField = null;this.addedRightField = null;this.newLeftField = null;this.newRightField = null;this.transferLeft=OT_transferLeft;this.transferRight=OT_transferRight;this.transferAllLeft=OT_transferAllLeft;this.transferAllRight=OT_transferAllRight;this.saveRemovedLeftOptions=OT_saveRemovedLeftOptions;this.saveRemovedRightOptions=OT_saveRemovedRightOptions;this.saveAddedLeftOptions=OT_saveAddedLeftOptions;this.saveAddedRightOptions=OT_saveAddedRightOptions;this.saveNewLeftOptions=OT_saveNewLeftOptions;this.saveNewRightOptions=OT_saveNewRightOptions;this.setDelimiter=OT_setDelimiter;this.setAutoSort=OT_setAutoSort;this.setStaticOptionRegex=OT_setStaticOptionRegex;this.init=OT_init;this.update=OT_update;}
+</script>
 END_JSCRIPT;
-        $this->sayJS($jscript);
+        $this->say($jscript);
         
     }
 
@@ -348,28 +350,27 @@ END_JSCRIPT;
             $this->createEntities();
         }
 
-        $this->sayJS('var opt = new OptionTransfer("_pool[]","_selected[]");');
+        $this->say('<script type="text/javascript">');
+        $this->say('var opt = new OptionTransfer("_pool[]","_selected[]");');
         if ($this->directive['sort']) {
-            $this->sayJS('opt.setAutoSort(true);');
+            $this->say('opt.setAutoSort(true);');
         }
-        $this->sayJS('opt.saveRemovedLeftOptions("_remLeft");');
-        $this->sayJS('opt.saveRemovedRightOptions("_remRight");');
-        $this->sayJS('opt.saveAddedLeftOptions("_addLeft");');
-        $this->sayJS('opt.saveAddedRightOptions("_addRight");');
-        $this->sayJS('opt.saveNewLeftOptions("_newLeft");');
-        $this->sayJS('opt.saveNewRightOptions("_newRight");');
+        $this->say('opt.saveRemovedLeftOptions("_remLeft");');
+        $this->say('opt.saveRemovedRightOptions("_remRight");');
+        $this->say('opt.saveAddedLeftOptions("_addLeft");');
+        $this->say('opt.saveAddedRightOptions("_addRight");');
+        $this->say('opt.saveNewLeftOptions("_newLeft");');
+        $this->say('opt.saveNewRightOptions("_newRight");');
+        $this->say('</script>');
         
         
-        // NOTE: this script requires the HTMLBODY and JAVASCRIPT SM tags in the root template
+        // NOTE: this script requires the HTMLBODY SM tags in the root template
         $rootTemplate = $SM_siteManager->rootTemplate;
         $bodyTags = $rootTemplate->getTagsByType('HTMLBODY');
         if (empty($bodyTags))
             $this->fatalErrorPage('poolSelectEntity needs root template to have an HTMLBODY tag to work');
         // XXX if there was already a bodyOther, this will munge it!!
         $bodyTags[0]->addDirective('bodyOther','onLoad="opt.init(document.forms[\''.$this->parentFormEntity->parentSmartForm->formID.'\'])"');
-        $jsTags = $rootTemplate->getTagsByType('JAVASCRIPT');
-        if (empty($jsTags))
-                $this->fatalErrorPage('poolSelectEntity needs root template to have a JAVASCRIPT tag to work');
 
         if ($this->template == NULL) {
             $tData = '<table width=100% align=center>

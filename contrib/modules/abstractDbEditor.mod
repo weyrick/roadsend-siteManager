@@ -80,11 +80,11 @@ class SM_abstractDbEditor extends SM_module {
         // incoming record indicator. shared with recordSelectorModule
         $this->addInVar('dbu_'.$this->moduleID);        // 'database has been updated' flag
 
-        $this->useSmartForm("myForm");
-
         // must include function to define a form
         $this->postConfigList[] = 'setInVars';
         $this->preThinkList[] = 'defineForm';
+
+        $this->myForm = $this->newSmartForm();
 
     }
 
@@ -120,7 +120,7 @@ class SM_abstractDbEditor extends SM_module {
 
         if (empty($this->sType)) {$this->sType='add';}
 
-        $myForm = $this->getResource('myForm');
+        $myForm = $this->myForm;
 
         // loop thru all the 'Types' and 
         // call the preFormRun method

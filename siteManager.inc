@@ -74,7 +74,6 @@ require($SM_rootDir."lib/smSessionContainer.inc");
 require($SM_rootDir."lib/smSessions.inc");
 
 require($SM_rootDir."lib/dataManip.inc");
-require($SM_rootDir."lib/security.inc");
 require($SM_rootDir."lib/auth.inc");
 
 
