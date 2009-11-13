@@ -97,7 +97,7 @@ class SM_module extends SM_object {
 
         // setup default directives
         $this->directive['outputWrapper']       = self::WRAP_DIV;
-        $this->directive['outputClass']         = 'mod '.get_class($this);
+        $this->directive['outputClass']         = 'sm_mod '.get_class($this);
     
         $this->directive['dieOnBadInVarType']   = true;
     
