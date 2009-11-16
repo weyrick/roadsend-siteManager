@@ -2,7 +2,7 @@
 
 /*********************************************************************
 *  Roadsend SiteManager
-*  Copyright (c) 2001-2003 Roadsend, Inc.(http://www.roadsend.com)
+*  Copyright (c) 2001-2009 Roadsend, Inc.(http://www.roadsend.com)
 **********************************************************************
 *
 * This source file is subject to version 1.0 of the Roadsend Public
@@ -83,13 +83,13 @@ class test_smartForms extends testBase {
     function moduleThink() {
     
         // create the form
-        $myForm = $this->newSmartForm();
+        $myForm = $this->newSmartForm('testForm');
 
         $myForm->addDirective('badFormMessage','<center><b><br>There is a problem with the form input. Please correct your input and try again.</b><br><br></center>');
 
         //$myForm->addDirective('showRequiredHelp',false);
         //$myForm->addDirective('submitAlign','RIGHT');
-        $myForm->addDirective('entityClassTag','sfEntity');
+        //$myForm->addDirective('entityClassTag','sfEntity');
 
         if ($this->getVar('loadXML') != 1) {        
 
@@ -121,15 +121,15 @@ class test_smartForms extends testBase {
         $myForm->addDirective('tableBorder','1');
                 
         // turn on alternating row colors
-        $myForm->addDirective('rowColorAlt1','#FFFFFF');
-        $myForm->addDirective('rowColorAlt2','#AAAAAA');
+        //$myForm->addDirective('rowColorAlt1','#FFFFFF');
+        //$myForm->addDirective('rowColorAlt2','#AAAAAA');
         
         // styles for alternating rows
-        $myForm->addDirective('normalClassTagAlt1','sfNormal1');
-        $myForm->addDirective('normalClassTagAlt2','sfNormal2');
+        //$myForm->addDirective('normalClassTagAlt1','sfNormal1');
+        //$myForm->addDirective('normalClassTagAlt2','sfNormal2');
         
         // default entity styles
-        $myForm->addDirective('entityAttributeClassTag','testStyle');
+        //$myForm->addDirective('entityClassTag','testStyle');
 
         // extra submit button right on top
         $myForm->add('submit1','','submit');
@@ -142,6 +142,7 @@ class test_smartForms extends testBase {
         $ent = $myForm->add('userName','User Name','text',true,'start name',array('size'=>'50','maxLength'=>'100'));        
         $ent->addFrobber('trim');
         $ent->addFrobber('toLatin1');
+        $ent->addDirective('entityClassTag','foo');
         
         // some simpler examples
         $myForm->add('firstName','First Name','text',false);

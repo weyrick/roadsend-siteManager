@@ -355,15 +355,19 @@ class SM_module extends SM_object {
 
     /**
      * Create a new SmartForm for use in this module
+     * $param string form ID, default auto created
      * @return SM_smartForm reference to a new SmartForm object
      */
-    function newSmartForm() {
+    function newSmartForm($formName=NULL) {
                
         // make sure smartForm component loaded
         SM_loadComponent('SM_smartForm');
 
         // create the new form
-        $myForm = new SM_smartForm($this->moduleID.'_SF'.sizeof($this->formList));
+        if (empty($formName))
+            $formName = $this->moduleID.'_SF'.sizeof($this->formList);
+            
+        $myForm = new SM_smartForm($formName);
         
         // add it to our list
         $this->formList[] = $myForm;

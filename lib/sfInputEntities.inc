@@ -61,7 +61,7 @@ class SM_inputTypeEntity extends SM_object {
     * instructions on how a user can fix their form 
     * @var string 
     */
-    var $fixMessage = '';  
+    var $errorMsg = '';  
 
     /**
      * main input entity output string     
@@ -276,9 +276,7 @@ class SM_inputTypeEntity extends SM_object {
                 // data was NOT valid
                 $this->isValid = false;
                 // compile fix message
-                $this->fixMessage .= $filter->directive['badMessage'];
-                if (!$this->parentFormEntity->parentSmartForm->directive['noCorrectMsgBR'])
-                    $this->fixMessage .= '<br />';
+                $this->errorMsg .= $filter->directive['errorMsg'];
                 // debug warn
                 $this->debugLog($this->varName.': failed filter check');
                 // if we've found one bad, quit now

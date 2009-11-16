@@ -3,7 +3,7 @@
 /**
  *  Roadsend SiteManager
  *******************************************************************
- *  Copyright (c) 2001-2003 Roadsend, Inc.(http://www.roadsend.com)
+ *  Copyright (c) 2001-2009 Roadsend, Inc.(http://www.roadsend.com)
  *******************************************************************
  *
  * This source file is subject to version 1.0 of the Roadsend Public
@@ -50,7 +50,7 @@ class phoneFilter extends SM_entityFilter {
         $pat = preg_replace(array("/[Xx]/","/\-/","/\(/","/\)/","/\s/"),array("\\d","\\-","\\(","\\)","\s*"),$pat);
 
         // show them the format if it's bad
-        $this->directive['badMessage'] .= "<br />Format: {$this->directive['format']}";
+        $this->directive['errorMsg'] .= "Format: {$this->directive['format']}";
         
         return preg_match($pat, $this->data);
             

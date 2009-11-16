@@ -183,9 +183,9 @@ class surveyGridEntity extends SM_inputTypeEntity {
         foreach ($this->directive['questionList'] as $q => $entity) {
 
             $this->say("<tr><td>");
-            $this->say($entity->getTitle());
+            $this->say($entity->getTitleOutput());
             $this->say("</td>");
-            $this->say($entity->output());
+            $this->say($entity->getEntityOutput());
             $this->say('</tr>');
 
         }

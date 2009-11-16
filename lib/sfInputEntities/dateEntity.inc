@@ -153,7 +153,7 @@ class dateEntity extends SM_inputTypeEntity {
         // if the YEAR is not all numeric, complain
         if (($this->ySel != '')&&(!preg_match("/^\d\d\d\d$/",$this->ySel))) {
             $this->isValid = false;
-            $this->fixMessage = "Year is invalid";
+            $this->errorMsg = "Year is invalid";
         }
 
         if (!empty($this->mSel) &&
@@ -161,7 +161,7 @@ class dateEntity extends SM_inputTypeEntity {
             !empty($this->ySel) &&
             !checkdate($this->mSel, $this->dSel, $this->ySel)) {
             $this->isValid = false;
-            $this->fixMessage = "The date is invalid";
+            $this->errorMsg = "The date is invalid";
         }
 
     }

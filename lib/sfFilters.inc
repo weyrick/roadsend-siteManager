@@ -58,7 +58,7 @@ class SM_entityFilter extends SM_object {
         $this->parentInputEntity    = $pE;
         
         // default bad message
-        $this->addDirective('badMessage','');
+        $this->addDirective('errorMsg','');
 
     }
         
@@ -71,9 +71,9 @@ class SM_entityFilter extends SM_object {
             
         // if the filter fails, this message will be displayed to the user
         if ($msg != '')
-            $this->directive['badMessage'] = $msg;
+            $this->directive['errorMsg'] = $msg;
         else
-            $this->directive['badMessage'] = "This field appears to be invalid";  /* default */
+            $this->directive['errorMsg'] = "This field appears to be invalid";  /* default */
     
         // the data the filter will operate on
         $this->varName = $vN;

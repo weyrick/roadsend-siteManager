@@ -114,7 +114,7 @@ class zipFilter extends SM_entityFilter {
       		if(strlen($display) > 0) $display .= ' or ';
       		$display .= $format;	
       	}
-      	$this->directive['badMessage'] .= "<br />Format: $display";
+      	$this->directive['errorMsg'] .= "Format: $display";
 
 		//reutrn our array
 		return $formatList;

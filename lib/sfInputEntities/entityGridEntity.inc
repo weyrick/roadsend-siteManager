@@ -124,9 +124,9 @@ class eg_row {
 
         $output = '';
         $entity = $this->entityList[$colID];
-        $output .= $entity->output();
+        $output .= $entity->getEntityOutput();
         if (!$entity->inputEntity->isValid) {
-            $output .= $entity->getTitle();
+            $output .= $entity->getTitleOutput();
         }
 
         return $output;

@@ -236,7 +236,7 @@ function SM_saveForm($myForm) {
 
                     // Complex Filter Object
                     if (is_array(($filterObject->directive))) {
-                        $xmlPage .= TAB_8.'<FILTER  KEY="'.$filterType.'"  message="'.$filterObject->badMessage.'">'."\n";
+                        $xmlPage .= TAB_8.'<FILTER  KEY="'.$filterType.'"  message="'.$filterObject->errorMsg.'">'."\n";
                         foreach($filterObject->directive as $filterKey => $filterValue) {
                             if ($filterValue == $tFilter->directive[$filterKey])
                                 continue;
@@ -248,7 +248,7 @@ function SM_saveForm($myForm) {
                     } else {
 
                         $xmlPage .= TAB_8.'<FILTER>'."\n";
-                        $xmlPage .= TAB_12.'<VAR name="'.$filterType .'"  value="'. $filterObject->badMessage . '"/>'."\n";
+                        $xmlPage .= TAB_12.'<VAR name="'.$filterType .'"  value="'. $filterObject->errorMsg . '"/>'."\n";
                         $xmlPage .= TAB_8."</FILTER>\n";
 
                     }

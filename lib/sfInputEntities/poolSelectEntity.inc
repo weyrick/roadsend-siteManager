@@ -388,10 +388,10 @@ END_JSCRIPT;
         }
         
         // run entities
-        $this->template->addText($this->poolEntity->output(), 'poolItems');
-        $this->template->addText($this->selectedEntity->output(), 'selectedItems');
-        $this->template->addText($this->addEntity->output(), 'selectButton');
-        $this->template->addText($this->removeEntity->output(), 'removeButton');
+        $this->template->addText($this->poolEntity->getEntityOutput(), 'poolItems');
+        $this->template->addText($this->selectedEntity->getEntityOutput(), 'selectedItems');
+        $this->template->addText($this->addEntity->getEntityOutput(), 'selectButton');
+        $this->template->addText($this->removeEntity->getEntityOutput(), 'removeButton');
 
         $this->say('<input type="hidden" name="_addLeft">');
         $this->say('<input type="hidden" name="_remLeft">');

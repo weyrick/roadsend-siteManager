@@ -3,7 +3,7 @@
 /**
  *  Roadsend SiteManager
  *******************************************************************
- *  Copyright (c) 2001-2003 Roadsend, Inc.(http://www.roadsend.com)
+ *  Copyright (c) 2001-2009 Roadsend, Inc.(http://www.roadsend.com)
  *******************************************************************
  *
  * This source file is subject to version 1.0 of the Roadsend Public
@@ -37,7 +37,7 @@ class xmlFilter extends SM_entityFilter {
         xml_parser_set_option($xml_parser, XML_OPTION_CASE_FOLDING, 1);
 
         if (!xml_parse($xml_parser, $this->data, true)) {
-            $this->directive['badMessage'] = sprintf("XML error: %s at line %d",
+            $this->directive['errorMsg'] = sprintf("XML error: %s at line %d",
                         xml_error_string(xml_get_error_code($xml_parser)),
                         xml_get_current_line_number($xml_parser));
             xml_parser_free($xml_parser);

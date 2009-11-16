@@ -52,21 +52,19 @@ class SM_smTag_SF extends SM_smTag {
         case 'TITLE':
             $ent = $myForm->getFormEntity($this->attributes['VAR']);
             if (is_object($ent)) {
-                $this->say($ent->getTitle());
-            }
-            else {
-                $this->debugLog("requested SF variable [{$this->attributes['VAR']}] was not found in parent smartForm");
-                return;
+                $this->say($ent->getTitleOutput());
             }
             break;
         case 'ENTITY':
             $ent = $myForm->getFormEntity($this->attributes['VAR']);
             if (is_object($ent)) {
-                $this->say($ent->output());
+                $this->say($ent->getEntityOutput());
             }
-            else {
-                $this->debugLog("requested SF variable [{$this->attributes['VAR']}] was not found in parent smartForm");
-                return;
+            break;
+        case 'ERRORMSG':
+            $ent = $myForm->getFormEntity($this->attributes['VAR']);
+            if (is_object($ent)) {
+                $this->say($ent->getErrorMsgOutput());
             }
             break;
         case 'SUBMIT':
@@ -83,7 +81,7 @@ class SM_smTag_SF extends SM_smTag {
                 $submitButton->inputEntity->addDirective('image',true);
                 $submitButton->inputEntity->addDirective('src',$myForm->directive['submitImage']);
             }
-            $this->say($submitButton->output());
+            $this->say($submitButton->getEntityOutput());
             break;
         case 'RESET':
             if (!empty($this->attributes['TITLE'])) {
@@ -99,7 +97,7 @@ class SM_smTag_SF extends SM_smTag {
                 $resetButton->inputEntity->addDirective('image',true);
                 $resetButton->inputEntity->addDirective('src',$myForm->directive['resetImage']);
             }
-            $this->say($resetButton->output());
+            $this->say($resetButton->getEntityOutput());
             break;
         default:
             $this->debugLog("invalid DATA type: {$this->attributes['DATA']} - ignoring");
@@ -131,14 +129,17 @@ class SM_smTag_SF extends SM_smTag {
              ($this->attributes['DATA'] != 'ENTITY')&&
              ($this->attributes['DATA'] != 'SUBMIT')&&
              ($this->attributes['DATA'] != 'HEADER')&&
+             ($this->attributes['DATA'] != 'ERRORMSG')&&
              ($this->attributes['DATA'] != 'RESET') )
              {
             $this->debugLog("invalid SF data type ({$this->attributes['DATA']}). must be: (TITLE,ENTITY,SUBMIT,RESET)");
             return;
         }
 
-        // if it's a TITLE or ENTITY, check for required VAR
-        if ($this->attributes['DATA'] == 'TITLE' || $this->attributes['DATA'] == 'ENTITY') {
+        // if it's a TITLE or ENTITY or ERRORMSG, check for required VAR
+        if ($this->attributes['DATA'] == 'TITLE' ||
+            $this->attributes['DATA'] == 'ENTITY' ||
+            $this->attributes['DATA'] == 'ERRORMSG') {
             if (empty($this->attributes['VAR'])) {
                 $this->debugLog("SF tag with DATA of {$this->attributes['DATA']} did not specify a VAR attribute");
                 return;

@@ -63,10 +63,10 @@ class SM_formEntity extends SM_object {
     var $required = false;
 
     /** 
-    * entity layout
+    * entity output template
     * @var const int 
     */
-    var $layout = NULL;
+    var $template = '';
 
     /** 
     * parent smartform 
@@ -80,11 +80,11 @@ class SM_formEntity extends SM_object {
     */
     var $forceFilter = false;
 
-    /** 
-    * when alternating color rows is in effect, this determines which row number we are 
-    * @var int
-    */
-    var $rowAltNum = 0;
+    /**
+     * fieldset this entity belongs to
+     * @var string
+     */
+    var $fieldset = '';
 
      /**
       * initialize a formEntity
@@ -95,8 +95,9 @@ class SM_formEntity extends SM_object {
       * @param SM_smartForm $parentSmartForm the main smartForm parent
       * @param int $lay layout
       * @param mixed $val initial value
+      * @param string fieldset
       */
-    function SM_formEntity($vn, $tt, $ty, $req, $parentSmartForm, $lay=NULL, $val='') {
+    function SM_formEntity($vn, $tt, $ty, $req, $parentSmartForm, $tpt, $val='', $fieldset='') {
 
         // setup handlers
         $this->_smoConfigure();
@@ -113,15 +114,9 @@ class SM_formEntity extends SM_object {
         $this->type         = $ty;
         $this->required     = $req;
         $this->value        = $val; 
-        $this->layout       = $lay;
+        $this->template     = $tpt;
+        $this->fieldset     = $fieldset;
     
-        // configure row color
-        $this->rowAltNum    = 1;
-        if ($this->directive['normalClassTagAlt1'] == '')
-            $this->directive['normalClassTagAlt1'] = $this->directive['normalClassTag'];
-        if ($this->directive['normalClassTagAlt2'] == '')
-            $this->directive['normalClassTagAlt2'] = $this->directive['normalClassTag'];
-
         // load entity
         $this->inputEntity = $this->loadEntity($ty, $req);
 
@@ -172,23 +167,44 @@ class SM_formEntity extends SM_object {
       * return output from our input entity
       * @return string output from entity
       */
-    function output() {
-        
-        (isset($this->directive['entityPrefixWrap'])) ?
-            $_prefix = $this->directive['entityPrefixWrap'] :
-            $_prefix = '';
-
-        (isset($this->directive['entityPostfixWrap'])) ?
-            $_postfix = $this->directive['entityPostfixWrap'] :
-            $_postfix = '';
+    function getEntityOutput() {
 
         $this->inputEntity->entityThink();
-        $eOP = $this->inputEntity->output;
-
-        return $_prefix.$eOP.$_postfix; 
+        return $this->inputEntity->output;
+        
     }
-  
+          
      /**
+      * get title from entity
+      * @return string
+      */
+    function getTitleOutput() {
+
+        // if the title is blank, return blank
+        if ($this->title == '')
+            return '';
+                
+        return '<label for="'.$this->varName.'">'.$this->title.'</label>';
+    
+    }
+    
+    /**
+     * get error message output, if any
+     *
+     */
+    function getErrorMsgOutput() {
+        if (!$this->inputEntity->isValid) {
+            $msg = '<span class="'.$this->directive['errorMsgClass'].'">';
+            $msg .= $this->inputEntity->errorMsg;
+            $msg .= '</span>';
+            return $msg;
+        }
+        else {
+            return '';
+        }
+    }
+    
+    /**
       * apply filters that are attatched to this entity
       * don't apply them, however, if there was no data entered,
       * and it wasn't required
@@ -202,62 +218,7 @@ class SM_formEntity extends SM_object {
         if ((($this->required)||($data != ''))||($this->forceFilter))
             return $this->inputEntity->applyFilters();
     }
-        
-     /**
-      * get title from entity. if the inputEntity tells us the current value is bad, we'll mark it
-      * as red. also, if its invalid, we should have a fix
-      * message which we'll place underneith the title
-      * @return string title from entity, formatted with class tags and such
-      */
-    function getTitle() {
 
-        // if the title is blank, return blank
-        if ($this->title == '')
-            return '';
-                
-        $title = '';
-
-        $titleWrapTag = $this->directive['titleWrapTag'];
-        if (empty($titleWrapTag)) {
-            if ($this->inputEntity->isValid){
-                $title .= '<label for="'.$this->varName.'">'.$this->title.'</label>';
-            }
-            else {
-                $title .= '<label for="'.$this->varName.'">'.$this->title.'</label>';
-                if ($this->directive['correctMsgClassTag']) {
-                    $title .= "<span class=\"{$this->directive['correctMsgClassTag']}\">".
-                               $this->inputEntity->fixMessage.
-                               "</span>";
-                }
-                else {
-                    $title .= $this->inputEntity->fixMessage;
-                }
-            }            
-        }
-        else {
-            if ($this->inputEntity->isValid){        
-                $ct = 'normalClassTagAlt'.$this->rowAltNum;
-                $title .= "<$titleWrapTag class=\"".$this->directive[$ct]."\">$prefix".$this->title."</$titleWrapTag>";
-            }
-            else {
-                $title .= "<$titleWrapTag class=\"{$this->directive['badClassTag']}\">{$prefix}{$this->title}<$titleWrapTag class=\"{$this->directive['correctMsgClassTag']}\">{$this->inputEntity->fixMessage}</$titleWrapTag></$titleWrapTag>";
-            }
-        }
-        
-
-        return $title;
-    
-    }
-    
-     /**
-      * return the layout order of this entity
-      * @return int current layout
-      */      
-    function getLayout() {
-        return $this->layout;
-    }
-    
-     
     /**
      * return the type of input entity we maintain
      * @return string input entity type
