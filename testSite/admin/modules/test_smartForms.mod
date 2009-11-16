@@ -152,7 +152,7 @@ class test_smartForms extends testBase {
         // adding userName, firstName and lastName to the same group will mean they
         // will be considered one "row" as far as the alternating row colors are
         // concerned (ie, they will have the same background color)
-        $myForm->setGroupList('nameInfo',array('userName','firstName','lastName'));
+        $myForm->defineFieldset(array('userName','firstName','lastName'),'nameInfo');
         
         // add email address. returns a reference to the input entity
         $eA = $myForm->add('emailAddress','Email Address','text',false);
@@ -185,9 +185,9 @@ class test_smartForms extends testBase {
         
         // date entity examples
         $myForm->add('birthDate','Birth Date','date',true,'',array('yearSelect'=>false));
-        $myForm->setGroup('birthDate','dateInfo');
+        $myForm->setVarFieldset('birthDate','dateInfo');
         $myForm->add('otherDate','Other Date','date',false,'',array('yearSelect'=>true));
-        $myForm->setGroup('otherDate','dateInfo');
+        $myForm->setVarFieldset('otherDate','dateInfo');
         // test entityNewValue
         $myForm->setDefaultValue('otherDate','2009-5-12');
         
@@ -218,7 +218,7 @@ class test_smartForms extends testBase {
         $ccNum->setFilterArgs('creditCard',array('cardVar'=>'ccType'));
         
         // group the card type and number together
-        $myForm->setGroupList('creditCard',array('ccNum','ccType'));
+        $myForm->defineFieldset(array('ccNum','ccType'),'creditCard');
         
         // radio box
         $thisRadio = $myForm->add('radio','Radio Buttons','radio',true);

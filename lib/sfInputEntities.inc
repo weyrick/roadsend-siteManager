@@ -93,10 +93,6 @@ class SM_inputTypeEntity extends SM_object {
         $this->addDirective('extraAttributes','');
 
     }
-
-    function isLegacyLayout() {
-        return !($this->parentFormEntity->parentSmartForm->directive['legacyLayout'] === false);
-    }
     
     /**
      * a method for retrieving common attributes for input entities     
@@ -114,13 +110,12 @@ class SM_inputTypeEntity extends SM_object {
             $attrs .= ' '.$this->directive['extraAttributes'].' ';
         }
 
-        if (!$this->isLegacyLayout()) {
-            // new css forms: add id to input entities
-            $id = ($this->varName{0} == '_') ? substr($this->varName,1) : $this->varName; // id's break when they start with a _
-            $attrs .= ' id="'.$id.'" ';
-        }
-        elseif ($this->directive['entityAttributeClassTag'] != '') {
-            $attrs .= ' class="'.$this->directive['entityAttributeClassTag'].'" ';
+        // new css forms: add id to input entities
+        $id = ($this->varName{0} == '_') ? substr($this->varName,1) : $this->varName; // id's break when they start with a _
+        $attrs .= ' id="'.$id.'" ';
+
+        if ($this->directive['entityClassTag'] != '') {
+            $attrs .= ' class="'.$this->directive['entityClassTag'].'" ';
         }
         
         return $attrs;

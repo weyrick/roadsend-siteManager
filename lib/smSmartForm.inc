@@ -16,18 +16,6 @@
  *
  */
 
-/** title on left, input on right */
-define("SF_LAYOUT_NORMAL",     1);
-/** title on right, input on left */
-define("SF_LAYOUT_FLIPPED",    2);
-/** "title <br> input" in one cell */
-define("SF_LAYOUT_SINGLE",     3);
-/** free form layout - no table tags will wrap around a form entity */
-define("SF_LAYOUT_FREEFORM",   4);
-/** "titleinput" in one cell */
-define("SF_LAYOUT_SINGLENOBR", 5);
-/** undefined layout */
-define("SF_LAYOUT_UNDEFINED",  100);   
 
 global $SM_siteManager;
 
@@ -66,7 +54,7 @@ class SM_smartForm extends SM_object {
     var $entityList = NULL;
 
     /**
-     * double hash of groups of form variables 
+     * double hash of groups of form variables (fieldsets)
      * @var array 
      */
     var $groupList = array();
@@ -139,7 +127,23 @@ class SM_smartForm extends SM_object {
      * at the end of the runForm function. 
      * @var boolean
      **/
-     var $formHasRun = FALSE;
+     var $formHasRun = false;
+
+    /** title on left, input on right */
+    const LAYOUT_NORMAL   = 1;
+    
+    /** title on right, input on left */
+    const LAYOUT_FLIPPED  = 2;
+    
+    /** "title <br> input" */
+    const LAYOUT_SINGLE   = 3;
+    
+    /** free form layout - no wrappers around a form entity */
+    const LAYOUT_FREEFORM = 4;
+    
+    /** "titleinput" in one cell */
+    const LAYOUT_SINGLENOBR = 5;
+
      
      /**
       * create new SmartForm using the ID passed, which is used in the form name. SmartForms
@@ -151,80 +155,55 @@ class SM_smartForm extends SM_object {
         // setup session handlers
         $this->_smoConfigure();
         
-        // setup defaults for output
-        // setup default required directive
+        /// TEMPLATE BUILDING
+        
+        // default layout of form entities
+        $this->directive['defaultLayout']       = self::LAYOUT_NORMAL;
 
-        // visual "required" notification settings
-        $this->directive['showRequiredHelp']    = false; // if this is false, neither Star nor Tag will show up
-        $this->directive['requiredTag']         = false; // should we add a Required Field notice?
-        $this->directive['requiredStar']        = '*';  // what symbol denotes a required field. may be IMG tag.
-        $this->directive['requiredText']        = ' = Required Field'; // text shown to describe what requiredStar means
-        $this->directive['requiredBadMsg']      = 'Required Field';  // text for badMsg on required filters
-
-        // style sheet classes used in the display of the form
-        // these should NOT include the CLASS= part. just the style info
+        // style sheet classes used during build of a template, if one isn't specified
         $this->directive['normalClassTag']      = 'sfNormal';   // class tag for normal entity title
         $this->directive['badClassTag']         = 'sfBad';      // class tag for "bad" entity title
         $this->directive['correctMsgClassTag']  = 'sfMessage';  // class tag for correct message on entity title
         $this->directive['requiredClassTag']    = 'sfNormal';   // class tag for required tag
-        $this->directive['entityClassTag']      = '';           // default class tag for input entity text
+        $this->directive['entityClassTag']      = '';           // default class tag for input entity
 
-        // css style
-        $this->directive['legacyLayout']        = false;         // whether to use the latest and greatest CSS technology
-        $this->directive['noCorrectMsgBR']      = true;        // set to true to remove <br /> after Fix Message
-        
-        // if this is set to true, ALL entities will be presetText, regardless of what is
-        // specified as the entity type in the add() call
-        $this->directive['readOnly']            = false;
-
-        // this is the CLASS= tag for the main FORM tag
-        $this->directive['formClassTag']        = '';
-
-        // sessions vars to be excluded from propagating in this form
-        $this->directive['varExcludeList']      = NULL;
-
-        // row color alternator. every other row will have these background color. if blank, it ignores it.
-        $this->directive['rowColorAlt1']        = '';       
-        $this->directive['rowColorAlt2']        = '';
-
-        // SPAN tags that should be used when row color alternation is in effect
+        // classes that should be used when row color alternation is in effect
         $this->directive['normalClassTagAlt1']  = '';
         $this->directive['normalClassTagAlt2']  = '';
 
-        // default input entity class tag, as an attribute to the input entities main tag
-        $this->directive['entityAttributeClassTag'] = '';
+        // this is the class for the main FORM tag
+        $this->directive['formClassTag']        = '';
 
-        // allow choice of div or span wrapper on entity titles
-        $this->directive['titleWrapTag']            = 'div';
-        
-        // reset button off by default
-        $this->directive['resetButton']         = '';           // when blank, it wont show up. otherwise it should be
-                                                                // the VALUE for the reset button
+        // free form seperator is used in SF_LAYOUT_FREEFORM
+        $this->directive['freeFormSeparator']   = '<br />';
 
         // bad form message, displayed at top if
         // any filters failed
         $this->directive['badFormMessage']      = '';
 
-        // submit button alignment
-        $this->directive['submitAlign']         = 'left';
-
         // submit on right (or bottom)
         $this->directive['controlsOnRight']     = false;        // bottom by default, right otherwise
-
-        // dump the smartform template to HTML source
-        $this->directive['dumpTemplate']        = false;
 
         // if submit is on bottom, and reset is on bottom, submit is on the left
         // by default. to have submit on the right, and reset on the left, change this
         $this->directive['swapControlOrder']    = false;
 
-        // free form seperator is used in SF_LAYOUT_FREEFORM
-        $this->directive['freeFormSeparator']   = '<br />';
-    
+        // dump the smartform template to HTML source
+        $this->directive['dumpTemplate']        = false;
 
-        // default layout of form entities
-        $this->directive['defaultLayout']       = SF_LAYOUT_NORMAL;
-    
+        ///
+        
+        // if this is set to true, ALL entities will be presetText, regardless of what is
+        // specified as the entity type in the add() call
+        $this->directive['readOnly']            = false;
+        
+        // sessions vars to be excluded from propagating in this form
+        $this->directive['varExcludeList']      = NULL;
+        
+        // reset button off by default
+        $this->directive['resetButton']         = '';           // when blank, it wont show up. otherwise it should be
+                                                                // the VALUE for the reset button
+        
         // onSubmit event of form
         $this->directive['onSubEvent']      = '';
                                                                 
@@ -237,6 +216,9 @@ class SM_smartForm extends SM_object {
         
         // submit button image
         $this->directive['submitImage']         = '';
+
+        // raw form attributes that should be inserted into the <form> tag
+        $this->directive['formAttributes']      = '';
 
         // a flag used by SF tag to say that the end form tag has been written
         // so that we don't duplicate it
@@ -260,20 +242,11 @@ class SM_smartForm extends SM_object {
         // setup FTL
         $myFTL = $this->formID.'_ftl';
         $ftlVal = $this->inVarH->getPOST($myFTL);
-                        
+
         // is this a first time load?
         $this->ftl = !isset($ftlVal);
             
     }   
-
-    function addDirective($key, $val) {
-        parent::addDirective($key, $val);
-        // CSS compatibility
-        if (($key == 'legacyLayout') && ($val == false)) {
-            // new style layout. make sure some settings are correct for this style
-            $this->directive['titleWrapTag'] = NULL;
-        }
-    }
     
      /**
       * add a block of text in the input form
@@ -287,12 +260,12 @@ class SM_smartForm extends SM_object {
         $rtName = 'rawText_'.$this->rt;
         
         // setup default layout
-        if ($lay == SF_LAYOUT_UNDEFINED)
+        if ($lay == self::LAYOUT_UNDEFINED)
             $lay = $this->directive['defaultLayout'];
         
         // if it's not FREEFORM, make it single
-        if ($lay != SF_LAYOUT_FREEFORM)
-            $lay = SF_LAYOUT_SINGLE;
+        if ($lay != self::LAYOUT_FREEFORM)
+            $lay = self::LAYOUT_SINGLE;
         
         $rt = $this->add($rtName,'','rawText',false,'',NULL,$lay,$align,$align);
         $rt->addDirective('staticText', $text);
@@ -361,37 +334,6 @@ class SM_smartForm extends SM_object {
         $this->template->addDirective('SF', array('parentForm' => $this));
     }
 
-     /**
-      * setup an HTML template to use for the form output
-      * if this is not set, a template will be generated on the fly
-      * @deprecated templates now use the main {@link SM_layoutTemplate} engine. this is provided for
-      *             backward compatibility reasons.
-      * @param string $fName the file to use as template (full path)
-      */
-    function setTemplate($fName) {
-
-        global $SM_siteManager;
-
-        // now find and load form. failing to find this WILL be fatal
-        $fName = $SM_siteManager->findSMfile($fName, 'smartForms', 'stp', true);
-
-        // open file, check input path too      
-        $fp = fopen($fName, 'r', 1);
-        
-        if (!$fp) {
-            $this->debugLog("setTemplate(): file not found $fName");
-            return false;
-        }
-        
-        // read in template
-        while (!feof($fp)) {
-            $this->template .= fgets($fp, 4096);            
-        }
-        
-        // close template
-        fclose($fp);
-        
-    }
     
    /**
     * add a new entity to the form
@@ -407,7 +349,7 @@ class SM_smartForm extends SM_object {
     * @param string $iA input entity alignment
     * @return SM_inputEntity input entity created
     */
-    function add($varName, $title, $type, $req=false, $val='', $args=NULL, $lay=SF_LAYOUT_UNDEFINED, $tA='LEFT', $iA='LEFT') {
+    function add($varName, $title, $type, $req=false, $val='', $args=NULL, $lay=NULL) {
                                    
         // don't allow the same variable twice
         if (isset($this->entityList[$varName])) {
@@ -426,11 +368,11 @@ class SM_smartForm extends SM_object {
         }
 
         // setup default layout
-        if ($lay == SF_LAYOUT_UNDEFINED)
+        if ($lay === NULL)
             $lay = $this->directive['defaultLayout'];
                 
         // good entity, add it in
-        $this->entityList[$varName] = new SM_formEntity($varName, $title, $type, $req, $this, $lay, $val, $tA, $iA, $this->directive['useJS']);
+        $this->entityList[$varName] = new SM_formEntity($varName, $title, $type, $req, $this, $lay, $val);
 
         // if they passed args, do them here
         if (is_array($args))
@@ -596,6 +538,7 @@ class SM_smartForm extends SM_object {
         return true;
     
     }
+    
      /**
       * Add some text before or after the entity input.
       * @param string $varName the variable to set
@@ -669,60 +612,7 @@ class SM_smartForm extends SM_object {
         return true;
         
     }
-
-     /**
-      * set the "showBgColor" flag to make this form element
-      * @param string $varName the variable to set
-      * @param bool $val value to use (bool)
-      * @return bool true on success, false on error
-      */
-    function setShowBgColor($varName, $val) {
-        
-        if (!isset($this->entityList[$varName])) {
-            $this->debugLog("setShowBgColor: variable not found for argument set: $varName");
-            return false;
-        }
-        
-        $this->entityList[$varName]->setShowBgColor($val);
-        return true;
-    }
     
-     /**
-      * set the alignment of the input for an input entity
-      * @param string $varName the variable to set
-      * @param string $newAlign the new alignment to use. LEFT, RIGHT, or CENTER
-      * @return bool true on success, false on error      
-      */
-    function setInputAlign($varName, $newAlign) {
-    
-        if (!isset($this->entityList[$varName])) {
-            $this->debugLog("setInputAlign: variable not found for argument set: $varName");
-            return false;
-        }
-        
-        $this->entityList[$varName]->inputAlign = $newAlign;
-        return true;
-    
-    }
-    
-    
-     /**
-      * set the alignment of the title for an input entity    
-      * @param string $varName the variable to set
-      * @param string $newAlign the new alignment to use. LEFT, RIGHT, or CENTER
-      * @return bool true on success, false on error      
-      */
-    function setTitleAlign($varName, $newAlign) {
-    
-        if (!isset($this->entityList[$varName])) {
-            $this->debugLog("settitleAlign: variable not found for argument set: $varName");
-            return false;
-        }
-        
-        $this->entityList[$varName]->titleAlign = $newAlign;
-        return true;
-    
-    }
 
      /**
       * change a set default value for an input entity    
@@ -764,13 +654,12 @@ class SM_smartForm extends SM_object {
     }
 
     /**
-     * specify that a particular input entity is part of a certain group. groups are
-     * used to collect entities together and give them a common background color.
+     * specify that a particular input entity is part of a certain fieldset
      * @param string $varName the variable name to set
-     * @param string $groupName the group name to set it to
+     * @param string $groupName the fieldset to set it to
      * @return bool true on success, false on error     
      */
-    function setGroup($varName, $groupName) {
+    function setVarFieldset($varName, $groupName) {
                 
         if (!isset($this->entityList[$varName])) {
             $this->debugLog($this, "setGroup: variable not found for group set: $varName");
@@ -783,12 +672,12 @@ class SM_smartForm extends SM_object {
     }
 
     /**
-     * specify that a particular input entity is part of a certain group
-     * @param string $groupName the group name to set it to
-     * @param array $varList an array of variable names to put in this group
+     * specify that a particular input entity is part of a certain fieldset
+     * @param array $varList an array of variable names to put in this fieldset
+     * @param string $groupName the fieldset to set it to
      * @return bool true on success, false on error     
      */
-    function setGroupList($groupName, $varList) {
+    function defineFieldset($varList, $groupName) {
 
         if (!is_array($varList)) {      
             $this->debugLog("setGroupList: parameter \$varList is not array of variable names");
@@ -808,30 +697,6 @@ class SM_smartForm extends SM_object {
 
         return true;
             
-    }
-    
-     /**
-      * commit an entity to a variable. workaround for not being able to return
-      * a reference to our object in add() function
-      * @deprecated should not be used, since a reference is returned from {@link add}, or
-      *             you can retrieve a reference to an entity through {@link getEntity}
-      * @param string $varName the variable to edit
-      * @param SM_inputEntity $ent a reference to the entity to commit to the form
-      * @return bool true on success, false on error
-      */
-    function commit($varName, $ent) {
-        
-        if (!isset($this->entityList[$varName])) {
-            $this->debugLog("commit: variable not found for entity commit: $varName");
-            return false;
-        }
-        if (get_class($this->entityList[$varName]->inputEntity) != get_class($ent)) {
-            $this->debugLog("commit: entity passed to commit (".get_class($ent).") is not of the same type as $varName (".get_class($this->entityList[$varName]->inputEntity).")! changing types implicitly.");
-            unset($this->entityList[$varName]->inputEntity);
-        }
-        $this->entityList[$varName]->inputEntity = $ent;
-        return true;
-        
     }
 
 
@@ -911,82 +776,6 @@ class SM_smartForm extends SM_object {
     }
 
     /**
-     * run the template, doing substitutions for form entities
-     * @deprecated in >= 2.3.x, this is no longer used, since templates are now 
-     *             standard SM_layoutTemplate objects
-     */
-    function runTemplate() {
-
-        // BACKWARD COMPATIBILITY
-        // FIXME: this is deprecated, will be removed at some point... 
-        if (is_string($this->template)) {
-
-            // loop through each entity, do subs
-            foreach ($this->entityList as $ent) {
-                
-                // get info from entity objects for display
-                $vName  = $ent->varName;
-                (preg_match("/^(.+)\_\w+$/",$vName,$m)) ? $vpName = $m[1] : $vpName = $vName;
-                $title  = $ent->getTitle();
-                $input  = $ent->output();
-                
-                // try to substitute in the template
-                $tSubVar  = '{'."$vName.title".'}';
-                $tpSubVar = '{'."$vpName.title".'}';          
-                $iSubVar  = '{'."$vName.input".'}';
-                $ipSubVar = '{'."$vpName.input".'}';
-                
-                $this->template = str_replace($tSubVar, $title, $this->template);
-                $this->template = str_replace($tpSubVar, $title, $this->template);
-                $this->template = str_replace($iSubVar, $input, $this->template);
-                $this->template = str_replace($ipSubVar, $input, $this->template);
-                
-            }
-            
-            // sub in submit and reset buttons
-            $submitPattern = "/\{submit.(.+)\}/U";
-            if (preg_match($submitPattern,$this->template,$m)) {
-                SM_sfLoadEntity('submit');
-                $submitButton = new SM_formEntity('_submitBut'.'_'.$this->formID, '', 'submit', false, $this);
-                $submitButton->inputEntity->addDirective('value',$m[1]);
-                if (!empty($this->directive['submitImage'])) {            
-                    $submitButton->inputEntity->addDirective('image',true);
-                    $submitButton->inputEntity->addDirective('src',$this->directive['submitImage']);
-                }
-                $submitVal = $submitButton->output();
-                $this->template = preg_replace($submitPattern, $submitVal, $this->template);
-            }
-    
-            $resetPattern = "/\{reset.(.+)\}/U";
-            if (preg_match($resetPattern,$this->template,$m)) {
-                SM_sfLoadEntity('reset');
-                $resetButton = new SM_formEntity('_resetBut'.'_'.$this->formID, '', 'reset', false, $this);
-                $resetButton->inputEntity->addDirective('value',$m[1]);
-                if (!empty($this->directive['resetImage'])) {            
-                    $resetButton->inputEntity->addDirective('image',true);
-                    $resetButton->inputEntity->addDirective('src',$this->directive['resetImage']);
-                }
-                $resetVal = $resetButton->output();
-                $this->template = preg_replace($resetPattern, $resetVal, $this->template);
-            }
-
-            return $this->template;
-
-        }
-        elseif (is_object($this->template)) {
-
-            // SM_layoutTemplate method
-            return $this->template->run();
-
-        }
-
-        // fall through, unknown template
-        $this->debugLog("unknown template type (non-string or SM_layoutTemplate");
-        return '';
-
-    }
-
-    /**
      * build a valid SM_layoutTemplate template, to output the form
      * @param string $submit text of the default submit button. if not specified, no default
      *                       submit button is added.
@@ -1015,7 +804,7 @@ class SM_smartForm extends SM_object {
         
         // preloop variable set
         $colorRow   = false;
-        $lastVar    = '';; // the last variable we just looked at        
+        $lastVar    = ''; // the last variable we just looked at        
 
         // loop through each entity
         $firstEnt = true;
@@ -1026,9 +815,6 @@ class SM_smartForm extends SM_object {
             $title  = '<sm type="sf" data="title" var="'.$ent->varName.'">';
             $input  = '<sm type="sf" data="entity" var="'.$ent->varName.'">';
             $layout = $ent->getLayout();
-            $tA     = $ent->getTitleAlign();
-            $iA     = $ent->getInputAlign();
-            $bgO    = $ent->getShowBgColor();       // check for bg color setting
             
             // group support
             (isset($this->groupList[$ent->varName]))    ? $currentGroup     = $this->groupList[$ent->varName] : $currentGroup = '';         
@@ -1227,7 +1013,7 @@ class SM_smartForm extends SM_object {
             $this->buildTemplate($submit);        
         
         // run template, which runs all entityThinks
-        $templateOutput = $this->runTemplate();        
+        $templateOutput = $this->template->run();
         
         $onSub = $this->directive['onSubEvent'];
         
@@ -1243,15 +1029,11 @@ class SM_smartForm extends SM_object {
         else
             $fClass = '';
 
-        if ($this->directive['legacyLayout']) {
-            $this->sfOutput  = "\n\n<form $onSub $enctype $fClass name=\"{$this->directive['formName']}\" action=\"{$this->directive['postScript']}\" method=\"post\"";
-        }
-        else {
-            $this->sfOutput  = "\n\n<form $onSub $enctype $fClass id=\"{$this->directive['formName']}\" action=\"{$this->directive['postScript']}\" method=\"post\"";
-        }
+        $this->sfOutput  = "\n\n<form $onSub $enctype $fClass id=\"{$this->directive['formName']}\" action=\"{$this->directive['postScript']}\" method=\"post\"";
    
-        if (!empty($this->directive['formParams']))
-            $this->sfOutput .= ' '.$this->directive['formParams'].' ';
+        if (!empty($this->directive['formAttributes']))
+            $this->sfOutput .= ' '.$this->directive['formAttributes'].' ';
+            
         $this->sfOutput .= ">\n";
                 
         if (is_array($hiddens)|| (isset($this->directive['hiddens']) && is_array($this->directive['hiddens'] ) )) {

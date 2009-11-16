@@ -264,8 +264,6 @@ class columnDefinition {
             $this->dbHook->addToSmartFormHook($this, $ie);
         }
 
-        // commit
-        $myForm->commit($this->getName(), $ie);
     }
 
     /**

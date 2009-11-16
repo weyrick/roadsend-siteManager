@@ -66,25 +66,7 @@ class SM_formEntity extends SM_object {
     * entity layout
     * @var const int 
     */
-    var $layout = SF_LAYOUT_UNDEFINED;
-
-    /** 
-    * alignment of the title. CENTER, RIGHT, or LEFT 
-    * @var string 
-    */
-    var $titleAlign = 'LEFT';
-
-    /** 
-    * alignment of the input, CENTER, RIGHT, or LEFT 
-    * @var string
-    */
-    var $inputAlign = 'LEFT';
-
-    /** 
-    * show background color or not 
-    * @var bool
-    */
-    var $showBgColor = true;
+    var $layout = NULL;
 
     /** 
     * parent smartform 
@@ -110,13 +92,11 @@ class SM_formEntity extends SM_object {
       * @param string $tt the variable title
       * @param string $ty input entity type
       * @param bool $req required or not. if true, adds required filter
-      * @param   $parentSmartForm the main smartForm parent
+      * @param SM_smartForm $parentSmartForm the main smartForm parent
       * @param int $lay layout
       * @param mixed $val initial value
-      * @param string $tA title alignment
-      * @param string $iA input entity alignment
       */
-    function SM_formEntity($vn, $tt, $ty, $req, $parentSmartForm, $lay=0, $val='', $tA="LEFT", $iA="LEFT") {
+    function SM_formEntity($vn, $tt, $ty, $req, $parentSmartForm, $lay=NULL, $val='') {
 
         // setup handlers
         $this->_smoConfigure();
@@ -134,8 +114,6 @@ class SM_formEntity extends SM_object {
         $this->required     = $req;
         $this->value        = $val; 
         $this->layout       = $lay;
-        $this->titleAlign   = $tA;
-        $this->inputAlign   = $iA;
     
         // configure row color
         $this->rowAltNum    = 1;
@@ -179,7 +157,6 @@ class SM_formEntity extends SM_object {
 
         // setup default class tag for the entities use
         $newEntity->addDirective('entityClassTag',$this->directive['entityClassTag']);
-        $newEntity->addDirective('entityAttributeClassTag',$this->directive['entityAttributeClassTag']);
 
         // if this entity is required input, automatically add a requiredFilter
         if ($req) {
@@ -237,41 +214,23 @@ class SM_formEntity extends SM_object {
         // if the title is blank, return blank
         if ($this->title == '')
             return '';
-        
-        if (($this->required)&&($this->directive['showRequiredHelp']))
-            $prefix = $this->directive['requiredStar'].' ';
-        else
-            $prefix = '';
-        
+                
         $title = '';
 
         $titleWrapTag = $this->directive['titleWrapTag'];
         if (empty($titleWrapTag)) {
             if ($this->inputEntity->isValid){
-                if ($this->parentSmartForm->directive['legacyLayout']) {
-                    // legacy style
-                    $title .= $prefix.$this->title;
-                }
-                else {
-                    // new style: label tag
-                    $title .= $prefix.'<label for="'.$this->varName.'">'.$this->title.'</label>';
-                }
+                $title .= '<label for="'.$this->varName.'">'.$this->title.'</label>';
             }
             else {
-                if ($this->parentSmartForm->directive['legacyLayout']) {
-                    $title .= $prefix.$this->title.'<br/>'.$this->inputEntity->fixMessage;
+                $title .= '<label for="'.$this->varName.'">'.$this->title.'</label>';
+                if ($this->directive['correctMsgClassTag']) {
+                    $title .= "<span class=\"{$this->directive['correctMsgClassTag']}\">".
+                               $this->inputEntity->fixMessage.
+                               "</span>";
                 }
                 else {
-                    // new style
-                    $title .= $prefix.'<label for="'.$this->varName.'">'.$this->title.'</label>';
-                    if ($this->directive['correctMsgClassTag']) {
-                        $title .= "<span class=\"{$this->directive['correctMsgClassTag']}\">".
-                                   $this->inputEntity->fixMessage.
-                                   "</span>";
-                    }
-                    else {
-                        $title .= $this->inputEntity->fixMessage;
-                    }
+                    $title .= $this->inputEntity->fixMessage;
                 }
             }            
         }
@@ -298,38 +257,6 @@ class SM_formEntity extends SM_object {
         return $this->layout;
     }
     
-     /**
-      * return the title alignment
-      * @return string title alignment
-      */      
-    function getTitleAlign() {
-        return $this->titleAlign;
-    }
-    
-                                 
-     /**
-      * return the input alignment
-      * @return string input entity alignment
-      */      
-    function getInputAlign() {
-        return $this->inputAlign;
-    }
-    
-    /**
-     * show bgColor or not for this form entity
-     * @param bool $val true or false
-     */
-    function setShowBgColor($val) {
-        $this->showBgColor = $val;
-    }
-         
-    /**
-     * return whether we want a background color or not
-     * @return bool whether we should show background color or not
-     */
-    function getShowBgColor() {
-        return $this->showBgColor;
-    }
      
     /**
      * return the type of input entity we maintain
