@@ -45,7 +45,6 @@ class testCodePlate extends SM_codePlate {
      */
     function codePlateThink() {    
 
-        // create a new module. notice, returns a reference!!
         $mod1 = $this->loadModule('rawHTML','areaOne');
         
         // configure the module

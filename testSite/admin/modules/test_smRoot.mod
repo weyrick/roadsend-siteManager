@@ -68,6 +68,7 @@ class test_smRoot extends testBase {
 (sample text added to area)
 <br>
 Template Test Complete
+
 ';
         $this->addTest('loadTemplate()', 
                        'Load, parse and run template from file through SM_siteManager root object',
@@ -93,7 +94,7 @@ Template Test Complete
 
         // load module
         $mod = $SM_siteManager->loadModule('rawHTML');
-        $mod->addDirective('cleanOutput', true);
+        $mod->addDirective('outputWrapper', SM_module::WRAP_NONE);
         $mod->addDirective('output','sample module output');
         $actual = $mod->run();
         $expect = 'sample module output';
@@ -124,15 +125,12 @@ Template Test Complete
         $cpt->addText('<b>Codeplate Test</b><br>', 'areaOne');
         $actual = $cpt->run();
         $expect = '<b>Sample Template</b><br>
-<b>Codeplate Test</b><br><span id="SM5">
-<table width="100%" border="0" cellspacing="0" cellpadding="0"><tbody>
-<tr>
-<td><B>Hello World</B></td></tr></tbody>
-</table>
-</span>
+<b>Codeplate Test</b><br><div id="SM5" class="sm_mod SM_rawHTML">
+<B>Hello World</B></div>
 
 <br>
 Template Test Complete
+
 ';
         $this->addTest('loadCodePlate()', 
                        'Load a CodePlate, add some text from SM_siteManager root object',

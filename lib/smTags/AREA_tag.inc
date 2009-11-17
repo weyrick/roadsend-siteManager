@@ -110,12 +110,14 @@ class SM_smTag_AREA extends SM_smTag {
                 $this->debugLog("object appeared to be: ".get_class($this->itemList[$key]));
             }
 
-        }                
-
+        }
+        
+        $class = '';
         if (isset($this->attributes['CLASS'])) {
             $class = ' class="'.$this->attributes['CLASS'].'"';
         }
 
+        $id = '';
         if (isset($this->attributes['ID'])) {
             $id = ' id="'.$this->attributes['ID'].'"';
         }

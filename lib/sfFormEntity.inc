@@ -97,13 +97,17 @@ class SM_formEntity extends SM_object {
       * @param mixed $val initial value
       * @param string fieldset
       */
-    function SM_formEntity($vn, $tt, $ty, $req, $parentSmartForm, $tpt, $val='', $fieldset='') {
+    function SM_formEntity($vn, $tt, $ty, $req, $parentSmartForm, $tpt='', $val='', $fieldset='') {
 
         // setup handlers
         $this->_smoConfigure();
 
         // parent smartForm
         $this->parentSmartForm = $parentSmartForm;
+
+        // default template
+        if (empty($tpt))
+            $tpt = $parentSmartForm->formEntityTpt;
 
         // configure self
         $this->configure($this->parentSmartForm->directive);
@@ -151,7 +155,7 @@ class SM_formEntity extends SM_object {
         }
 
         // setup default class tag for the entities use
-        $newEntity->addDirective('entityClassTag',$this->directive['entityClassTag']);
+        $newEntity->addDirective('entityClassTag', $this->getDirective('entityClassTag'));
 
         // if this entity is required input, automatically add a requiredFilter
         if ($req) {

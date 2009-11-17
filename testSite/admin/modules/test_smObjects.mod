@@ -132,7 +132,7 @@ class test_smObjects extends testBase {
         $this->debugLog("test debuglog entry",5);
         $testEntry = array_pop($SM_debugOutput);
         $actual = $testEntry;
-        $expect = array('msg' => 'test_smObjects:: test debuglog entry', 'verbosity' => 5);
+        $expect = array('msg' => '<span class="caller">test_smObjects::</span> test debuglog entry', 'verbosity' => 5);
         $this->addTest('debugLog() method', 
                        'make sure debugLog() method writes to global debugLog',
                        $expect,

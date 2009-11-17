@@ -656,7 +656,7 @@ class ngMenu extends SM_module {
     }
 
     /** configure the menu module, and also the root item */
-    function addDirective($key, $val) {
+    function addDirective($key, $val='', $overWrite=true) {
         parent::addDirective($key, $val);
         $this->rootItem->addDirective($key, $val);
     }

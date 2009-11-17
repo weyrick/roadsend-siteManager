@@ -87,14 +87,7 @@ class test_smartForms extends testBase {
 
         $myForm->addDirective('badFormMessage','<center><b><br>There is a problem with the form input. Please correct your input and try again.</b><br><br></center>');
 
-        //$myForm->addDirective('showRequiredHelp',false);
-        //$myForm->addDirective('submitAlign','RIGHT');
-        //$myForm->addDirective('entityClassTag','sfEntity');
-
         if ($this->getVar('loadXML') != 1) {        
-
-        // tell it to use javascript
-        $myForm->addDirective('useJS',true);
         
         $myForm->addDirective('cleanHiddens',true);
 
@@ -109,25 +102,13 @@ class test_smartForms extends testBase {
         
 
 
-        // swap control order
-        //$myForm->addDirective('swapControlOrder',true);
-
         // dump template
         $myForm->addDirective('dumpTemplate',true);
 
         // misc directives
-        //$myForm->addDirective('controlsOnRight',true);
         $myForm->addDirective('resetButton','Reset');
         $myForm->addDirective('tableBorder','1');
                 
-        // turn on alternating row colors
-        //$myForm->addDirective('rowColorAlt1','#FFFFFF');
-        //$myForm->addDirective('rowColorAlt2','#AAAAAA');
-        
-        // styles for alternating rows
-        //$myForm->addDirective('normalClassTagAlt1','sfNormal1');
-        //$myForm->addDirective('normalClassTagAlt2','sfNormal2');
-        
         // default entity styles
         //$myForm->addDirective('entityClassTag','testStyle');
 

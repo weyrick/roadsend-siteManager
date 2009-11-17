@@ -46,7 +46,7 @@ class submitEntity extends SM_inputTypeEntity {
     function entityConfig() {
 
         // clean layout up, we'll do our own
-        $this->parentFormEntity->layout = SF_LAYOUT_SINGLENOBR;
+        //$this->parentFormEntity->layout = SF_LAYOUT_SINGLENOBR;
         
         // SUBMIT or IMG
         $this->directive['image'] = false;
@@ -70,9 +70,11 @@ class submitEntity extends SM_inputTypeEntity {
         else
             $sType = 'submit';
 
+        $class = '';
         if ($this->directive['class'])
             $class = '<span class="'.$this->directive['class'].'">';
 
+        $eclass = '';
         if ($this->directive['class'])
             $eclass = '</span>';
 

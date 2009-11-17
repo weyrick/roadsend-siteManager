@@ -80,6 +80,7 @@ class test_templates extends testBase {
 (sample text added to area)
 <br>
 Template Test Complete
+
 ';
         $this->addTest('loadTemplate()', 
                        'Load, parse and run template from file',
@@ -92,7 +93,7 @@ Template Test Complete
         $tpt->setTemplateData($text);
         $tpt->addText('(sample text added to area)','areaTwo');
         $actual = $tpt->run();
-        $expect = '<b>Template From Code</b><Br><span class="sample">'."\n".'(sample text added to area)'."\n".'</span><br>Template Test Complete';
+        $expect = '<b>Template From Code</b><Br><div class="sample">'."\n".'(sample text added to area)'."\n".'</div>'."\n".'<br>Template Test Complete';
         $this->addTest('setTemplateData', 
                        'Create template, use template from code.',
                        $expect,
@@ -141,15 +142,12 @@ Template Test Complete
         $cpt->addTemplate($tpt2, 'areaOne');
         $actual = $cpt->run();
         $expect = '<b>Sample Template</b><br>
-<b>Codeplate Test</b><br><b>Sub Template Area Text<br></b>Bottom of Sub Template<span id="SM4">
-<table width="100%" border="0" cellspacing="0" cellpadding="0"><tbody>
-<tr>
-<td><B>Hello World</B></td></tr></tbody>
-</table>
-</span>
+<b>Codeplate Test</b><br><b>Sub Template Area Text<br></b>Bottom of Sub Template<div id="SM4" class="sm_mod SM_rawHTML">
+<B>Hello World</B></div>
 
 <br>
 Template Test Complete
+
 ';
         $this->addTest('Template in Codeplate', 
                        'Load a CodePlate, add some text and another template to an area in the CodePlate',
@@ -164,6 +162,7 @@ Template Test Complete
 EXAMPLE tag: babble
 <br>
 SM TAG Template Test Complete
+
 
 ';
         $this->addTest('Custom SM Tag', 

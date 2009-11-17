@@ -205,7 +205,7 @@ class SM_inputTypeEntity extends SM_object {
         // create the filter and add it to this entity
         $filterClass = $fType.'Filter';
         $newFilter = new $filterClass($this);
-        $newFilter->setInfo($varName, $msg, $this->useJS);
+        $newFilter->setInfo($varName, $msg);
         
         // save to this entity
         $this->filterList[$fType] = $newFilter;

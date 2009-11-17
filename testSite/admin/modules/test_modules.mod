@@ -75,7 +75,7 @@ class test_modules extends testBase {
     }
 
 
-    function eventBadInVar($var) {
+    function eventBadInVar($var='', $wantedType='') {
 
         $actual = $var;
         $expect = 'modVar2';
@@ -131,7 +131,7 @@ class test_modules extends testBase {
         // load module
         $mod = $this->loadModule('rawHTML');
         $mod->addDirective('output','fufu');
-        $mod->addDirective('cleanOutput',true);
+        $mod->addDirective('outputWrapper',SM_module::WRAP_NONE);
         $actual = $mod->run();
         $expect = 'fufu';
         $this->addTest('loadModule', 
@@ -147,6 +147,7 @@ class test_modules extends testBase {
 moo
 <br>
 Template Test Complete
+
 ';
         $this->addTest('loadTemplate', 
                        'load template for use in this module',
