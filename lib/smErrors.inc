@@ -3,7 +3,7 @@
 /**
  *  Roadsend SiteManager
  *******************************************************************
- *  Copyright (c) 2001-2003 Roadsend, Inc.(http://www.roadsend.com)
+ *  Copyright (c) 2001-2009 Roadsend, Inc.(http://www.roadsend.com)
  *******************************************************************
  *
  * This source file is subject to version 1.0 of the Roadsend Public
@@ -32,7 +32,7 @@ set_error_handler("SM_errorHandler");
  */
 function SM_debugLog($msg, $obj=NULL, $verbosity=0) {
 
-    global $SM_debugOutput, $SM_develState;
+    global $SM_debugOutput, $SM_develState, $SM_filePrefixRemove, $SM_siteManager;
 
     // if not in develState, not debug log
     if (!$SM_develState) {
@@ -43,6 +43,11 @@ function SM_debugLog($msg, $obj=NULL, $verbosity=0) {
         $msg = '<span class="caller">'.get_class($obj)."::</span> ".$msg;
     }
 
+    // add file/line
+    $bt = debug_backtrace(false);
+    $last = $bt[2];
+    $msg .= ' on line '.$last['line'].' in '.$SM_siteManager->maybeRemovePrefix($last['file']);
+
     $SM_debugOutput[] = array('msg'=>$msg,'verbosity'=>$verbosity);
 
 }
@@ -52,9 +57,8 @@ function SM_debugLog($msg, $obj=NULL, $verbosity=0) {
  */
 function SM_getDebugBackTrace($stripTags = false, $exception=NULL) {
 
-    if (!function_exists('debug_backtrace'))
-        return '(no backtrace available)';
-    
+    global $SM_siteManager;
+
     $text = '<br /><font color="blue">';
     if (!empty($exception)) {
         $bt = $exception->getTrace();
@@ -101,7 +105,7 @@ function SM_getDebugBackTrace($stripTags = false, $exception=NULL) {
             $caller = $val['class'].'::'.$val['function'];
         else
             $caller = $val['function'];
-        $file = dirname($val['file']).'/<font color="brown">'.basename($val['file']).'</font>';
+        $file = dirname($val['file']).'/<font color="brown">'.basename($SM_siteManager->maybeRemovePrefix($val['file'])).'</font>';
         $text .= $file.' (<font color="darkred">'.$val['line'].'</font>): <font color="darkorange">'.$caller.'</font>'.$args."\n";
     }
 
@@ -317,7 +321,9 @@ function SM_dumpVars() {
  
 function SM_errorHandler($errno, $errstr, $errfile, $errline) {
 
-    global $SM_noticeLog, $SM_develState;
+    global $SM_noticeLog, $SM_develState, $SM_siteManager;
+
+    $errfile = $SM_siteManager->maybeRemovePrefix($errfile);
 
     // if not in devel mode we ignore
     if (!$SM_develState)

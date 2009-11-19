@@ -54,12 +54,20 @@ class SM_siteManagerRoot extends SM_object {
     var $templateCache = array();
 
     /**
+     * list of prefixes to remove from error warnings and notices
+     */
+    var $filePrefixRemove = array();
+
+    /**
     * constructor. load global configuration
     */
      
     function boot() {
 
         global $SM_rootDir, $SM_siteID, $HTTP_SERVER_VARS, $SM_MODULE_COUNT;
+
+        // remove file prefix from debuglog
+        $this->addFilePrefixRemove(substr(__FILE__, 0, strpos(__FILE__,'/siteManager')));
 
         // check SITEID for validity
         if (!preg_match('/^\w+$/',$SM_siteID))
@@ -96,6 +104,27 @@ class SM_siteManagerRoot extends SM_object {
         // Start with no modules loaded
         $SM_MODULE_COUNT = 0;
 
+    }
+
+    /**
+     * add a new file prefix to remove from warnings and notices in debug log
+     * @param string $p prefix to add
+     */
+    function addFilePrefixRemove($p) {
+        $this->filePrefixRemove[] = $p;
+    }
+    
+    /**
+     * remove prefix from given file if matches our internal list
+     * @return string the given file, possibly with prefix removed
+     */
+    function maybeRemovePrefix($file) {
+        foreach ($this->filePrefixRemove as $f) {
+            if (substr($file, 0, strlen($f)) == $f) {
+                return substr($file, strlen($f)+1);
+            }
+        }
+        return $file;
     }
     
     /**
