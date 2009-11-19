@@ -290,7 +290,7 @@ class removeEditorAction extends SM_dbEditorAction {
             $myForm->addDirective('requiredTag','');
             $rC = $myForm->add('_removeConfirm','','checkBox',true);
             $rC->addOption('Are you SURE you wish to remove this item?','yes');
-            $myForm->setLayout('_removeConfirm',SF_LAYOUT_SINGLE);
+            //$myForm->setLayout('_removeConfirm',SF_LAYOUT_SINGLE);
         }
     }
 

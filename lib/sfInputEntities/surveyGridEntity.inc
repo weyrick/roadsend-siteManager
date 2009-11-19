@@ -53,7 +53,7 @@ class surveyGridEntity extends SM_inputTypeEntity {
     function entityConfig() {
 
         // clean layout up, we'll do our own
-        $this->parentFormEntity->layout = SF_LAYOUT_SINGLENOBR;
+        //$this->parentFormEntity->layout = SF_LAYOUT_SINGLENOBR;
         
         // force filters on
         $this->parentFormEntity->forceFilter = true;
