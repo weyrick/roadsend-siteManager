@@ -853,7 +853,7 @@ class SM_siteManagerRoot extends SM_object {
             if ($fatalDebug)
                 $this->debugLog($debugOutput);
 
-            $pageOutput = SM_makeErrorPage();
+            $pageOutput = $this->errorHandler->makeDebugPage();
 
         }
 

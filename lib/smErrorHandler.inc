@@ -57,6 +57,14 @@ class SM_errorHandler extends SM_object {
     }
 
     /**
+     * make a page of debug output. run in develMode on SM_debug=1
+     *
+     */
+    function makeDebugPage() {
+        return SM_makeErrorPage();
+    }
+
+    /**
      * check for a PEAR database error
      * @param result handle $rh the PEAR db result handle to check
      * @param SM_errorHandler $obj calling object
