@@ -183,7 +183,7 @@ function SM_makeErrorPage() {
     
     $output = "<html><head>
                <style type=\"text/css\">
-               body {
+               .sm_error_wrap {
                  color: black;
                  background-color: white;
                  font-family: monospace;
@@ -224,6 +224,7 @@ function SM_makeErrorPage() {
                }
                </style>
                </head><body>
+               <div class='sm_error_wrap'>
                <br /><h2>\n";
     $output .= "$SM_siteName ($SM_siteID) :: ".$_SERVER['REQUEST_URI']."</h2><hr />\n";
     
@@ -284,7 +285,7 @@ function SM_makeErrorPage() {
         $output .= "<hr /><b>Roadsend SiteManager v".SM_VERSION." (<a href=\"http://www.roadsend.com/siteManager\">http://www.roadsend.com/siteManager</a>) ".$verLine;
     $output .= "</b><br />";
 
-    $output .= "</body></html>\n";
+    $output .= "</div></body></html>\n";
 
     if (PHP_SAPI == 'cli')
         $output = strip_tags($output);
