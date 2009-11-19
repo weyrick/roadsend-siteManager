@@ -105,7 +105,8 @@ function SM_getDebugBackTrace($stripTags = false, $exception=NULL) {
             $caller = $val['class'].'::'.$val['function'];
         else
             $caller = $val['function'];
-        $file = dirname($val['file']).'/<font color="brown">'.basename($SM_siteManager->maybeRemovePrefix($val['file'])).'</font>';
+        $fileM = $SM_siteManager->maybeRemovePrefix($val['file']);
+        $file = dirname($fileM).'/<font color="brown">'.basename($fileM).'</font>';
         $text .= $file.' (<font color="darkred">'.$val['line'].'</font>): <font color="darkorange">'.$caller.'</font>'.$args."\n";
     }
 
