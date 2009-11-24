@@ -81,6 +81,9 @@ class SM_smTag_SF extends SM_smTag {
                 $submitButton->inputEntity->addDirective('image',true);
                 $submitButton->inputEntity->addDirective('src',$myForm->directive['submitImage']);
             }
+            if (!empty($myForm->directive['submitExtra'])) {
+                $submitButton->inputEntity->addDirective('extra', $myForm->directive['submitExtra']);
+            }
             $this->say($submitButton->getEntityOutput());
             break;
         case 'RESET':

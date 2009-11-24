@@ -733,8 +733,11 @@ class SM_layoutTemplate extends SM_object {
     function addText($output, $areaName) {
     
         // error checking
+        if ($output === NULL)
+            return;
+        
         if (!is_string($output))
-            $this->debugLog("WARNING: data added to area \"$areaName\" is not a valid string!");
+            $this->debugLog("WARNING: data added to area \"$areaName\" is not a valid string! ($output)");
         
         // check for valid area name
         if (empty($this->smTagList[$areaName])) {

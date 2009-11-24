@@ -61,6 +61,10 @@ class SM_smTag_AREA extends SM_smTag {
 
         // requires NAME tag
         $this->areaName = $this->attributes['NAME'];
+        
+        // optionally delaythink
+        if (!empty($this->attributes['DELAY']))
+            $this->delayThink = true;
 
     }
 
