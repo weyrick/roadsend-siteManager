@@ -52,8 +52,8 @@ class SM_errorHandler extends SM_object {
      * @param SM_errorHandler $obj object calling the error handler
      * @param int $verbosity level of verbosity this message is assigned to (higher=more verbose)
      */
-    function debugLog($msg, $obj=NULL, $verbosity=0) { 
-        SM_debugLog($msg, $obj, $verbosity);
+    function debugLog($msg, $obj=NULL, $verbosity=0, $addBacktrace=false) { 
+        SM_debugLog($msg, $obj, $verbosity, $addBacktrace);
     }
 
     /**

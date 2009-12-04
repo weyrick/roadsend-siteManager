@@ -276,8 +276,8 @@ class SM_smartForm extends SM_object {
      * override debugLog to show our form ID
      *
      */
-    function debugLog($msg, $verbosity=0) {
-        parent::debugLog($this->formID.': '.$msg, $verbosity);
+    function debugLog($msg, $verbosity=0, $addBacktrace=false) {
+        parent::debugLog($this->formID.': '.$msg, $verbosity, $addBacktrace);
     }
     
     /**

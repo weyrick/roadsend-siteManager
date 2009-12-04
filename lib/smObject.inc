@@ -167,12 +167,12 @@ class SM_object {
      * @param string $msg message to display
      * @param string $verbosity level of verbosity this message is assigned to (higher=more verbose)
      */
-    function debugLog($msg, $verbosity=0) {
+    function debugLog($msg, $verbosity=0, $addBacktrace=false) {
         if (isset($this->errorHandler)) {
-            $this->errorHandler->debugLog($msg, $this, $verbosity);
+            $this->errorHandler->debugLog($msg, $this, $verbosity, $addBacktrace);
         }
         else {
-            SM_debugLog($msg, $this, $verbosity);
+            SM_debugLog($msg, $this, $verbosity, $addBacktrace);
         }
         // add to class log
         $this->classLog[] = $msg;

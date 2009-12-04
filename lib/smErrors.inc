@@ -30,7 +30,7 @@ set_error_handler("SM_errorHandler");
  *                                 the debug function
  * @param int $verbosity verbosity of this message, for filtering out unwanted debug messages later
  */
-function SM_debugLog($msg, $obj=NULL, $verbosity=0) {
+function SM_debugLog($msg, $obj=NULL, $verbosity=0, $addBacktrace=false) {
 
     global $SM_debugOutput, $SM_develState, $SM_filePrefixRemove, $SM_siteManager;
 
@@ -49,6 +49,11 @@ function SM_debugLog($msg, $obj=NULL, $verbosity=0) {
     $msg .= ' on line '.$last['line'].' in '.$SM_siteManager->maybeRemovePrefix($last['file']);
 
     $SM_debugOutput[] = array('msg'=>$msg,'verbosity'=>$verbosity);
+
+    // possibly full backtrace
+    if ($addBacktrace) {
+        $SM_debugOutput[] = array('msg'=>SM_getDebugBackTrace(false), 'verbosity'=>$verbosity);
+    }
 
 }
 
