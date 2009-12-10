@@ -136,7 +136,6 @@ class SM_smTag_VAR extends SM_smTag {
             
             // convert from mysqldate to english date
             case 'date':
-                $op = SM_fromMysqlDate($op);
                if (!empty($formatOption)) {
                     $format = $formatOption;
                     $op = date($format,strtotime($op));

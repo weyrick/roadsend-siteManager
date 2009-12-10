@@ -1032,7 +1032,7 @@ class SM_smartForm extends SM_object {
      /**
       * Return a hash of all input variable names in use, keyed by field name
       * and the value set to getVar(fieldName)
-      * @param array $getList a list of fields to exclusively include - all others excluded
+      * @param array $getList a list of fields to explicitly include - all others excluded
       * @return array hash of fieldName => form value
       */
      function getVarHash($getList=NULL) {
