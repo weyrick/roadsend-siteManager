@@ -215,7 +215,7 @@ class selectEntity extends SM_inputTypeEntity {
         }
         
         $attr = $this->getCommonAttr();
-        $this->say("<select name=\"{$this->varName}{$braces}\" $attr $onSubmit>\n");
+        $this->say("<select name=\"{$this->varName}{$braces}\" $attr $mult $onSubmit size=\"{$this->directive['size']}\">\n");
 
         if ($this->directive['addNoOption']){
 
