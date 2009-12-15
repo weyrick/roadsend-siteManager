@@ -53,8 +53,9 @@ class submitEntity extends SM_inputTypeEntity {
         $this->directive['button'] = false;
         $this->directive['class'] = NULL;
         $this->directive['value'] = NULL;
-        $this->directive['extra'] = NULL;
+        $this->directive['extra'] = $this->parentFormEntity->parentSmartForm->directive['submitExtra'];
         $this->directive['src'] = NULL;
+        
     }
 
     /**
