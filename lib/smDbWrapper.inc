@@ -2,7 +2,7 @@
 /**
  *  Roadsend SiteManager
  *******************************************************************
- *  Copyright (c) 2001-2007 Roadsend, Inc.(http://www.roadsend.com)
+ *  Copyright (c) 2001-2010 Roadsend, Inc.(http://www.roadsend.com)
  *******************************************************************
  *
  * This source file is subject to version 1.0 of the Roadsend Public
@@ -137,7 +137,12 @@ class SM_dbWrapper
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
-    
+
+    /**
+     * performa query
+     * @param $query string SQL statement
+     * @return PDOStatement statement handle, or null on error
+     */
     function query($query)
     {
 
