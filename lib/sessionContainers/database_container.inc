@@ -37,16 +37,6 @@ class SM_sessionContainer_database extends SM_sessionContainer {
      
     function containerConfig() {
 
-        // backwards compatibility
-        if ($this->siteConfig->getVar('compatibility','2.2.x')) {
-            // 2.2.0 functionality: check for directives in a different place
-            if (!isset($this->directive['dataBaseID']))
-                $this->directive['dataBaseID'] = $this->siteConfig->getVar('sessions','dataBaseID');
-            if (!isset($this->directive['sessionTable']))
-                $this->directive['sessionTable'] = $this->siteConfig->getVar('sessions','sessionTable');
-            $this->debugLog("warning: using backward compatibility mode - you should update to ".SM_VERSION.' compatible');
-        }
-
         // get session container settings
         if ($this->directive['dataBaseID'] == '')
             $this->directive['dataBaseID'] = 'default';
