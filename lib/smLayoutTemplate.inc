@@ -120,6 +120,7 @@ class SM_layoutTemplate extends SM_object {
      * override SM_object::addDirective() to handle compatibility issues
      *
      */
+    /*
     function addDirective($key, $val='', $overWrite=true) {
 
         // backwards compatibility
@@ -155,6 +156,7 @@ class SM_layoutTemplate extends SM_object {
         parent::addDirective($key, $val, $overWrite);
 
     }
+    */
 
 
     /**
