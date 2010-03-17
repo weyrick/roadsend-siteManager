@@ -116,48 +116,6 @@ class SM_layoutTemplate extends SM_object {
 
     }
 
-    /**
-     * override SM_object::addDirective() to handle compatibility issues
-     *
-     */
-    /*
-    function addDirective($key, $val='', $overWrite=true) {
-
-        // backwards compatibility
-        if ($this->siteConfig->getVar('compatibility','2.2.x')) {
-            
-            // convert to new directive format
-
-            // HTMLBODY tag
-            if ($key == 'bodyBGCOLOR')
-                $this->directive['HTMLBODY']['bodyBGCOLOR']     = $val;
-            if ($key == 'bodyLINK')
-                $this->directive['HTMLBODY']['bodyLINK']        = $val;
-            if ($key == 'bodyALINK')
-                $this->directive['HTMLBODY']['bodyALINK']       = $val;
-            if ($key == 'bodyVLINK')
-                $this->directive['HTMLBODY']['bodyVLINK']       = $val;
-            if ($key == 'bodyBACKGROUND')
-                $this->directive['HTMLBODY']['bodyBACKGROUND']  = $val;
-            if ($key == 'bodyONLOAD')
-                $this->directive['HTMLBODY']['bodyONLOAD']      = $val;
-            if ($key == 'bodyOther')
-                $this->directive['HTMLBODY']['bodyOther']       = $val;
-
-            // HTMLTITLE tag
-            if ($key == 'htmlTitle')
-                $this->directive['HTMLTITLE']['htmlTitle']      = $val;
-
-            $this->debugLog("warning: using backward compatibility mode - you should update to ".SM_VERSION.' compatible');
-
-        }
-
-        // now call parent
-        parent::addDirective($key, $val, $overWrite);
-
-    }
-    */
-
 
     /**
      * method for setting directives for tags in this template
