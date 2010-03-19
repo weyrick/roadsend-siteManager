@@ -187,6 +187,11 @@ function SM_makeErrorPage() {
     if ($SM_siteID == '')
         $SM_siteID = 'UNKNOWN SITEID';
     
+    
+    if (PHP_SAPI == 'cli') {
+        $output == '';
+    }
+    else {
     $output = "<html><head>
                <style type=\"text/css\">
                .sm_error_wrap {
@@ -232,6 +237,8 @@ function SM_makeErrorPage() {
                </head><body>
                <div class='sm_error_wrap'>
                <br /><h2>\n";
+    }
+    
     $output .= "$SM_siteName ($SM_siteID) :: ".$_SERVER['REQUEST_URI']."</h2><hr />\n";
     
     /*
