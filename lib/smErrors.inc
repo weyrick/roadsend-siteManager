@@ -368,6 +368,8 @@ function SM_errorHandler($errno, $errstr, $errfile, $errline) {
         break;
     case E_NOTICE:
     case E_USER_NOTICE:
+    case E_DEPRECATED:
+    case E_USER_DEPRECATED:
         // only unique notices
         $msg = '<b>PHP NOTICE:</b> '.$errstr." on line $errline in $errfile\n";
         $SM_noticeLog[$msg] = true; 

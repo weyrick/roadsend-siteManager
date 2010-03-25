@@ -301,7 +301,7 @@ class SM_inputTypeEntity extends SM_object {
         // XXX we do this by string for now to be consistent with e.g. filters and entites,
         // but we may switch to passing a new SM_frobber object directly
         $cName = 'SM_'.$f.'Frob';
-        if (!class_exists($cName))
+        if (!class_exists($cName,false))
             $this->fatalErrorPage("unknown frobber: $f");
         $fH = new $cName();
         $this->frobberList[] = $fH;
@@ -348,7 +348,7 @@ class SM_inputTypeEntity extends SM_object {
 function SM_sfLoadEntity($iName) {
     
     // if already here, don't reload    
-    if (class_exists($iName.'Entity'))
+    if (class_exists($iName.'Entity',false))
         return true;
 
     // globalize

@@ -185,7 +185,7 @@ class SM_smTag extends SM_object {
 function SM_loadTag($tagName) {
     
     // if already here, don't reload    
-    if (class_exists('SM_smTag_'.$tagName))
+    if (class_exists('SM_smTag_'.$tagName, false/*no autoload*/))
         return true;
 
     // globalize
