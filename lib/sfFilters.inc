@@ -115,7 +115,7 @@ class SM_entityFilter extends SM_object {
 function SM_sfLoadFilter($fName) {
     
     // if already here, don't reload    
-    if (class_exists($fName.'Filter'))
+    if (class_exists($fName.'Filter',false))
         return true;    
     
     // globalize

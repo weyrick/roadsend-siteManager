@@ -51,7 +51,7 @@ $SM_debugLevel = 10;
 ob_start();
 
 // script start time
-$microtime = split(' ', microtime());
+$microtime = explode(' ', microtime());
 $SM_scriptStartTime = $microtime[1].substr( $microtime[0], 1);
 
 require($SM_rootDir."lib/smLoader.inc");
