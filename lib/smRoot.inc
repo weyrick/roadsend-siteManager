@@ -76,7 +76,7 @@ class SM_siteManagerRoot extends SM_object {
         // detect accepted browser locale
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             global $SM_clientLocale;
-            $SM_clientLocale = split(', *',$_SERVER['HTTP_ACCEPT_LANGUAGE']);
+            $SM_clientLocale = explode(', *',$_SERVER['HTTP_ACCEPT_LANGUAGE']);
         }
 
         // startup inVar manager
@@ -783,7 +783,7 @@ class SM_siteManagerRoot extends SM_object {
             $this->sessionH->saveSession();
 
         // get script end execution time
-        $microtime = split(' ', microtime());
+        $microtime = explode(' ', microtime());
         $SM_scriptStopTime = $microtime[1].substr( $microtime[0], 1);
         $scriptLoadTime = $SM_scriptStopTime - $SM_scriptStartTime;
 

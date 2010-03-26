@@ -121,7 +121,7 @@ function SM_randomint($max) {
  */
 function SM_isInSet($findItem, $cdList, $delim=',') {
 
-    $lArray = split($delim, $cdList);
+    $lArray = explode($delim, $cdList);
     return in_array($findItem, $lArray);
 }
 
@@ -199,7 +199,7 @@ function SM_reloadScript($excludeList=NULL,$includeList=NULL) {
 
 
 /**
- * return a "pretty name". ie, split on studly caps
+ * return a "pretty name". ie, explode on studly caps
  * this will take a string such as "thisIsAStringTest1" and
  * return "This Is A String Test 1"
  *

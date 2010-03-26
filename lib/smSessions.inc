@@ -462,7 +462,7 @@ class SM_session extends SM_object {
         }
             
         $lvList = array();
-        $vList = split('&',$link);
+        $vList = explode('&',$link);
         foreach ($vList as $v) {
             /*
             // FIXME: faster to avoid preg?
@@ -470,7 +470,7 @@ class SM_session extends SM_object {
             $lvList[] = $m[1];
             }
             */
-            $ar = split('=',$v);
+            $ar = explode('=',$v);
             $lvList[] = $ar[0];
         }
             

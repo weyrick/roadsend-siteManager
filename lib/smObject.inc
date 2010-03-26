@@ -347,7 +347,7 @@ class SM_object {
                     if ($l{2} == '-') {
                         $l{2} = '_';
                     }
-                    list($lang, $country) = split('_',$l,2);
+                    list($lang, $country) = explode('_',$l,2);
                     $l = strtolower($lang).'_'.strtoupper($country);
                 }
                 $lSearch .= $l.',';
@@ -365,7 +365,7 @@ class SM_object {
                 if ($locale{2} == '-') {
                     $locale{2} = '_';
                 }
-                list($lang, $country) = split('_',$locale,2);
+                list($lang, $country) = explode('_',$locale,2);
                 $locale = strtolower($lang).'_'.strtoupper($country);
             }
             if (isset($this->liText[$locale][$id])) {
