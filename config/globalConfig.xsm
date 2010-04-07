@@ -71,7 +71,7 @@
             <VAR name="useMemberSystem"     value="false"           desc="main on/off switch for member system. if on, make sure 'members' section is setup" />
             <VAR name="forceSessionID"      value="false"           desc="when set to true, the session ID variable will always be appended to links, even if a cookie is in use. true is safest bet, as users can turn cookies off." />
             <VAR name="badSessionPage"      value="home/home.php"   desc="page to send to when a session is invalid" />
-            <VAR name="scriptWithVars"      value="\.php\?"         desc="regex to determine if linking to a script. if you use a different extension other than .php, change this" />
+            <VAR name="scriptWithVars"      value=".php?"         desc="regex to determine if linking to a script. if you use a different extension other than .php, change this" />
             <VAR name="sessionIDName"       value="sID"             desc="GET/POST variable name to use to store sessions ID" /> 
             <VAR name="cookieTTL"           value="2678400"         desc="session cookie expire time. 2678400=1month. set to 0 to expire after browser closes." />
             <VAR name="defaultScript"       value="index.php"       desc="the default script that loads when no script is specified" />            

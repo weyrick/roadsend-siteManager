@@ -505,7 +505,7 @@ class SM_session extends SM_object {
         }
         
         // include default search location
-        (eregi($this->directive['scriptWithVars'],$link)) ? $connect = '&' : $connect = '?';
+        (strstr($link,$this->directive['scriptWithVars'])) ? $connect = '&' : $connect = '?';
         
         // generate variable exclude list
         $eList = $this->_getLinkVars($link);
