@@ -26,11 +26,6 @@ class SM_smTag_VAR extends SM_smTag {
      */
     function tagConfig() {
 
-        // always require name
-        if (!isset($this->attributes['NAME'])) {
-            $this->fatalErrorPage("VAR tag missing NAME attribute");
-        }
-
         // var type will be 'global' or 'local'
         // default to local
         $this->directive['varType'] = 'local';
@@ -74,6 +69,9 @@ class SM_smTag_VAR extends SM_smTag {
         
         
         $var = $this->attributes['NAME'];
+        if (empty($var)) {
+            $var = 'data';
+        }
         $vVar = '';
 
         
