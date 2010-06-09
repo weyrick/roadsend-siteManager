@@ -132,9 +132,12 @@ class SM_smTag extends SM_object {
      * @param string $key the attribute key to retrieve
      * @return string the value of the attribute requested, or NULL
      */
-    function getAttr($key) {
+    function getAttr($key,$default=NULL) {
         if (isset($this->attributes[$key])) {        
             return $this->attributes[$key];
+        }
+        elseif($default){
+            return $default;            
         }
         else {        
             $this->debugLog("getAttr: requested attribute not found for key [$key], tag: ".$this->attributes['TYPE'], 6);
