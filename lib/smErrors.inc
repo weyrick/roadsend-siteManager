@@ -26,8 +26,8 @@ set_error_handler("SM_errorHandler");
  * debug output
  *
  * @param string $msg message to log
- * @param SM_errorHandler $obj the caller object. specify to display which object called
- *                                 the debug function
+ * @param mixed  $obj the caller object (or class). specify to display which object called
+ *                    the debug function
  * @param int $verbosity verbosity of this message, for filtering out unwanted debug messages later
  */
 function SM_debugLog($msg, $obj=NULL, $verbosity=0, $addBacktrace=false) {
@@ -39,8 +39,11 @@ function SM_debugLog($msg, $obj=NULL, $verbosity=0, $addBacktrace=false) {
         return;
     }
 
-    if (is_object($obj)) {
-        $msg = '<span class="caller">'.get_class($obj)."::</span> ".$msg;
+    if ($obj) {
+        if (is_object($obj))
+            $msg = '<span class="caller">'.get_class($obj)."::</span> ".$msg;
+        else
+            $msg = '<span class="caller">'.$obj."::</span> ".$msg;
     }
 
     // add file/line
