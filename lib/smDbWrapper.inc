@@ -52,6 +52,11 @@ class SM_dbWrapper
      * my sitemanager db id
      */
     private $SM_id = 'unknown';
+
+    /**
+     * simple counter
+     */
+    public $queryCount = 0;
     
     function __construct($id, $dsn, $user = NULL, $pass = NULL, $options = NULL) {
         $this->SM_id = $id;
@@ -148,6 +153,8 @@ class SM_dbWrapper
 
         // so that siteManager knows the last ID in use
         $GLOBALS['SM_LAST_DB_ID'] = $this->SM_id;
+
+        $this->queryCount++;
         
         // unless we're benchmarking, just record the last query (for errors) and go to parent
         if (!$this->benchMarking) {
