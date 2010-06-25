@@ -7,8 +7,8 @@
  *******************************************************************
  *
  * This source file is subject to version 1.0 of the Roadsend Public
- * License, that is bundled with this package in the file 
- * LICENSE, and is available through the world wide web at 
+ * License, that is bundled with this package in the file
+ * LICENSE, and is available through the world wide web at
  * http://www.roadsend.com/license/rpl1.txt
  *
  *******************************************************************
@@ -18,38 +18,38 @@
 
 
 /**
- * a class for regulating incoming script variables 
+ * a class for regulating incoming script variables
  * @author Shannon Weyrick <weyrick@roadsend.com>
  * @package roadsend_siteManager
- * @subpackage siteManager_inVar 
+ * @subpackage siteManager_inVar
  */
 class SM_inVarManager extends SM_object {
 
-    /** 
-    * session (persistent) variables, valid for this session 
+    /**
+    * session (persistent) variables, valid for this session
     * @var mixed
     */
     var $sessionVarList = array();
 
-    /** 
-    * list of variable names we will NOT return data for 
+    /**
+    * list of variable names we will NOT return data for
     * @var mixed
     */
     var $badVarList = array();
-    
-    /** 
+
+    /**
     * values overriden by setInVar (tcobb: added to support setInVar)
     * @var array
     */
     var $overriddenVarList = array();
 
-    /** 
-    * a list of inVars to propagate for each module loaded by the system 
+    /**
+    * a list of inVars to propagate for each module loaded by the system
     * @var array
     */
     var $inVarPList = array();
-    
-    /** 
+
+    /**
      * add a variable to the bad variable list
      * @param string $varName the variable name to add
      */
@@ -110,7 +110,7 @@ class SM_inVarManager extends SM_object {
      * @param mixed $varVal new value
      */
     function setSessionVar($varName, $varVal) {
-                       
+
         $this->sessionVarList[$varName] = $varVal;
 
     }
@@ -145,7 +145,7 @@ class SM_inVarManager extends SM_object {
         if (isset($this->sessionVarList[$varName])) {
             return $this->sessionVarList[$varName];
         }
-        else {        
+        else {
             return NULL;
         }
 
@@ -166,7 +166,7 @@ class SM_inVarManager extends SM_object {
             return NULL;
 
         // get value
-        if (isset($_POST[$varName]))        
+        if (isset($_POST[$varName]))
             $varVal = $_POST[$varName];
         else
             $varVal = NULL;
@@ -195,7 +195,7 @@ class SM_inVarManager extends SM_object {
             return NULL;
 
         // get value
-        if (isset($_GET[$varName]))        
+        if (isset($_GET[$varName]))
             $varVal = $_GET[$varName];
         else
             $varVal = NULL;
@@ -218,7 +218,7 @@ class SM_inVarManager extends SM_object {
      * @param string $varName the variable name to retrieve
      * @param string $type [optional: blank] valid PHP variable type
      * @param bool $dieOnBadType [optional: false] whether to issue of fatal error, or a warning if bad type
-     * @return mixed value of the variable, or NULL if not found     
+     * @return mixed value of the variable, or NULL if not found
      */
     function getVar($varName, $type='', $dieOnBadType=true) {
 
@@ -246,13 +246,20 @@ class SM_inVarManager extends SM_object {
         }
 
         // check type
-        if ($type != '')
-            $this->_checkType($varName, $varVal, $type, $dieOnBadType);
+        if ($type != '') {
+            $status = $this->_checkType($varName, $varVal, $type, $dieOnBadType);
+            if (!$status) {
+                // if we got here, then the type check failed. since we got here,
+                // dieOnBadType was false. in this case, we continue, but return
+                // an empty value
+                return '';
+            }
+        }
 
         // XSS check
         if (preg_match('#<\s*(script|about|applet|activex|chrome)#i', $varVal))
             return '';
-        
+
         // return value
         return $varVal;
 
@@ -330,7 +337,7 @@ class SM_inVarManager extends SM_object {
                 $vOk = is_string($val);
                 break;
             default:
-                // these should never match, if they do it's invalid                
+                // these should never match, if they do it's invalid
                 $this->fatalErrorPage("checkType() found unknown type: ".$type);
                 break;
             }
@@ -346,7 +353,7 @@ class SM_inVarManager extends SM_object {
 
         if (!$vOk) {
             $msg = "A required variable appears to be of an invalid type ($var / $val [wanted $type])";
-            if ($dieOnBadType) 
+            if ($dieOnBadType)
                 $this->fatalErrorPage($msg);
             else
                 $this->debugLog($msg);
