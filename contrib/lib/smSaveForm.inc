@@ -2,17 +2,17 @@
 
 /*
 
-    Project: 
+    Project:
     using code from RoadsEnd PHP SiteManager
-    
+
     description   : site wide global helper functions
 
     change history:
-    
+
                 05/06/02 - bugfixes (weyrick)
-                11/20/01 - updates by weyrick        
+                11/20/01 - updates by weyrick
                 03/09/01 - script created by pym
-                    
+
 */
 
 // if you want real tabs, change this
@@ -41,19 +41,19 @@ function xmlValue($value, $directiveName = 'unset') {
         } else {
             $xmlSafeValue = "false";
         }
-    
+
     // Replace < and > signs
     } elseif (is_string($value)) {
         $value = ereg_replace("<","&lt;",$value);
         $value = ereg_replace(">","&gt;",$value);
-        
+
         $xmlSafeValue = $value;
 
     // No Change
     } else {
         $xmlSafeValue = $value;
     }
-    
+
     return $xmlSafeValue;
 
 }
@@ -64,7 +64,7 @@ function xmlValue($value, $directiveName = 'unset') {
  * The form will handle new directives or entitys as they are created
  * but there is a limit of levels (object->entity->directive->object.
  * The most complex structure so it can handle is a entity directive with an array (ie select list) value
- * 
+ *
  * Note: If the struction of the smartForm inputEntity Bases class changes you may need
  * to change the exected parameters array,
  *
@@ -74,11 +74,10 @@ function xmlValue($value, $directiveName = 'unset') {
 
 function SM_saveForm($myForm) {
 
-    // Create new XML SMART FORM DESCRIPTION    
-    $xmlPage .= "<SM_XML>\n";
-    $xmlPage .= '<SMARTFORM VERSION="'.SM_SAVEXML_VERSION.'">'."\n";  
+    // Create new XML SMART FORM DESCRIPTION
+    $xmlPage = "<SM_XML>\n";
+    $xmlPage .= '<SMARTFORM VERSION="'.SM_SAVEXML_VERSION.'">'."\n";
 
-    
     // create a smartform so we can get the current default directives
     $tSF = new SM_smartForm('testFORM');
     $defaultDirectives = $tSF->directive;
@@ -91,7 +90,7 @@ function SM_saveForm($myForm) {
 
     $haveDirs = false;
     foreach($myForm->directive as $directiveName => $directiveValue) {
-        
+
         // skip bad
         if (in_array($directiveName, $badDirs))
             continue;
@@ -107,29 +106,29 @@ function SM_saveForm($myForm) {
         }
 
     }
-    
-    if ($haveDirs)    
+
+    if ($haveDirs)
         $xmlPage .= TAB_4."</DIRECTIVE>\n";
 
-    
+
     // If there are any entities add a smartform section
     if (!(empty($myForm->entityList))) {
 
         foreach($myForm->entityList as $entityName => $entityValue) {
             $xmlPage .= TAB_4.'<ENTITY name = "' .$entityName. '">'."\n";
-            
+
             // BASIC INFORMATION - SMART FORM ENTITY Parameters
             $xmlPage .= TAB_8.'<PARAMETER>'."\n";
-            
+
             // if subtype is in the expected parameter list and subtypeinfo is
-            // not empty then print out 
-            
+            // not empty then print out
+
             // also, don't do parameter if it's the same as the default
             // for that we need a clean formEntity
             $tFormEntity = new SM_formEntity('temp','title','text',false,$this);
 
             $expectedValueList = array('type','title','required','value','layout','titleAlign','inputAlign');
-            foreach($expectedValueList as $parameter) {                
+            foreach($expectedValueList as $parameter) {
 
                 // always do type
                 if ($parameter == 'type') {
@@ -142,21 +141,21 @@ function SM_saveForm($myForm) {
                 }
 
             }
-    
+
             $xmlPage .= TAB_8."</PARAMETER>\n";
-        
+
             // Directives (optional)
-            
+
             // Are there any drectives for this entity
             if (is_array($entityValue->inputEntity->directive)) {
-                
+
                 //create a blank entity of this type to see if this directive is different from the default
                 $cName = get_class($entityValue->inputEntity);
                 $tEntity = new $cName($this);
 
                 // Loop through a list of the entity directives
                 foreach($entityValue->inputEntity->directive as $dirType => $dirInfo) {
-                    
+
                     // if this directive is the same as the default, skip it
                     if ($dirInfo == $tEntity->directive[$dirType]) {
                         continue;
@@ -166,20 +165,20 @@ function SM_saveForm($myForm) {
                     if (!(is_array($dirInfo))) {
                         $sDir = true;
                         $sDirList .= TAB_12.'<VAR name="' .$dirType.'" value= "'. xmlValue($dirInfo).'"/>'."\n";
-                    
+
                     } else {
                         // COMPLEX Directives : where dirInfo is an array loop in and get the values
                         /* OPTION LIST HACK
                          * To protect the value of optionlists form select entitys and their
-                         * extended classes set the id to optionList and the values will not be 
-                         * set to xmlSafe if the name is true or false                        
+                         * extended classes set the id to optionList and the values will not be
+                         * set to xmlSafe if the name is true or false
                         */
 
                         // optionList
                         if ($dirType == 'optionList') {
-                            
+
                             $xmlPage .= TAB_8.'<DIRECTIVE   KEY="'.$dirType.'">'."\n";
-                            foreach($dirInfo as $tmpKey => $dInfo) {                            
+                            foreach($dirInfo as $tmpKey => $dInfo) {
                                 foreach($dInfo as $dirKey => $dirValue) {
                                     $xmlPage .= TAB_12.'<VAR name="' .$dirKey.'" value= "'. xmlValue($dirValue) .'"/>'."\n";
                                 }
@@ -189,25 +188,25 @@ function SM_saveForm($myForm) {
                         }
                         // other directives
                         else {
-                        
+
                             $xmlPage .= TAB_8.'<DIRECTIVE   KEY="'.$dirType.'">'."\n";
                             foreach($dirInfo as $dirKey => $dirValue) {
                                 $xmlPage .= TAB_12.'<VAR name="' .$dirKey.'" value= "'. xmlValue($dirValue) .'"/>'."\n";
                             }
                             $xmlPage .= TAB_8."</DIRECTIVE>\n";
-                        
+
                         }
 
                     }
-    
+
                 } // end loop through directives list
-                
+
                 // Output simple directives
                 if ($sDir == true) {
                     $xmlPage .= TAB_8.'<DIRECTIVE>'."\n";
                     $xmlPage .= $sDirList;
                     $xmlPage .= TAB_8."</DIRECTIVE>\n";
-                    
+
                     // After adding reset values
                     $sDirList = "";
                     $sDir == false;
@@ -220,7 +219,7 @@ function SM_saveForm($myForm) {
             // Filters (optional)
 
             if (isset($entityValue->inputEntity->filterList)) {
-                
+
                 // Get a list of the filter objects
                 foreach($entityValue->inputEntity->filterList as $filterType => $filterObject) {
 
@@ -243,7 +242,7 @@ function SM_saveForm($myForm) {
                              $xmlPage .= TAB_12.'<VAR  name="' .$filterKey. '"  value="'.xmlValue($filterValue) .'"/>'."\n";
                          }
                         $xmlPage .= TAB_8."</FILTER>\n";
-                    
+
                     // Simple filter Object
                     } else {
 
@@ -256,11 +255,11 @@ function SM_saveForm($myForm) {
 
             }  // end if filters exist condition
 
-        
+
             $xmlPage .= TAB_4."</ENTITY>\n";
-        
+
         } // end foreach entity loop
-    
+
 
     } // end if entity exist condition
 
@@ -271,7 +270,6 @@ function SM_saveForm($myForm) {
     // End the form
 
     // display XML or write the XML to a file
-
     return $xmlPage;
 
 }

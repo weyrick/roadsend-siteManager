@@ -7,8 +7,8 @@
  *******************************************************************
  *
  * This source file is subject to version 1.0 of the Roadsend Public
- * License, that is bundled with this package in the file 
- * LICENSE, and is available through the world wide web at 
+ * License, that is bundled with this package in the file
+ * LICENSE, and is available through the world wide web at
  * http://www.roadsend.com/license/rpl1.txt
  *
  *******************************************************************
@@ -45,8 +45,8 @@ $SM_siteManager->includeLib('sfFormEntity');
  * @see SM_module::newSmartForm
  */
 class SM_smartForm extends SM_object {
-    
-    /** 
+
+    /**
      * array of formEntities in this form, keyed by varName
      * @see SM_formEntity
      * @var array
@@ -55,7 +55,7 @@ class SM_smartForm extends SM_object {
 
     /**
      * double hash of groups of form variables (fieldsets)
-     * @var array 
+     * @var array
      */
     var $groupList = array();
 
@@ -67,48 +67,48 @@ class SM_smartForm extends SM_object {
 
     /**
      * first time form load or not
-     * @var bool  
+     * @var bool
      */
     var $ftl = true;
 
-    /** 
+    /**
      * raw text counter. used internally by {@link addText}
-     * @var int  
+     * @var int
      */
     var $rt = 0;
 
-    /** 
+    /**
      * final buffered output
-     * @var string  
+     * @var string
      */
     var $sfOutput = '';
-        
-    /** 
+
+    /**
      * a header to place at the top of the form table. set with {@link setHeader}
-     * @var string  
-     */ 
+     * @var string
+     */
     var $header = '';
-    
-    /** 
+
+    /**
      * a footer to place at the bottom of the form table. set with {@link setFooter}
-     * @var string  
-     */ 
+     * @var string
+     */
     var $footer = '';
-        
-    /** 
+
+    /**
      * the template we either built or loaded, that form entities will appear in
      * @var string
      */
     var $template = '';
 
-    /** 
+    /**
      * an expanded array of hashes used to mimic the data structure
      * when the XML file is read in
      * @var array
      */
     var $xEntity = array();
-   
-    /** 
+
+    /**
      * a list of variables available from getVar, but that are not available through
      * entityList because they are inside of another entity
      * @var array
@@ -116,13 +116,13 @@ class SM_smartForm extends SM_object {
     var $internalVarList = array();
 
     /**
-     * a unique form ID     
+     * a unique form ID
      * @var string
      */
     var $formID = '';
 
-    /** 
-     * SmartForm reader, for creating forms from XML or database 
+    /**
+     * SmartForm reader, for creating forms from XML or database
      * @see SM_configReader_SMARTFORM
      * @var SM_configReader_SMARTFORM
      */
@@ -130,7 +130,7 @@ class SM_smartForm extends SM_object {
 
     /**
      * Track if this form has run. This is set to true
-     * at the end of the runForm function. 
+     * at the end of the runForm function.
      * @var boolean
      **/
      var $formHasRun = false;
@@ -140,19 +140,19 @@ class SM_smartForm extends SM_object {
      *
      */
     var $formEntityTpt = '';
-     
+
      /**
       * create new SmartForm using the ID passed, which is used in the form name. SmartForms
-      * should NOT be instantiated directcly, see {@link SM_module::newSmartForm} 
+      * should NOT be instantiated directcly, see {@link SM_module::newSmartForm}
       * @param string $formID unique (to this page) ID, used to make formName
       */
     function SM_smartForm($formID) {
 
         // setup session handlers
         $this->_smoConfigure();
-        
+
         /// TEMPLATE BUILDING
-        
+
         // style sheet classes used during build of a template, if one isn't specified
         $this->directive['requiredClass']    = 'sf_required'; // applies to wrapper div
         $this->directive['optionalClass']    = 'sf_optional'; // applies to wrapper div
@@ -171,28 +171,28 @@ class SM_smartForm extends SM_object {
         $this->directive['dumpTemplate']        = false;
 
         ///
-        
+
         // if this is set to true, ALL entities will be presetText, regardless of what is
         // specified as the entity type in the add() call
         $this->directive['readOnly']            = false;
-        
+
         // sessions vars to be excluded from propagating in this form
         $this->directive['varExcludeList']      = NULL;
-        
+
         // reset button off by default
         $this->directive['resetButton']         = '';           // when blank, it wont show up. otherwise it should be
                                                                 // the VALUE for the reset button
-        
+
         // onSubmit event of form
         $this->directive['onSubEvent']      = '';
-                                                                
+
         // script to POST to. normally $PHP_SELF. if you change this, all validation functionality goes
         // out the window.
         $this->directive['postScript']          = $_SERVER['PHP_SELF'];
-        
+
         // Set the encode type for a smartform
         $this->directive['enctype']             = '';
-        
+
         // submit button image
         $this->directive['submitImage']         = '';
 
@@ -202,13 +202,13 @@ class SM_smartForm extends SM_object {
         // a flag used by SF tag to say that the end form tag has been written
         // so that we don't duplicate it
         $this->directive['formIsEnded']         = false;
-        
+
         // header is blank by default
         $this->header                           = '';
-        
+
         // footer is blank by default
         $this->footer                           = '';
-            
+
         // form ID
         $this->formID                           = $formID;
 
@@ -217,7 +217,7 @@ class SM_smartForm extends SM_object {
 
         // global frob list. if non empty, add each frobber to each entity
         $this->directive['globalFrobList']      = NULL;
-        
+
         // setup FTL
         $myFTL = $this->formID.'_ftl';
         $ftlVal = $this->inVarH->getPOST($myFTL);
@@ -231,9 +231,9 @@ class SM_smartForm extends SM_object {
 
         // default form entity template
         $this->formEntityTpt = '<sm type="sf" data="title" var="___VARNAME___"><sm type="sf" data="errorMsg" var="___VARNAME___"><sm type="sf" data="entity" var="___VARNAME___">';
-        
-    }   
-    
+
+    }
+
      /**
       * add a block of text in the input form
       * @param string $text the text to add. may contain HTML
@@ -243,10 +243,10 @@ class SM_smartForm extends SM_object {
 
         $this->rt++;
         $rtName = 'rawText_'.$this->rt;
-        
+
         if (empty($tpt))
             $tpt = $this->formEntityTpt;
-        
+
         $rt = $this->add($rtName,'','rawText',false,'',NULL,$tpt);
         $rt->addDirective('staticText', $text);
 
@@ -260,7 +260,7 @@ class SM_smartForm extends SM_object {
     function setHeader($hText) {
         $this->header = $hText;
     }
-    
+
 
      /**
       * setup a footer to be displayed at the bottom of the form table
@@ -279,7 +279,7 @@ class SM_smartForm extends SM_object {
     function debugLog($msg, $verbosity=0, $addBacktrace=false) {
         parent::debugLog($this->formID.': '.$msg, $verbosity, $addBacktrace);
     }
-    
+
     /**
      * use a SiteManager template to format the output of the SmartForm
      * @param string $templateFile the template file to load. will search template file path.
@@ -296,9 +296,9 @@ class SM_smartForm extends SM_object {
 
     }
 
-    /** 
+    /**
      * return the current SM_layoutTemplate to be used for SmartForm output
-     * @return SM_layoutTemplate current layout template     
+     * @return SM_layoutTemplate current layout template
      */
     function getTemplate() {
         return $this->template;
@@ -314,7 +314,7 @@ class SM_smartForm extends SM_object {
         $this->template->addDirective('SF', array('parentForm' => $this));
     }
 
-    
+
    /**
     * add a new entity to the form
     *
@@ -349,7 +349,7 @@ class SM_smartForm extends SM_object {
         // setup default layout
         if ($tpt === NULL)
             $tpt = $this->formEntityTpt;
-                
+
         // good entity, add it in
         $this->entityList[$varName] = new SM_formEntity($varName, $title, $type, $req, $this, $tpt, $val, $fieldset);
 
@@ -367,7 +367,7 @@ class SM_smartForm extends SM_object {
                 $this->entityList[$varName]->inputEntity->addFrobber($frobber);
             }
         }
-        
+
         // success, return reference to formEntity
         return $this->entityList[$varName]->inputEntity;
 
@@ -396,12 +396,12 @@ class SM_smartForm extends SM_object {
             $this->debugLog("remove: variable not found for remove: $varName");
             return false;
         }
-    
+
     }
 
     /**
      * add a variable to the 'internal' var list. this is a variable that should be returned in getVarList()
-     * that wasn't actually an entry in the entityList hash. this happens (for example) when input entities 
+     * that wasn't actually an entry in the entityList hash. this happens (for example) when input entities
      * have more than one variable name, or when you want to include a hidden in the getVarList() hash
      * @param string $varName the variable name to add
      */
@@ -436,8 +436,8 @@ class SM_smartForm extends SM_object {
                 $newFilter->configure($args);
 
             return $newFilter;
-        }       
-    
+        }
+
     }
 
 
@@ -476,12 +476,12 @@ class SM_smartForm extends SM_object {
       * @return bool true on success, false otherwise
       */
     function setArgs($varName, $args) {
-        
+
         if (!is_array($args)) {
             $this->debugLog("setFilterArgs: args variable was not an array");
             return false;
         }
-            
+
         if (!isset($this->entityList[$varName])) {
             $this->debugLog("setArgs: variable not found for filter add: $varName");
             return false;
@@ -495,17 +495,17 @@ class SM_smartForm extends SM_object {
      /**
       * set a filters arguments (directives)
       * @param string $varName the variable to edit
-      * @param string $fType the filter to edit 
+      * @param string $fType the filter to edit
       * @param array $args an array of key/value arguments
       * @return bool true on success, false on error
       */
     function setFilterArgs($varName, $fType, $args) {
-    
+
         if (!is_array($args)) {
             $this->debugLog("setFilterArgs: args variable was not an array");
             return false;
         }
-        
+
         if (!isset($this->entityList[$varName])) {
             $this->debugLog("setFilterArgs: variable not found for argument set: $varName");
             return false;
@@ -517,11 +517,11 @@ class SM_smartForm extends SM_object {
         }
 
         // configure
-        $this->entityList[$varName]->inputEntity->filterList[$fType]->configure($args);        
+        $this->entityList[$varName]->inputEntity->filterList[$fType]->configure($args);
         return true;
-    
+
     }
-    
+
 
     /**
      * set a new title for a form entity
@@ -534,7 +534,7 @@ class SM_smartForm extends SM_object {
             $this->debugLog("setEntityTitle: variable not found: $varName");
             return false;
         }
-        
+
         $this->entityList[$varName]->setTitle($newTitle);
 
     }
@@ -547,18 +547,18 @@ class SM_smartForm extends SM_object {
       * @return bool true on success, false on error
       */
     function setVarFormTemplate($varName, $tpt) {
-    
+
         if (!isset($this->entityList[$varName])) {
             $this->debugLog("setVarFormTemplate: variable not found for argument set: $varName");
             return false;
         }
-        
+
         $this->entityList[$varName]->template = $tpt;
         return true;
-    
+
     }
 
-    
+
     /**
      * turn an entity that's already been added into the form, into read only (presetText)
      * @param string $varName the variable to set
@@ -574,19 +574,19 @@ class SM_smartForm extends SM_object {
 
         $this->entityList[$varName]->setReadOnly($defaultValue);
         return true;
-        
+
     }
-    
+
 
      /**
-      * change a set default value for an input entity    
+      * change a set default value for an input entity
       * @param string $varName the variable to set
       * @param mixed $default the new value to display
       * @param bool $forceNotFTL when true, it will set default value even if we're not FTL
-      * @return bool true on success, false on error      
+      * @return bool true on success, false on error
       */
     function setDefaultValue($varName, $default, $forceNotFTL=false) {
-   
+
         if (!isset($this->entityList[$varName])) {
             $this->debugLog("setDefaultValue: variable not found for argument set: $varName");
             return false;
@@ -601,7 +601,7 @@ class SM_smartForm extends SM_object {
         else {
             return false;
         }
-    
+
     }
 
     /**
@@ -621,53 +621,53 @@ class SM_smartForm extends SM_object {
      * specify that a particular input entity is part of a certain fieldset
      * @param string $varName the variable name to set
      * @param string $fieldset the fieldset to set it to
-     * @return bool true on success, false on error     
+     * @return bool true on success, false on error
      */
     function setVarFieldset($varName, $fielset) {
-                
+
         if (!isset($this->entityList[$varName])) {
             $this->debugLog($this, "setVarFieldset: variable not found for group set: $varName");
             return false;
         }
-        
+
         $this->entityList[$varName]->fieldset = $fieldset;
         $this->groupList[$varName][] = $this->entityList[$varName];
-        
+
         return true;
-    
+
     }
 
     /**
      * specify that a particular input entity is part of a certain fieldset
      * @param array $varList an array of variable names to put in this fieldset
      * @param string $fieldset the fieldset to set it to
-     * @return bool true on success, false on error     
+     * @return bool true on success, false on error
      */
     function defineFieldset($varList, $fieldset) {
 
-        if (!is_array($varList)) {      
+        if (!is_array($varList)) {
             $this->debugLog("defineFieldset: parameter \$varList is not array of variable names");
             return false;
         }
-        
+
         foreach ($varList as $varName) {
-                
+
             if (!isset($this->entityList[$varName])) {
                 $this->debugLog("defineFieldset: variable not found for group set: $varName");
                 return false;
             }
-            
+
             $this->entityList[$varName]->fieldset = $fieldset;
             $this->groupList[$varName][] = $this->entityList[$varName];
-            
+
         }
 
         return true;
-            
+
     }
 
 
-    /** 
+    /**
      * wrapper function for runForm(). identical in every way
      * only for consistency.
      */
@@ -680,13 +680,13 @@ class SM_smartForm extends SM_object {
 
         if ($this->formHasRun)
             return;
-        
-        // blank form?      
+
+        // blank form?
         if (empty($this->entityList)) {
             $this->debugLog('form was blank!');
             return;
         }
-        
+
         foreach ($this->entityList as &$ent) {
 
             // make sure entity has a group, default if none other
@@ -694,7 +694,7 @@ class SM_smartForm extends SM_object {
                 $ent->fieldset = 'default';
                 $this->groupList['default'][] = $ent;
             }
-        
+
             // apply filters/frobbers if this isn't a ftl (ie, dont do server side if this is a first time load)
             if (!$this->ftl) {
                 $ent->applyFilters();
@@ -702,19 +702,19 @@ class SM_smartForm extends SM_object {
             }
 
         }
-        
+
         // Mark that this form has run
         $this->formHasRun = TRUE;
 
     }
 
-    
+
      /**
       * this function should be called AFTER setting up the entire form. it will return TRUE
       * if all the input entities have passed all of their filters, letting the calling script
       * know that all the data they need has been entered and verified as correct according
       * to the filters applied
-      * 
+      *
       * @return bool true if all data is "verified" and ready for submission, false otherwise
       */
     function dataVerified() {
@@ -724,28 +724,28 @@ class SM_smartForm extends SM_object {
         // avoid us trying to dataVerify on another forms data, since the FTL hidden var name
         // is based on our smartform id, which is based on the module we are in.
         if ($this->ftl)
-            return false;   
-    
+            return false;
+
         //check to see if the form has run. if not, run it
         if(!$this->formHasRun)
             $this->runForm();
-        
+
         // loop through each entity and ask if it's valid or not
         foreach ($this->entityList as $ent) {
 
             // skip text entities
             if ($ent instanceof rawTextEntity)
                 continue;
-        
+
             if (!$ent->inputEntity->isValid) {
                 $this->debugLog("entity [{$ent->varName}] failed filter check");
                 return false;
             }
-        
+
         }
-        
+
         return true;
-    
+
     }
 
     /**
@@ -754,15 +754,15 @@ class SM_smartForm extends SM_object {
      *                       submit button is added.
      */
      function buildTemplate($submit='') {
-     
+
         // if $submit is set, convert html entities to allow >, etc
         if ($submit != '') {
             $submit = htmlspecialchars($submit);
         }
-        
+
         // clean
         $template = '';
-        
+
         // if this is NOT a ftl, it's a bad form. if badFormMessage is set,
         // use that as a header
         if (!$this->ftl && isset($this->directive['badFormMessage'])) {
@@ -772,23 +772,23 @@ class SM_smartForm extends SM_object {
         // add header if we've got one
         if ($this->header != '')
             $template .= $this->header;
-        
+
         // loop through by group
         foreach ($this->groupList as $groupName => $entList) {
              foreach ($entList as $ent) {
-                
+
                 // get info from entity objects for display
                 $errClass = ($ent->inputEntity->isValid) ? '' : ' '.$this->directive['errorClass'];
                 $template .= "<div id='".$ent->varName.'_wrap'."' class='".(($ent->required)?$this->directive['requiredClass']:$this->directive['optionalClass'])."$errClass'>";
                 $template .= str_replace('___VARNAME___', $ent->varName, $ent->template);
                 $template .= "</div>\n";
 
-             }            
+             }
         }
 
         ///////////////////////////////////////////////////////////////////
         // bottom of table, after form entities
-                
+
 
         // add footer if we've got one
         if ($this->footer != '')
@@ -804,7 +804,7 @@ class SM_smartForm extends SM_object {
 
         }
         else {
-            if ($submit != '')                
+            if ($submit != '')
                 $template .= '<sm type="sf" data="submit" title="'."$submit\">";
         }
 
@@ -813,9 +813,9 @@ class SM_smartForm extends SM_object {
         $this->template->addDirective('SF', array('parentForm' => $this));
         $this->template->setTemplateData($template);
 
-        
+
      }
-    
+
      /**
       * return output of this form. should be called after {@link run}
       * @param string $submit value of the submit button (if not using custom template). leave blank to not add a submit button automatically
@@ -835,13 +835,13 @@ class SM_smartForm extends SM_object {
 
         // if we don't already have a template, make one
         if (empty($this->template))
-            $this->buildTemplate($submit);        
-        
+            $this->buildTemplate($submit);
+
         // run template, which runs all entityThinks
         $templateOutput = $this->template->run();
-        
+
         $onSub = $this->directive['onSubEvent'];
-        
+
         // specify enctype if required
         if (!empty($this->directive['enctype']))
             $enctype =  'enctype="'.$this->directive['enctype'].'"';
@@ -855,14 +855,14 @@ class SM_smartForm extends SM_object {
             $fClass = '';
 
         $this->sfOutput  = "\n\n<form $onSub $enctype $fClass id=\"{$this->directive['formName']}\" action=\"{$this->directive['postScript']}\" method=\"post\"";
-   
+
         if (!empty($this->directive['formAttributes']))
             $this->sfOutput .= ' '.$this->directive['formAttributes'].' ';
-            
+
         $this->sfOutput .= ">\n";
-                
+
         if (is_array($hiddens)|| (isset($this->directive['hiddens']) && is_array($this->directive['hiddens'] ) )) {
-        
+
             // if they're both arrays, merge them
             if (is_array($hiddens) && (isset($this->directive['hiddens']) && is_array($this->directive['hiddens'])))
                 $hiddens = array_merge($hiddens, $this->directive['hiddens']);
@@ -870,19 +870,19 @@ class SM_smartForm extends SM_object {
             // if only directive hiddens is set, make that $hiddens
             if ( (isset($this->directive['hiddens']) && is_array($this->directive['hiddens'])) && !(is_array($hiddens)))
                 $hiddens = $this->directive['hiddens'];
-            
+
             foreach($hiddens as $hKey => $hVal) {
                 $this->sfOutput .= "<input type=\"hidden\" name=\"{$hKey}\" value=\"$hVal\" />\n";
             }
-            
+
         }
-            
+
         // ** SESSIONS **
         // session variables from sessions.inc, if available
-        if (isset($this->sessionH)) {        
+        if (isset($this->sessionH)) {
             if (is_array($hiddens)) {
                 if (is_array($this->directive['varExcludeList'])) {
-                    $eList = array_merge($this->directive['varExcludeList'], array_keys($hiddens));  
+                    $eList = array_merge($this->directive['varExcludeList'], array_keys($hiddens));
                 }
                 else {
                     $eList = array_keys($hiddens);
@@ -893,7 +893,7 @@ class SM_smartForm extends SM_object {
             }
             $this->sfOutput .= $this->sessionH->formID($eList);
         }
-                    
+
         // if we've been told to dump the template, do so here
         if ((!empty($this->directive['dumpTemplate'])) && ($this->directive['dumpTemplate'])) {
             if (is_string($this->template))
@@ -903,20 +903,20 @@ class SM_smartForm extends SM_object {
                 $this->sfOutput .= "<!--\n\n TEMPLATE DUMP\n\n{$tOutput}\n\n -->\n";
             }
         }
-                
+
         // run template, which runs all entityThinks
         $this->sfOutput .= $templateOutput;
-        
+
         // end form
-        if (!$this->directive['formIsEnded'])     
+        if (!$this->directive['formIsEnded'])
             $this->sfOutput .= "\n</form>\n";
-        
+
         // return final output
         return $this->sfOutput;
-    
+
     }
 
-    
+
      /**
       * Get the value of a variable that's been added to the form, from the current POST of the script
       * @param string $varName the variable to retrieve
@@ -934,7 +934,7 @@ class SM_smartForm extends SM_object {
         }
         return $v;
     }
-    
+
     /**
      * get a reference to a {@link SM_formEntity} (NOT the input entity) by
      * variable ID
@@ -954,7 +954,7 @@ class SM_smartForm extends SM_object {
 
     }
 
-    /** 
+    /**
      * determine if an entity has been added to the form, by entity name
      * @param string $varName the var (entity) name
      * @return bool true if entity is part of this form, false otherwise
@@ -970,7 +970,7 @@ class SM_smartForm extends SM_object {
      * @return SM_inputTypeEntity reference to SM_inputTypeEntity object requested, or NULL if not found
      */
     function getEntity($varName) {
-        
+
         // sanity
         if (!isset($this->entityList[$varName]->inputEntity)) {
             $this->debugLog("getEntity: variable not found: $varName");
@@ -988,7 +988,7 @@ class SM_smartForm extends SM_object {
      * @return string a type of input entity, or NULL if not found
      */
     function getEntityType($varName) {
-        
+
         // sanity
         if (!isset($this->entityList[$varName])) {
             $this->debugLog("getEntityType: variable not found: $varName");
@@ -999,7 +999,7 @@ class SM_smartForm extends SM_object {
 
     }
 
-    
+
     /**
      * return the amount of input entities that have been added to the form
      * @return int number of entities
@@ -1013,22 +1013,22 @@ class SM_smartForm extends SM_object {
      * @return array list of variables which can be used with getVar()
      */
      function getVarList() {
-        
-        // return main list 
+
+        // return main list
         $varList = array_keys($this->entityList);
 
         // return 'internal' list, which would be entities that contain
         // more than one input variable
-        if (is_array($this->internalVarList)) {        
+        if (is_array($this->internalVarList)) {
             foreach ($this->internalVarList as $vName) {
                 $varList[] = $vName;
             }
         }
-        
+
         return $varList;
-     
+
      }
-    
+
      /**
       * Return a hash of all input variable names in use, keyed by field name
       * and the value set to getVar(fieldName)
@@ -1046,15 +1046,15 @@ class SM_smartForm extends SM_object {
          }
 
          return $varHash;
-        
+
      }
 
     /**
-     * dump all variables for this form (module). 
+     * dump all variables for this form (module).
      * useful for debugging after data gets verified
      */
     function dumpFormVars() {
-        
+
         $varList = $this->getVarList();
         $output = '';
         foreach ($varList as $formVar) {
@@ -1065,11 +1065,11 @@ class SM_smartForm extends SM_object {
                 $output .= $formVar.' => [NOT PASSED IN POST]<br />';
             }
         }
-        
+
         return $output;
-    
+
     }
-    
+
     /**
      * dump smartform information
      * @return string debug information
@@ -1095,7 +1095,7 @@ class SM_smartForm extends SM_object {
     }
 
     /**
-     * XML HANDLE FUNCTIONS 
+     * XML HANDLE FUNCTIONS
      */
 
     /**
@@ -1108,7 +1108,7 @@ class SM_smartForm extends SM_object {
         // Make certain there are entities
         if (!empty($this->xEntity)) {
             foreach ($this->xEntity as $entityName => $entityValue) {
-                
+
                 // store entity name
                 $eLoadList[] = $entityName;
 
@@ -1116,7 +1116,7 @@ class SM_smartForm extends SM_object {
                     $entityValue['required'] = false;
                 if (!isset($entityValue['value']))
                     $entityValue['value'] = '';
-                
+
 
                 // Add the element
                 $entity = $this->add($entityName,
@@ -1127,12 +1127,12 @@ class SM_smartForm extends SM_object {
                                       NULL
                                       // tpt
                                       );
-    
+
                 if ($entity == NULL) {
                     $this->debugLog("unable to add loaded entity to SmartForm: $entityName (defined twice?)");
                     continue;
                 }
-                
+
                 // Add Filters to the form element
                 if (isset($entityValue['filter'])) {
                     foreach ($entityValue['filter'] as $filterID => $filterIDValue) {
@@ -1145,21 +1145,21 @@ class SM_smartForm extends SM_object {
                                 // if a filter array (name) is set
                                 // then read in the arguments, create an array and set the filter arguments
                                 // for each item set
-    
+
                                 // create the filter if it doesnt exist
                                 if (!isset($this->entityList[$entityName]->inputEntity->filterList[$filterID])) {
                                     // filter message
                                     $filterMessage = $entityValue['filter'][$filterID]['message'];
                                     $this->addFilter($entityName,$filterID,$filterMessage);
-                                } 
-    
+                                }
+
                                 $this->setFilterArgs($entityName,$filterID,array($filterName=>$filterValue));
-    
+
                             }
                         }
                     }
                 } // end filter
-                
+
                 // Add Directives to the form element
                 if (isset($entityValue['directive'])) {
                     foreach ($entityValue['directive'] as $directiveID => $directiveIDValue) {
@@ -1175,13 +1175,13 @@ class SM_smartForm extends SM_object {
                                 if (($directiveID == 'optionList')&&(method_exists($entity,'addOption'))) {
                                     $entity->addOption($directiveValue,$directiveName);
                                 }
-                                else {                                
+                                else {
                                     // set the array directly
                                     $entity->directive[$directiveID][$directiveName]=$directiveValue;
                                 }
                             }
                         }
-                    } 
+                    }
                 }  // end directives
             } // end check of existing entities
         } // end entity
@@ -1198,14 +1198,15 @@ class SM_smartForm extends SM_object {
      * @param string $data the XML data to parse
      * @return array the list of field names loaded from the XML form
      */
-    function loadFormData($data) {
+    function loadFormData($data,$encoding = 'ISO-8859-1') {
+        $enc = '<?xml version="1.0" encoding="'.$encoding.'"?>';
 
         // if we dont have a reader yet, make it
         if ($this->cFormReader == NULL) {
             $this->cFormReader = SM_loadConfigReader('SMARTFORM', $this);
         }
 
-        $this->cFormReader->XMLsetContent($data);
+        $this->cFormReader->XMLsetContent($enc.$data);
         $this->cFormReader->parseXML();
 
         return $this->_parseSF_XML();
@@ -1218,7 +1219,7 @@ class SM_smartForm extends SM_object {
      * @param string $errorMsg the message to show inline
      */
     function triggerBadEntity($varName, $errorMsg) {
-        
+
         // sanity
         if (!isset($this->entityList[$varName])) {
             $this->debugLog("triggerBadEntity: variable not found: $varName");
@@ -1227,10 +1228,10 @@ class SM_smartForm extends SM_object {
 
         $this->entityList[$varName]->inputEntity->isValid = false;
         $this->entityList[$varName]->inputEntity->errorMsg = $errorMsg;
-        
+
         return true;
     }
-    
+
     /**
      * load a SmartForm definition through an XML file
      * @param string $configFile the xml file
@@ -1243,7 +1244,7 @@ class SM_smartForm extends SM_object {
         // now find and load form. failing to find this WILL be fatal
         $configFile = $SM_siteManager->findSMfile($configFile, 'smartForms', 'xsm');
 
-        if ($GLOBALS['SM_develState'])        
+        if ($GLOBALS['SM_develState'])
             $this->debugLog("loadForm(): $configFile");
 
         // fall through: get config
@@ -1251,7 +1252,7 @@ class SM_smartForm extends SM_object {
         if ($this->cFormReader == NULL) {
             $this->cFormReader = SM_loadConfigReader('SMARTFORM', $this);
         }
-        
+
         // check cache?
         $willCache = false;
         if ($this->siteConfig->getGlobalVar('cache','cacheSmartForm')) {
@@ -1263,11 +1264,11 @@ class SM_smartForm extends SM_object {
             }
 
         }
-        else {        
+        else {
 
             // fall through: parse
             $this->cFormReader->readConfigXML($configFile);
-            
+
         }
 
         // should we cache the config file?
@@ -1282,10 +1283,10 @@ class SM_smartForm extends SM_object {
     /**
      * determine if the given button element was pressed.
      * @param $varName the name of the button element that has already been added to the form
-     * @return bool 
+     * @return bool
      */
     function buttonPressed($varName) {
-        
+
         // sanity
         if (!isset($this->entityList[$varName])) {
             $this->debugLog("buttonPressed: variable not found: $varName");
@@ -1293,7 +1294,7 @@ class SM_smartForm extends SM_object {
         }
 
         return ($this->getVar($varName) == $this->entityList[$varName]->inputEntity->directive['value']);
-        
+
     }
 
 }
