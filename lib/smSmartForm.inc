@@ -326,9 +326,10 @@ class SM_smartForm extends SM_object {
     * @param array $args arguments to pass along to configure the input entity
     * @param string $tpt optional form entity template
     * @param string $fieldset which fieldset this belongs to, or null for none (manual)
+    * @param bool $prepend place entity at the begining of the list
     * @return SM_inputEntity input entity created
     */
-    function add($varName, $title, $type, $req=false, $val='', $args=NULL, $tpt=NULL, $fieldset=NULL) {
+    function add($varName, $title, $type, $req=false, $val='', $args=NULL, $tpt=NULL, $fieldset=NULL, $prepend=false) {
 
         // don't allow the same variable twice
         if (isset($this->entityList[$varName])) {
@@ -351,7 +352,12 @@ class SM_smartForm extends SM_object {
             $tpt = $this->formEntityTpt;
 
         // good entity, add it in
-        $this->entityList[$varName] = new SM_formEntity($varName, $title, $type, $req, $this, $tpt, $val, $fieldset);
+        if($prepend) {
+            $pre[$varName] = new SM_formEntity($varName, $title, $type, $req, $this, $tpt, $val, $fieldset);
+            $this->entityList = array_merge($pre,$this->entityList);
+        }
+        else
+            $this->entityList[$varName] = new SM_formEntity($varName, $title, $type, $req, $this, $tpt, $val, $fieldset);
 
         // add to fieldset
         if ($fieldset)
