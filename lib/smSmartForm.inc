@@ -352,12 +352,14 @@ class SM_smartForm extends SM_object {
             $tpt = $this->formEntityTpt;
 
         // good entity, add it in
-        if($prepend) {
-            $pre[$varName] = new SM_formEntity($varName, $title, $type, $req, $this, $tpt, $val, $fieldset);
-            $this->entityList = array_merge($pre,$this->entityList);
+        $newEnt = new SM_formEntity($varName, $title, $type, $req, $this, $tpt, $val, $fieldset);
+        if ($prepend) {
+            $pre[$varName] = $newEnt;
+            $this->entityList = array_merge($pre,(array)$this->entityList);
         }
-        else
-            $this->entityList[$varName] = new SM_formEntity($varName, $title, $type, $req, $this, $tpt, $val, $fieldset);
+        else {
+            $this->entityList[$varName] = $newEnt;
+        }
 
         // add to fieldset
         if ($fieldset)
