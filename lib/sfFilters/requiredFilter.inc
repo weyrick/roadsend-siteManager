@@ -7,8 +7,8 @@
  *******************************************************************
  *
  * This source file is subject to version 1.0 of the Roadsend Public
- * License, that is bundled with this package in the file 
- * LICENSE, and is available through the world wide web at 
+ * License, that is bundled with this package in the file
+ * LICENSE, and is available through the world wide web at
  * http://www.roadsend.com/license/rpl1.txt
  *
  *******************************************************************
@@ -18,7 +18,7 @@
 
 /**
  *
- *  data must not be empty  
+ *  data must not be empty
  *
  * @author Shannon Weyrick <weyrick@roadsend.com>
  * @package roadsend_siteManager
@@ -26,7 +26,11 @@
  */
 class requiredFilter extends SM_entityFilter {
 
-    // apply this filter 
+    function filterConfig() {
+        $this->directive['errorMsg'] = 'This field is required.';
+    }
+
+    // apply this filter
     function filterThink() {
         return ($this->data != '');
     }
