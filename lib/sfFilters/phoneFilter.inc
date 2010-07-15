@@ -50,7 +50,7 @@ class phoneFilter extends SM_entityFilter {
         $pat = preg_replace(array("/[Xx]/","/\-/","/\(/","/\)/","/\s/"),array("\\d","\\-","\\(","\\)","\s*"),$pat);
 
         // show them the format if it's bad
-        $this->directive['errorMsg'] .= "Format: {$this->directive['format']}";
+        $this->directive['errorMsg'] = "Please enter a phone number in the format: {$this->directive['format']}";
         
         return preg_match($pat, $this->data);
             
