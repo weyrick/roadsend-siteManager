@@ -1207,6 +1207,12 @@ class SM_smartForm extends SM_object {
      * @return array the list of field names loaded from the XML form
      */
     function loadFormData($data,$encoding = 'ISO-8859-1') {
+
+        if (trim($data) == '') {
+            $this->debugLog('no xml given');
+            return;
+        }
+
         $enc = '<?xml version="1.0" encoding="'.$encoding.'"?>';
 
         // if we dont have a reader yet, make it
