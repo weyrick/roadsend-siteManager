@@ -7,8 +7,8 @@
  *******************************************************************
  *
  * This source file is subject to version 1.0 of the Roadsend Public
- * License, that is bundled with this package in the file 
- * LICENSE, and is available through the world wide web at 
+ * License, that is bundled with this package in the file
+ * LICENSE, and is available through the world wide web at
  * http://www.roadsend.com/license/rpl1.txt
  *
  *******************************************************************
@@ -28,27 +28,27 @@ define('SM_CODEPLATE',2);           // SM_codePlate object
  * @package roadsend_siteManager
  */
 class SM_siteManagerRoot extends SM_object {
-    
-    /** 
-    * the Global Site Configuration object 
+
+    /**
+    * the Global Site Configuration object
     * @var SM_siteConfig
     */
     var $siteConfig = NULL;
 
-    /** 
-    * the root layout template 
+    /**
+    * the root layout template
     * @var SM_layoutTemplate
     */
     var $rootTemplate = NULL;
 
-    /** 
-    * list of modules we have loaded 
+    /**
+    * list of modules we have loaded
     * @var SM_module
     */
     var $moduleList = array();
 
-    /** 
-    * list of loaded templates 
+    /**
+    * list of loaded templates
     * @var SM_layoutTemplates
     */
     var $templateCache = array();
@@ -61,7 +61,7 @@ class SM_siteManagerRoot extends SM_object {
     /**
     * constructor. load global configuration
     */
-     
+
     function boot() {
 
         global $SM_rootDir, $SM_siteID, $HTTP_SERVER_VARS, $SM_MODULE_COUNT;
@@ -78,6 +78,9 @@ class SM_siteManagerRoot extends SM_object {
             global $SM_clientLocale;
             $SM_clientLocale = explode(', *',$_SERVER['HTTP_ACCEPT_LANGUAGE']);
         }
+
+        // db handles
+        $this->dbHL = new SM_dbHandles();
 
         // startup inVar manager
         $this->inVarH = new SM_inVarManager();
@@ -113,7 +116,7 @@ class SM_siteManagerRoot extends SM_object {
     function addFilePrefixRemove($p) {
         $this->filePrefixRemove[] = $p;
     }
-    
+
     /**
      * remove prefix from given file if matches our internal list
      * @return string the given file, possibly with prefix removed
@@ -126,7 +129,7 @@ class SM_siteManagerRoot extends SM_object {
         }
         return $file;
     }
-    
+
     /**
      * load a new error handler
      * @param string $errorHandlerClass class name of new error handler. should extend SM_errorHandler
@@ -152,7 +155,7 @@ class SM_siteManagerRoot extends SM_object {
             $this->_loadErrorHandler($newErrorHandler);
         }
 
-        $this->_updateGlobals(); 
+        $this->_updateGlobals();
 
     }
 
@@ -198,7 +201,7 @@ class SM_siteManagerRoot extends SM_object {
         include_once($moduleFile);
 
         return true;
-    
+
     }
 
     /**
@@ -214,7 +217,7 @@ class SM_siteManagerRoot extends SM_object {
      * @return SM_module reference to new module, or null if not loaded
      */
     function loadModule($moduleFile, $moduleName='', $fatalFNF=true) {
-        
+
         // did they specify a path?
         if ( (strstr($moduleFile, '/')) || (strstr($moduleFile, '\\')) )  {
 
@@ -222,10 +225,10 @@ class SM_siteManagerRoot extends SM_object {
             // default object name
             if ($moduleName == '')
                 $moduleName = basename($moduleFile);
-    
+
         }
         else {
-        
+
             // default object name
             if ($moduleName == '') {
 
@@ -237,10 +240,10 @@ class SM_siteManagerRoot extends SM_object {
                     $moduleName = $moduleFile;
                 }
 
-            }    
+            }
 
         }
-        
+
         // include the module file
         if ($this->includeModule($moduleFile, $fatalFNF) === false) {
             $this->debugLog("Unable find module for inclusion: $moduleFile");
@@ -259,12 +262,12 @@ class SM_siteManagerRoot extends SM_object {
         else {
             $this->fatalErrorPage("could not load requested module (check class name): $moduleFile, $moduleName");
         }
-            
+
         // add to our list of modules
         $this->moduleList[] = $newModule;
 
         return $newModule;
-    
+
     }
 
     /**
@@ -357,18 +360,18 @@ class SM_siteManagerRoot extends SM_object {
      * @return SM_codePlate reference to new SM_codePlate, or null if not loaded
      */
     function loadCodePlate($cpFile, $cpName='',$fatalFNF=true) {
-        
+
         // did they specify a path?
         if ( (strstr($cpFile, '/')) || (strstr($cpFile, '\\')) )  {
-    
+
             // yes, they specified a path
             // default object name
             if ($cpName == '')
                 $cpName = basename($cpFile);
-    
+
         }
         else {
-        
+
             // default object name
             if ($cpName == '') {
 
@@ -381,7 +384,7 @@ class SM_siteManagerRoot extends SM_object {
                 }
 
             }
-    
+
         }
 
         // try to require the cp they've specified
@@ -389,7 +392,7 @@ class SM_siteManagerRoot extends SM_object {
             $this->debugLog("Unable to find codePlate for inclusion: $cpFile");
             return NULL;
         }
-    
+
         // did we get the cp we're looking for?
         if (class_exists($cpName)) {
             $newCp = new $cpName();
@@ -399,14 +402,14 @@ class SM_siteManagerRoot extends SM_object {
         }
 
         return $newCp;
-    
+
     }
 
     /**
      * search Global Configuratin System paths for certain SiteManager files. it can take a name
      * like "basicTemplate" and search the template paths for "basicTemplate.tpt", for example
      *
-     * this function will try to load from a PCC library if available 
+     * this function will try to load from a PCC library if available
      *
      * @param string $fName the file to find
      * @param array $GCSpath either a "dir" SECTION from global config, or an array of them (ie 'libs')
@@ -443,7 +446,7 @@ class SM_siteManagerRoot extends SM_object {
 
             // nope, they didn't specify a path. search paths from globalConfig (merge GLOBAL)
             $path = $this->siteConfig->getVar('dirs', $GCSpath, true);
-            
+
             // check multiple paths
             if (is_array($path)) {
                 $realPath = '';
@@ -465,7 +468,7 @@ class SM_siteManagerRoot extends SM_object {
                     $realPath = $path.'/'.$fName;
                 }
             }
-            
+
         }
 
         if ($realPath != '') {
@@ -473,16 +476,16 @@ class SM_siteManagerRoot extends SM_object {
         }
         else
             return $this->_findSMfile_disk($fName, $GCSpath, $extension, $fatalFNF);
-        
+
     }
-    
+
 
     /**
      * attempt to find the requested file on disk
      *
      */
     function _findSMfile_disk($fName, $GCSpath, $extension='', $fatalFNF=true) {
-        
+
         // debug log at verbose level 1
         $this->debugLog("attempting to load SiteManager resource file from disk: $fName ($GCSpath, $extension)",6);
 
@@ -514,7 +517,7 @@ class SM_siteManagerRoot extends SM_object {
                          return $check1;
                     }
                 }
-                
+
                 // If we didn't find anything and we want to throw
                 // and error because we couldn't find the file, do so.
                 if ($fatalFNF)
@@ -535,9 +538,9 @@ class SM_siteManagerRoot extends SM_object {
             }
 
         } else {
-            
+
             // They specified a path, so we're not checking any of our paths.
-            // either php can find the file or it can't 
+            // either php can find the file or it can't
             if (file_exists($fName)) {
 
                 // found file
@@ -547,7 +550,7 @@ class SM_siteManagerRoot extends SM_object {
             } else if ($fatalFNF) {
 
                 // File not found. throw an error.
-                $this->fatalErrorPage("Requested SiteManager file ($fName) was not found, and the search path array was empty."); 
+                $this->fatalErrorPage("Requested SiteManager file ($fName) was not found, and the search path array was empty.");
 
             }
         }
@@ -560,13 +563,13 @@ class SM_siteManagerRoot extends SM_object {
 
     /**
      * create a new instance of a template from the filename given
-     * @param string $fName the template file to load. will automatically add .tpt if not included, and check 
+     * @param string $fName the template file to load. will automatically add .tpt if not included, and check
      *                        template path
      * @param bool $fatalFNF when true, if the file wasn't found, will exit with SM_fatalErrorPage
      * @return SM_loadTemplate  a new SM_loadTemplate object (by value), or false if not found and fatalFNF=false
      */
     function loadTemplate($fName, $fatalFNF=true) {
-        
+
         // convert fName to SiteManager path'd version
         $fName = $this->findSMfile($fName, 'templates', 'tpt', $fatalFNF);
         if ($fName === false) {
@@ -586,7 +589,7 @@ class SM_siteManagerRoot extends SM_object {
 
         // return new template
         return $newTemplate;
-    
+
     }
 
     /**
@@ -606,7 +609,7 @@ class SM_siteManagerRoot extends SM_object {
         }
         return $dbSettings;
     }
-    
+
     /**
      * wrapper function for defineDBconnection, for backward compatibility.
      * FIXME: note, this function is deprecated, and will be removed before 2.4.x release!
@@ -638,7 +641,7 @@ class SM_siteManagerRoot extends SM_object {
 
         // if 'required' flag is set, update dieOnError flag. this lets XML override parameter
         if (isset($dbSettings['required']) && (is_bool($dbSettings['required'])))
-            $dieOnError = $dbSettings['required'];        
+            $dieOnError = $dbSettings['required'];
 
         // if they didn't specify whether to make a persistent connection or not,
         // use the default from globalConfig
@@ -658,7 +661,7 @@ class SM_siteManagerRoot extends SM_object {
                 $this->debugLog($e->getMessage()."<br />\n");
                 $this->fatalErrorPage("Unable to connect to database - please notify an administrator.");
             }
-            else {            
+            else {
                 $this->debugLog("database connection [$id] failed, but was flagged as non required: ignoring");
                 return false;
             }
@@ -666,7 +669,7 @@ class SM_siteManagerRoot extends SM_object {
 
         // error mode
         $this->dbHL[$id]->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
-        
+
         // backwards compatibility -- buffered by default
         if ($this->dbHL[$id]->getAttribute(PDO::ATTR_DRIVER_NAME) == 'mysql') {
             $this->dbHL[$id]->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY,true);
@@ -691,7 +694,7 @@ class SM_siteManagerRoot extends SM_object {
      * create a new database connection using settings for this SITE
      */
     function dbConnect() {
-        
+
         if (!class_exists('PDO')) {
             $this->fatalErrorPage("PDO DB routines are not available! You will need to recompile PHP or load the extension first.");
         }
@@ -701,11 +704,18 @@ class SM_siteManagerRoot extends SM_object {
 
             // multiple db connections
             $idList = $this->siteConfig->getIDlist('db');
-            
+
             // loop through id's and setup database connections
             foreach ($idList as $dbID) {
 
                 $dbSettings = $this->siteConfig->getSection('db',$dbID);
+
+                if (isset($dbSettings['lazyConnect']) && ($dbSettings['lazyConnect'])) {
+                    // we will connect on first use instead
+                    $this->dbHL->lazyConnect[$dbID] = $dbSettings;
+                    $this->debugLog('saved db ['.$dbID.'] for lazy connect');
+                    continue;
+                }
 
                 // if global active flag is set to false, and local db is defined
                 // but doesn't set active flag, set active to true
@@ -720,10 +730,10 @@ class SM_siteManagerRoot extends SM_object {
             }
 
         }
-        else {        
+        else {
 
             // setup single default database connection
-            $dbSettings = $this->siteConfig->getSection('db');            
+            $dbSettings = $this->siteConfig->getSection('db');
             $this->defineDBconnection('default',$dbSettings);
 
         }
@@ -746,7 +756,7 @@ class SM_siteManagerRoot extends SM_object {
     /**
      * add persistent variables to the session. once variables have been added
      * to the persistent list, they will be kept alive throughout session-aware modules
-     * once they obtain a value     
+     * once they obtain a value
      * @param string $varName the variable name to keep persistant
      */
     function addPersistent($varName) {
@@ -790,7 +800,7 @@ class SM_siteManagerRoot extends SM_object {
         // debug?
         $debugOutput = '';
         if ($fatalDebug) {
-            
+
             // header
             $debugOutput = "<br /><b>SITEMANAGER ROOT CLASS FATAL DEBUG PAGE</b><br /><hr /><br />";
 
@@ -804,14 +814,14 @@ class SM_siteManagerRoot extends SM_object {
                 $debugOutput .= "<hr /><b>DATABASE INFORMATION</b><hr /><br />\n";
                 $debugOutput .= "There are $numDB database connection(s) open<br /><br />";
             }
-    
+
             // session debug output
             if (isset($this->sessionH)) {
                 $debugOutput .= "<hr /><b />SESSION INFORMATION</b><hr /><br />\n";
                 $debugOutput .= $this->sessionH->dumpInfo();
-    
+
                 $debugOutput .= "Propagated InVars:<br />";
-                if (is_array($this->inVarH->inVarPList)) {            
+                if (is_array($this->inVarH->inVarPList)) {
                     foreach ($this->inVarH->inVarPList as $ivpVar) {
                         $debugOutput .= "[$ivpVar]<br />";
                     }
@@ -819,18 +829,18 @@ class SM_siteManagerRoot extends SM_object {
                 else {
                     $debugOutput .= 'None<br />';
                 }
-    
+
                 $debugOutput .= "<br /><hr /><br />\n";
             }
-    
+
             // dump modules loaded information
             if (is_array($this->moduleList)) {
                 $debugOutput .= "<hr /><b>MODULE INFORMATION</b><hr />\n";
                 foreach ($this->moduleList as $module) {
-    
+
                     $debugOutput .= $module->dumpInfo();
                     $debugOutput .= "<hr />\n";
-    
+
                 }
             }
         }
@@ -841,7 +851,7 @@ class SM_siteManagerRoot extends SM_object {
 
         // SiteManager Powered By header
         header("X-Powered-By: Roadsend PHP SiteManager ".SM_VERSION);
-        
+
         // if debugOnVar, output the debug_log first
         if (($fatalDebug) || ($this->siteConfig->getVar('debug','debugOnVar')) && ($this->inVarH->getGET('SM_debug')==1)) {
 
@@ -887,7 +897,7 @@ class SM_siteManagerRoot extends SM_object {
     }
 
     /**
-     * private function used by the session system to get a list of inVars from the 
+     * private function used by the session system to get a list of inVars from the
      * modules currently loaded.
      * @return array a list of inVars from each module loaded
      */
@@ -896,7 +906,7 @@ class SM_siteManagerRoot extends SM_object {
     }
 
     /**
-     * compile a debug page that includes all current SiteManager information, 
+     * compile a debug page that includes all current SiteManager information,
      * including configuration settings, database settings, session settings,
      * which modules are loaded, etc.
      * NOTE: this method is deprecated, use completePage(true)
@@ -909,7 +919,7 @@ class SM_siteManagerRoot extends SM_object {
     /**
     * refresh some global variables. called after reading in configuration files
     */
-     
+
     function _updateGlobals() {
 
         global $SM_develState, $SM_defaultLocale, $SM_debugLevel;

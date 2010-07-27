@@ -7,8 +7,8 @@
  *******************************************************************
  *
  * This source file is subject to version 1.0 of the Roadsend Public
- * License, that is bundled with this package in the file 
- * LICENSE, and is available through the world wide web at 
+ * License, that is bundled with this package in the file
+ * LICENSE, and is available through the world wide web at
  * http://www.roadsend.com/license/rpl1.txt
  *
  *******************************************************************
@@ -24,75 +24,75 @@
  * @package roadsend_siteManager
  */
 class SM_object {
-    
+
     /**
-    * a list of class logged items 
+    * a list of class logged items
     * @var array
     */
     var $classLog = array();
 
-    /** 
-    * configuration directive hash 
+    /**
+    * configuration directive hash
     * @var array
     */
     var $directive = array();
 
-    /** 
-    * current session handler 
+    /**
+    * current session handler
     * @var SM_session
     */
     var $sessionH = NULL;
 
-    /** 
-    * current default database handler 
+    /**
+    * current default database handler
     * @var SM_dbWrapper
     */
     var $dbH = NULL;
 
-    /** 
-    * current hash of database handlers 
-    * @var array
+    /**
+    * current hash of database handlers
+    * @var SM_dbHandles
     */
     var $dbHL = NULL;
 
-    /** 
-    * current inVar manager 
+    /**
+    * current inVar manager
     * @var SM_inVarManager
     */
     var $inVarH = NULL;
 
-    /** 
-    * reference to the current Global siteConfig 
+    /**
+    * reference to the current Global siteConfig
     * @var SM_siteConfig
     */
     var $siteConfig = NULL;
 
-    /** 
-    * current site error handler 
+    /**
+    * current site error handler
     * @var SM_errorHandler
     */
     var $errorHandler = NULL;
 
-    /** 
-    * language independent text hash 
+    /**
+    * language independent text hash
     * @var array
     */
     var $liText = array();
 
-    /** 
-    * whether to override or append directives in loadConfig 
+    /**
+    * whether to override or append directives in loadConfig
     * @var bool
     */
     var $owD = true;
 
-    /** 
-    * our SMOBJECT config reader 
+    /**
+    * our SMOBJECT config reader
     * @var SM_configReader_SMOBJECT
     */
     var $cObjectReader = NULL;
 
-    /** 
-    * our SMLANGUAGE config reader 
+    /**
+    * our SMLANGUAGE config reader
     * @var SM_configReader_SMLANGUAGE
     */
     var $cLanguageReader = NULL;
@@ -131,9 +131,9 @@ class SM_object {
         foreach ($this as $name => $val) {
             if (!in_array($name, $this->varsNotToSerialize) ) {
                 $varToSerialize[] = $name;
-            }           
+            }
         }
-        
+
         return $varToSerialize;
 
     }
@@ -192,7 +192,7 @@ class SM_object {
     }
 
      /**
-      * this function configures the object. it accepts an associative array of 
+      * this function configures the object. it accepts an associative array of
       * configuration directive in key/value pair format
       * @param array $cDir a key/value pair list of directive for this object
       */
@@ -207,7 +207,7 @@ class SM_object {
       * Add a single key/value directive for configuration
       * @param string $key the key to use
       * @param array $val the value to assign it
-      * @param bool $overWrite when set to false, if the key is already present, 
+      * @param bool $overWrite when set to false, if the key is already present,
       *                           the new value will be an array of the old values(s)
       *                           and the new one (instead of overwriting). defaults
       *                           to true.
@@ -234,11 +234,11 @@ class SM_object {
                 }
             }
         }
-        else {        
+        else {
             // new value
             $this->directive[$key] = $val;
         }
-    }   
+    }
 
 
     /**
@@ -289,15 +289,15 @@ class SM_object {
     }
 
 
-    /** 
+    /**
      * retrieve the class log as a block of formatted text
      *
      */
     function getClassLog() {
-        if (isset($this->classLog))        
+        if (isset($this->classLog))
             return "CLASS LOG:<br />".join('<br />',$this->classLog).'<br /><br />';
     }
-    
+
     /**
      * retrieve some language independent text by ID
      * @param string $id the id to use to retrieve the text
@@ -311,14 +311,14 @@ class SM_object {
         if (!empty($this->directive['defaultLocale'])) {
             $default_locale = $this->directive['defaultLocale'];
         }
-        else {               
+        else {
             $default_locale = $GLOBALS['SM_defaultLocale'];
         }
-        
-        // try to decide which locale to use
-        if ($locale == '') {        
 
-            if (($this->siteConfig->getVar('localization','useClientLocale'))&& 
+        // try to decide which locale to use
+        if ($locale == '') {
+
+            if (($this->siteConfig->getVar('localization','useClientLocale'))&&
                 (isset($SM_clientLocale))) {
                 // use locale specified by browser. might be array
                 $locale = $SM_clientLocale;
@@ -327,7 +327,7 @@ class SM_object {
             elseif (!empty($this->directive['defaultLocale'])) {
                 $locale = $this->directive['defaultLocale'];
             }
-            else {               
+            else {
                 $locale = $GLOBALS['SM_defaultLocale'];
             }
         }
@@ -390,7 +390,7 @@ class SM_object {
     *                          loaded from the XML file. if false, it will keep values and
     *                          make an array where keys are non-unique
     */
-        
+
     function loadConfig($configFile,$fatalFNF = true, $overWrite = true){
 
         global $SM_siteManager;
@@ -417,7 +417,7 @@ class SM_object {
         if ($this->cObjectReader == NULL) {
             $this->cObjectReader = SM_loadConfigReader('SMOBJECT', $this);
         }
-        
+
         // read in config, setting my properties at the same time
         // overwrite directives?
         $this->cObjectReader->addDirective('owD',$this->owD);
@@ -433,11 +433,11 @@ class SM_object {
 
     /**
      * load an SMLANGUAGE XML language file
-     * @param string $lFile the file to read in     
+     * @param string $lFile the file to read in
      * @param bool $fatalFNF if true, execution will stop if the file is not found
      */
     function loadLanguage($langFile, $fatalFNF = true) {
-    
+
         global $SM_siteManager;
 
         // find and load config file
@@ -459,7 +459,7 @@ class SM_object {
         if ($this->cLanguageReader == NULL) {
             $this->cLanguageReader = SM_loadConfigReader('SMLANGUAGE', $this);
         }
-        
+
         // read in config, setting my properties at the same time
         $this->cLanguageReader->readConfigXML($langFile);
 
@@ -467,7 +467,7 @@ class SM_object {
         if ($willCache) {
             $this->saveSerial($langFile, 'SMLANGUAGE', $this->liText);
         }
-    
+
         return true;
 
     }
@@ -485,19 +485,19 @@ class SM_object {
         global $SM_siteID;
 
         // must specify file. will strip directory later
-        if ($file == '') {        
+        if ($file == '') {
             $this->debugLog("saveSerial - file to cache was blank");
-            return false;        
+            return false;
         }
 
         // use cache system?
-        if (!$this->siteConfig->getGlobalVar('cache','useCache')) {        
+        if (!$this->siteConfig->getGlobalVar('cache','useCache')) {
             return false;
         }
 
         // create file name
-        $cacheDir = $this->siteConfig->getGlobalVar('dirs','cache');        
-        $goodFN = preg_replace('/\W/','_',$file);        
+        $cacheDir = $this->siteConfig->getGlobalVar('dirs','cache');
+        $goodFN = preg_replace('/\W/','_',$file);
         $file = $cacheDir.$SM_siteID.'-'.$prefix.'-'.$goodFN.'.inc';
 
         // only save if the file doesn't exist
@@ -519,7 +519,7 @@ class SM_object {
         // nobody should read it but webserver
         chmod($file,0600);
 
-        if ($GLOBALS['SM_develState'])        
+        if ($GLOBALS['SM_develState'])
             $this->debugLog("saveSerial: created cache file $file");
 
         return true;
@@ -528,26 +528,26 @@ class SM_object {
 
     /**
      * read in a serialized object, assign value to $data
-     * @param string $file the file to read in and unseralize     
+     * @param string $file the file to read in and unseralize
      * @param string $prefix a string to prefix the cache file name with
      * @param mixed $data store results of unserialized data in this variable
      */
-    
+
      function loadSerial($file, $prefix, &$data) {
 
         global $SM_siteID;
 
         // use cache system?
-        if (!$this->siteConfig->getGlobalVar('cache','useCache')) {        
+        if (!$this->siteConfig->getGlobalVar('cache','useCache')) {
             return;
         }
 
         // make file name
         $cacheDir = $this->siteConfig->getGlobalVar('dirs','cache');
-        $goodFN = preg_replace('/\W/','_',$file);        
+        $goodFN = preg_replace('/\W/','_',$file);
         $file = $cacheDir.$SM_siteID.'-'.$prefix.'-'.$goodFN.'.inc';
 
-        if (!file_exists($file)) {        
+        if (!file_exists($file)) {
             $this->debugLog("loadSerial: file not found [$file]");
             return false;
         }
@@ -557,13 +557,13 @@ class SM_object {
 
         $data = unserialize($ct);
 
-        if ($GLOBALS['SM_develState'])        
+        if ($GLOBALS['SM_develState'])
             $this->debugLog("loadSerial: loaded cached file $file");
 
         return true;
 
     }
-    
+
     /**
      * default toString method
      */
@@ -571,6 +571,52 @@ class SM_object {
         return '--> toString() dump of: ['.get_class($this).'] (SM_object based) <--';
     }
 
+}
+
+
+/**
+ * a small class to hold database connection information
+ * used to implement the dbHL array. it is basically just
+ * an array, but with lazyConnect functionality
+ */
+class SM_dbHandles implements ArrayAccess {
+
+    // db connect info
+    private $data;
+
+    // db settings to connect lazily (i.e., on first use)
+    public $lazyConnect = array();
+
+    public function offsetGet($i) {
+        // if the handle they are looking for isn't defined,
+        // see if it's a lazyConnect and if so, make the connection
+            global $SM_siteManager;
+        if (empty($this->data[$i])) {
+            if (isset($this->lazyConnect[$i])) {
+                // do lazy connect
+                $SM_siteManager->_defineDBconnection($i, $this->lazyConnect[$i]);
+                $SM_siteManager->debugLog('connected lazily to dbID: '.$i);
+            }
+            else {
+                // no lazy connect, it really doesn't exist
+                $SM_siteManager->fatalErrorPage('database connection undefined: '.$id);
+            }
+        }
+        return $this->data[$i];
+    }
+
+    public function offsetExists ($i) {
+        $d = $this->offsetGet($i);
+        return !empty($d);
+    }
+
+    public function offsetSet($i, $value) {
+        $this->data[$i] = $value;
+    }
+
+    public function offsetUnset($i) {
+        unset($this->data[$i]);
+    }
 }
 
 ?>
