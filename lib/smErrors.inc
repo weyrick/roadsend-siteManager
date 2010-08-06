@@ -7,8 +7,8 @@
  *******************************************************************
  *
  * This source file is subject to version 1.0 of the Roadsend Public
- * License, that is bundled with this package in the file 
- * LICENSE, and is available through the world wide web at 
+ * License, that is bundled with this package in the file
+ * LICENSE, and is available through the world wide web at
  * http://www.roadsend.com/license/rpl1.txt
  *
  *******************************************************************
@@ -16,7 +16,7 @@
  *
  * @package roadsend_siteManager
  */
-/** 
+/**
  *  override the PHP error handler
  */
 set_error_handler("SM_errorHandler");
@@ -122,25 +122,25 @@ function SM_getDebugBackTrace($stripTags = false, $exception=NULL) {
 
     if ((PHP_SAPI == 'cli') || ($stripTags))
         $text = strip_tags($text);
-        
+
     return $text;
 
 
 }
 
-/** 
+/**
  *  a fatal error has occured. last ditch effort to output an error message.
  *
  *  NOTE that this function checks to make sure it is not already defined. this allows
  *  you to override SM_fatalErrorPage() by defining it before the call to include SiteManager.
  *
- *  @param string $msg error message to display 
+ *  @param string $msg error message to display
  *  @param object $obj the caller object. specify to display which object called the error routine
- *  
+ *
  */
 if (!function_exists('SM_fatalErrorPage')) {
 function SM_fatalErrorPage($msg='', $obj=NULL) {
-    
+
     global $SM_outputBuffer, $SM_develState, $SM_shortFatalError, $SM_debugOutput, $SM_noticeLog;
 
     // SM_shortError means we don't display any notice or previous debugLog
@@ -168,10 +168,10 @@ function SM_fatalErrorPage($msg='', $obj=NULL) {
         $SM_outputBuffer = ob_get_contents();
         ob_end_clean();
     }
-    
+
     echo SM_makeErrorPage();
     exit;
-    
+
 }
 }
 
@@ -183,14 +183,14 @@ function SM_fatalErrorPage($msg='', $obj=NULL) {
 function SM_makeErrorPage() {
 
     global $SM_siteName, $SM_siteID, $PHP_SELF, $SM_debugOutput, $SM_outputBuffer, $SM_noticeLog, $SM_siteManager, $SM_debugLevel;
-    
+
     if ($SM_siteName == '')
         $SM_siteName = 'UNKNOWN SITENAME';
-    
+
     if ($SM_siteID == '')
         $SM_siteID = 'UNKNOWN SITEID';
-    
-    
+
+
     if (PHP_SAPI == 'cli') {
         $output == '';
     }
@@ -241,9 +241,9 @@ function SM_makeErrorPage() {
                <div class='sm_error_wrap'>
                <br /><h2>\n";
     }
-    
+
     $output .= "$SM_siteName ($SM_siteID) :: ".$_SERVER['REQUEST_URI']."</h2><hr />\n";
-    
+
     /*
     if (!$SM_siteManager->dbH->benchMarking) {
         $chr = (strstr($_SERVER['REQUEST_URI'],'?')) ? '&' : '?';
@@ -256,7 +256,7 @@ function SM_makeErrorPage() {
         if (isset($SM_siteManager) &&
             (!isset($SM_siteManager->siteConfig) ||
              (isset($SM_siteManager->siteConfig) && // this would only happen if it dies in config reader
-              $SM_siteManager->siteConfig->getVar('debug','showNotices')))) {        
+              $SM_siteManager->siteConfig->getVar('debug','showNotices')))) {
 
             $output .= "<b>NOTICE LOG:</b><br />\n";
             foreach ($SM_noticeLog as $line => $_d) {
@@ -296,7 +296,7 @@ function SM_makeErrorPage() {
         $verLine = "(".RAVEN_VERSION_TAG.'/'.PHP_OS.')';
     else
         $verLine = "(PHP v".PHP_VERSION.'/'.PHP_OS.')';
-    
+
     if (PHP_SAPI != 'cli')
         $output .= "<hr /><b>Roadsend SiteManager v".SM_VERSION." (<a href=\"http://www.roadsend.com/siteManager\">http://www.roadsend.com/siteManager</a>) ".$verLine;
     $output .= "</b><br />";
@@ -316,7 +316,7 @@ function SM_makeErrorPage() {
  * will traverse arrays
  */
 function SM_dumpVars() {
-    
+
     while (list($key, $val) = each ($_REQUEST)) {
         if (!is_array($val))
             echo "$key => $val<br />";
@@ -328,14 +328,14 @@ function SM_dumpVars() {
         }
     }
 
-}   
+}
 
 
 /**
 *  override PHP's main error handler function
 *  this should NOT be called directly
 */
- 
+
 function SM_errorHandler($errno, $errstr, $errfile, $errline) {
 
     global $SM_noticeLog, $SM_develState, $SM_siteManager;
@@ -373,9 +373,12 @@ function SM_errorHandler($errno, $errstr, $errfile, $errline) {
     case E_USER_NOTICE:
     case E_DEPRECATED:
     case E_USER_DEPRECATED:
+        // skip undefined index always
+        if (substr($errstr,0,15) == 'Undefined index')
+            break;
         // only unique notices
         $msg = '<b>PHP NOTICE:</b> '.$errstr." on line $errline in $errfile\n";
-        $SM_noticeLog[$msg] = true; 
+        $SM_noticeLog[$msg] = true;
         break;
     default:
         SM_fatalErrorPage("Unkown error type: [$errno] $errstr on line $errline in $errfile<br />\n");
