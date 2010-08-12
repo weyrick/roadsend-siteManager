@@ -87,12 +87,12 @@ class SM_dbWrapper
     }
 
     function beginTransaction() {
-        SM_debugLog("DB [{$this->SM_id}]: started transaction");
+        //SM_debugLog("DB [{$this->SM_id}]: started transaction");
         return $this->dbH->beginTransaction();
     }
 
     function commit() {
-        SM_debugLog("DB [{$this->SM_id}]: committed transaction");
+        //SM_debugLog("DB [{$this->SM_id}]: committed transaction");
         return $this->dbH->commit();
     }
     
