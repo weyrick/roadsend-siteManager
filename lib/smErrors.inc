@@ -49,7 +49,9 @@ function SM_debugLog($msg, $obj=NULL, $verbosity=0, $addBacktrace=false) {
     // add file/line
     $bt = debug_backtrace(false);
     $last = $bt[2];
-    $msg .= ' on line '.$last['line'].' in '.$SM_siteManager->maybeRemovePrefix($last['file']);
+    $line = (isset($last['line']) ? $last['line'] : 'unknown');
+    $file = (isset($last['file']) ? $last['file'] : 'unknown');
+    $msg .= ' on line '.$line.' in '.$SM_siteManager->maybeRemovePrefix($file);
 
     $SM_debugOutput[] = array('msg'=>$msg,'verbosity'=>$verbosity);
 
@@ -340,11 +342,11 @@ function SM_errorHandler($errno, $errstr, $errfile, $errline) {
 
     global $SM_noticeLog, $SM_develState, $SM_siteManager;
 
-    $errfile = $SM_siteManager->maybeRemovePrefix($errfile);
-
     // if not in devel mode we ignore
     if (!$SM_develState)
         return;
+
+    $errfile = $SM_siteManager->maybeRemovePrefix($errfile);
 
     switch ($errno) {
     case E_PARSE:
