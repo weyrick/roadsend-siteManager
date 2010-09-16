@@ -786,8 +786,17 @@ class SM_smartForm extends SM_object {
              foreach ($entList as $ent) {
 
                 // get info from entity objects for display
-                $errClass = ($ent->inputEntity->isValid) ? '' : ' '.$this->directive['errorClass'];
-                $template .= "<div id='".$ent->varName.'_wrap'."' class='".(($ent->required)?$this->directive['requiredClass']:$this->directive['optionalClass'])."$errClass'>";
+
+                $wrapClass = '';
+                $customClass = (isset($ent->inputEntity->directive['wrapClass'])) ?
+                                     ($ent->inputEntity->directive['wrapClass'].' ') :
+                                    '';
+                $errClass = ($ent->inputEntity->isValid) ? '' : (' '.$this->directive['errorClass']);
+                $reqClass = (($ent->required) ? $this->directive['requiredClass'] :
+                                                $this->directive['optionalClass']);
+                $wrapClass = $customClass.$reqClass.$errClass;
+
+                $template .= "<div id='".$ent->varName.'_wrap'."' class='".$wrapClass."'>";
                 $template .= str_replace('___VARNAME___', $ent->varName, $ent->template);
                 $template .= "</div>\n";
 
