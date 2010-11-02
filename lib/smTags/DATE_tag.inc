@@ -28,7 +28,7 @@ class SM_smTag_DATE extends SM_smTag {
 
 
 
-        $format = $this->getAttr('FORMAT','M, d Y');
+        $format = $this->getAttr('FORMAT','M. d, Y');
         $class= $this->getAttr('CLASS','date');
         $op = date($format);
 
