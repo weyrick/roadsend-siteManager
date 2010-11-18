@@ -116,6 +116,14 @@ class SM_inVarManager extends SM_object {
     }
 
     /**
+     * set the entire session var list as once
+     * @param array $list 
+     */
+    function setSessionVarList($list) {
+        $this->sessionVarList = $list;
+    }
+
+    /**
      * override an inVar value. use sparingly for best practice.
      * @param string $varName variable to override/set
      * @param mixed $varVal new value

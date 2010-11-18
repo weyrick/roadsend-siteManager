@@ -32,6 +32,10 @@
             <VAR name="persistent"          value = "true"  desc = "bool to determine whether this is a persistent connection or not" />
             <VAR name="required"            value = "true"  desc = "if this is true, a fatal error will be thrown if the connection fails. if false, it will ignore a bad connection." />
         </SECTION>
+        <SECTION name="memcached" id="default">
+            <VAR name="host"            value = "localhost"  desc = "memcached host" />
+            <VAR name="port"            value = "11211"  desc = "memcached port" />
+        </SECTION>
         <SECTION name="compatibility">
             <VAR name="2.2.x"               value = "true"  desc = "set to true if you want more compatibility with SiteManager 2.2.x" />
         </SECTION>
