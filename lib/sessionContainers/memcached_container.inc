@@ -59,18 +59,23 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
      * the memcached instance
      * @var Memcached
      */
-    protected $mc = NULL;
+    public $mc = NULL;
 
     /**
      * actual session data container
      * @var SM_sessionData
      */
-    protected $sContainer = NULL;
+    public $sContainer = NULL;
 
     /**
      * @var bool whether we've written to memcached or not this page view
      */
     protected $written = false;
+
+    /**
+     * @var int timeout for vars stored in memcached
+     */
+    protected $ttl = 0;
 
     // configure before we load/save     
     function containerConfig() {
@@ -88,6 +93,9 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
         if (!isset($config['port'])) {
             $this->fatalErrorPage("memcached port was not defined");
         }
+
+        // pull ttl from session config
+        $this->ttl = $this->sessionH->directive['gcMaxLifeTime'];
 
         global $SM_siteID;
         $this->mc = new Memcached($SM_siteID);
@@ -131,11 +139,11 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
         // last update is always touched
         $this->sContainer->lastUpdated = time();
         $key = $this->getKey();
-        $this->mc->set($key, $this->sContainer, 0/*no expiration*/);
+        $this->mc->set($key, $this->sContainer, time()+$this->ttl);
         $this->written = true;
 
         // store this id in our global list, so we can walk sessions later
-        //$this->saveToKeyList();
+        $this->saveToKeyList();
 
     }
 
@@ -143,12 +151,11 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
         if (empty($sessionID))
             $sessionID = $this->sessionH->sessionID;
         $keyList = $this->mc->get('SMS_KEYLIST');
-
         if (empty($keyList))
-            $keyList = array($sessionID => true);
+            $keyList = array('SMS_'.$sessionID => true);
         else
-            $keyList[$sessionID] = true;
-        $this->mc->set('SMS_KEYLIST', $keyList);
+            $keyList['SMS_'.$sessionID] = true;
+        $this->mc->set('SMS_KEYLIST', $keyList, 0);
     }
 
     // key used on memcached server for this session
@@ -194,13 +201,52 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
         $this->mc->delete($key);
         return true;
     }
-    
+
+    function getFullKeyList() {
+        return $this->mc->get('SMS_KEYLIST');
+    }
+
+
     /**
      * garbage collect. clear all sessions older than $maxLifeTime seconds 
      *
      */
     function garbageCollect($maxLifeTime) {
-        return true;	
+
+        // memcached maintains ttl on the actual session data itself
+        // all we do here is maintain the list of active sessions
+        $mainKeyList = $this->mc->get('SMS_KEYLIST');
+        $skeyList = array_keys($mainKeyList);
+
+        if (sizeof($skeyList) == 0)
+            return;
+
+        // request all of the sessions we have in our keylist
+        // XXX note, this returns all of the data for all of the keys?? an isset() is what we need, not a get*
+        // but that's not available?
+        $sVarList = $this->mc->getMulti($skeyList);
+
+        // sVarList will contain all of the keys that still exist
+        // calculate which we need to purge
+        $remList = array_diff($skeyList, array_keys($sVarList));
+
+        /*
+        var_dump($mainKeyList);
+        var_dump($remList);
+        var_dump($skeyList);
+        var_dump($sVarList);
+         *
+         */
+
+        $this->debugLog('gcing '.sizeof($remList).' keys');
+
+        // remove from list
+        foreach ($remList as $sKey) {
+            unset($mainKeyList[$sKey]);
+        }
+
+        $this->mc->set('SMS_KEYLIST', $mainKeyList,0);
+
     }
 
     
