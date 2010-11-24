@@ -159,10 +159,18 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
     }
 
     // key used on memcached server for this session
-    private function getKey($sessionID=NULL) {
+    public function getKey($sessionID=NULL) {
         if (empty($sessionID))
             $sessionID = $this->sessionH->sessionID;
         return 'SMS_'.$sessionID;
+    }
+
+    // reverse
+    public function getSessionID($sKey) {
+        if (strlen($sKey) == 32+4)
+            return substr($sKey, 4);
+        else
+            return NULL;
     }
 
    /**

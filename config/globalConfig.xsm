@@ -69,7 +69,7 @@
             <VAR name="containerType"       value="none"            desc="which session container to use. currently 'database' or 'file'" />
             <VAR name="garbageCollect"      value="true"            desc="when true, clear old sessions out at specified interval" />
             <VAR name="gcProbability"       value="1"               desc="there is a [gcProbability] in [gcDivisor] chance the gc will run on any page view" />
-            <VAR name="gcDivisor"           value="100"             desc="" />
+            <VAR name="gcDivisor"           value="500"             desc="" />
             <VAR name="gcMaxLifeTime"       value="604800"          desc="maximum time, in seconds, a session should stay active 694800=1 week" />
             <VAR name="sessionCookie"       value="SMSESS"          desc="session cookie name on the remote users machine that stores their session id" />            
             <VAR name="useMemberSystem"     value="false"           desc="main on/off switch for member system. if on, make sure 'members' section is setup" />
