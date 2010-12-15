@@ -77,7 +77,14 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
      */
     protected $ttl = 0;
 
-    // configure before we load/save     
+    /**
+     * @var bool whether we need to update the key list or not. if the session load was already valid,
+     *           there's reason to rewrite it (it must have been there). if we created a new session
+     *           this page load, we'll need to save it
+     */
+    protected $needKeyListWrite = false;
+
+// configure before we load/save     
     function containerConfig() {
 
         // get session container settings
@@ -183,6 +190,8 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
     }
 
     private function saveToKeyList($sessionID=NULL) {
+        if (!$this->needKeyListWrite)
+            return;
         if (empty($sessionID))
             $sessionID = $this->sessionH->sessionID;
         $keyList = $this->mc->get('SMS_KEYLIST');
@@ -222,6 +231,8 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
             $this->sContainer = new SM_sessionData();
             $this->sContainer->dateCreated = time();
             $this->sContainer->remoteHost = $_SERVER['REMOTE_ADDR'];
+
+            $this->needKeyListWrite = true;
 
             return false;
         }
