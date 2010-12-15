@@ -129,7 +129,9 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
 
         $key = $this->getKey($sessionID);
         $this->mc->set($key, $container, time()+$this->ttl);
-        $this->saveToKeyList($sessionID);
+
+        // NOTE this is too slow, do it in bulk with setKeyList
+        //$this->saveToKeyList($sessionID);
 
     }
 
@@ -172,6 +174,12 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
         // store this id in our global list, so we can walk sessions later
         $this->saveToKeyList();
 
+    }
+
+    // used in import script to set keylist in bulk
+    // should be a hash with sKey => true
+    public function setKeyList($keyList) {
+        $this->mc->set('SMS_KEYLIST', $keyList, 0);
     }
 
     private function saveToKeyList($sessionID=NULL) {
@@ -240,7 +248,6 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
     function getFullKeyList() {
         return $this->mc->get('SMS_KEYLIST');
     }
-
 
     /**
      * garbage collect. clear all sessions older than $maxLifeTime seconds 
