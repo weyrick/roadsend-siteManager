@@ -103,8 +103,35 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
             $this->fatalErrorPage('unable to connect to memcached server at '.$host.':'.$port);
         }
 
+        $this->mc->setOption(Memcached::OPT_NO_BLOCK, true);
+        $this->mc->setOption(Memcached::OPT_TCP_NODELAY, true);
+        //$this->mc->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
+
     }
 
+    // called to create a session from an external source, e.g. the command line import script
+    // data is a hash of key/val session data pairs
+    // dateCreated is a unix timestamp
+    // remoteHost is a string of dotted quad
+    function addDirectSession($sessionID, $dateCreated, $lastUpdated, $remoteHost, $data) {
+
+        if (!preg_match('/^\d+$/', $dateCreated))
+            $this->fatalErrorPage('invalid date: '.$dateCreated);
+
+        if (!preg_match('/^\d+$/', $lastUpdated))
+            $lastUpdated = 0;
+
+        $container = new SM_sessionData();
+        $container->dateCreated = $dateCreated;
+        $container->remoteHost = $remoteHost;
+        $container->data = $data;
+        $container->lastUpdated = $lastUpdated;
+
+        $key = $this->getKey($sessionID);
+        $this->mc->set($key, $container, time()+$this->ttl);
+        $this->saveToKeyList($sessionID);
+
+    }
 
     /**
      * save session vars
@@ -257,6 +284,13 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
 
     }
 
+    function clearAllSessions() {
+        $keyList = $this->mc->get('SMS_KEYLIST');
+        foreach ($keyList as $sKey => $d) {
+            $this->mc->delete($sKey);
+        }
+        $this->mc->set('SMS_KEYLIST', array(),0);
+    }
     
 }
 
