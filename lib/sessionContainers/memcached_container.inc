@@ -270,6 +270,9 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
      */
     function garbageCollect($maxLifeTime) {
 
+        // XXX
+        return;
+
         // memcached maintains ttl on the actual session data itself
         // all we do here is maintain the list of active sessions
         $mainKeyList = $this->mc->get('SMS_KEYLIST');
