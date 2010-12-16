@@ -84,7 +84,7 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
      */
     protected $needKeyListWrite = false;
 
-// configure before we load/save     
+    // configure before we load/save
     function containerConfig() {
 
         // get session container settings
@@ -192,6 +192,7 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
     private function saveToKeyList($sessionID=NULL) {
         if (!$this->needKeyListWrite)
             return;
+        $this->debugLog('doing full keylist write');
         if (empty($sessionID))
             $sessionID = $this->sessionH->sessionID;
         $keyList = $this->mc->get('SMS_KEYLIST');
@@ -253,6 +254,9 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
     function clearSession($sessionID) {
         $key = $this->getKey();
         $this->mc->delete($key);
+        $keyList = $this->mc->get('SMS_KEYLIST');
+        unset($keyList[$key]);
+        $this->mc->set('SMS_KEYLIST', $keyList, 0);
         return true;
     }
 
