@@ -117,7 +117,7 @@ class SM_inVarManager extends SM_object {
 
     /**
      * set the entire session var list as once
-     * @param array $list 
+     * @param array $list
      */
     function setSessionVarList($list) {
         $this->sessionVarList = $list;
@@ -340,6 +340,9 @@ class SM_inVarManager extends SM_object {
                 break;
             case 'hex':
                 $vOk = preg_match('/^[0-9a-fA-F]+$/',$val);
+                break;
+            case 'time':
+                $vOk = preg_match('/^\d{1,2}[:]\d{2}([:]\d{2})?$/',$val);
                 break;
             case 'string':
                 $vOk = is_string($val);
