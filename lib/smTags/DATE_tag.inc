@@ -31,9 +31,11 @@ class SM_smTag_DATE extends SM_smTag {
         $format = $this->getAttr('FORMAT','M. d, Y');
         $class= $this->getAttr('CLASS','date');
         $op = date($format);
-
-        $this->say("<span class='$class'>".$op."</span>");
-
+        if ($class == "nospan") {
+            $this->say($op);
+        } else {
+            $this->say("<span class='$class'>".$op."</span>");    
+        }       
     }
 
 }
