@@ -132,7 +132,8 @@ class SM_session extends SM_object {
         // check to see if we are in cli mode and if so, turn off cookies (gollum 6/18/2004)
         if (php_sapi_name() === 'cli') {
             $this->directive['useCookies'] = 'none';
-            $this->debugLog("useCookies set to 'none' in CLI mode");
+            $this->directive['containerType'] = 'none';
+            $this->debugLog("useCookies, session type set to 'none' in CLI mode");
         }
         
         // setup session container
