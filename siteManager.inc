@@ -32,8 +32,8 @@ $SM_rootDir = '';   // when set, make sure it ends with a slash!
 // -----------------------------------------------------------------------------
 
 // Version
-$SM_versionTag = "6.0.0";
-define('SM_VERSION', '6.0.0');
+$SM_versionTag = "6.0.1";
+define('SM_VERSION', '6.0.1');
 
 // main global config file
 define('SM_GLOBAL_CONFIG_FILE','config/globalConfig.xsm');
@@ -72,6 +72,7 @@ require($SM_rootDir."lib/smLayoutTemplate.inc");
 require($SM_rootDir."lib/smModules.inc");
 require($SM_rootDir."lib/smSessionContainer.inc");
 require($SM_rootDir."lib/smSessions.inc");
+require($SM_rootDir."lib/smCacheManager.inc");
 
 require($SM_rootDir."lib/dataManip.inc");
 require($SM_rootDir."lib/auth.inc");

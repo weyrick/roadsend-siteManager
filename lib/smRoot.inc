@@ -106,7 +106,7 @@ class SM_siteManagerRoot extends SM_object {
 
         // Start with no modules loaded
         $SM_MODULE_COUNT = 0;
-
+        
     }
 
     /**
@@ -738,7 +738,6 @@ class SM_siteManagerRoot extends SM_object {
 
         }
 
-
     }
 
     /**
@@ -750,6 +749,16 @@ class SM_siteManagerRoot extends SM_object {
 
         $this->sessionH = new SM_session();
         $this->sessionH->runSession();
+
+    }
+
+    /**
+     * start cacheing system
+     */
+    function startCache() {
+
+        if (empty($this->cacheH))
+            $this->cacheH = new SM_cacheManager();
 
     }
 

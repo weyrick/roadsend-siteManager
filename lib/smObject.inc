@@ -62,6 +62,12 @@ class SM_object {
     var $inVarH = NULL;
 
     /**
+    * current cache manager
+    * @var SM_cacheManager
+    */
+    var $cacheH = NULL;
+
+    /**
     * reference to the current Global siteConfig
     * @var SM_siteConfig
     */
@@ -101,7 +107,7 @@ class SM_object {
      * class variables not to serialize when this object gets serialized
      * @var array
      */
-    var $varsNotToSerialize = array('dbH', 'dbHL', 'sessionH', 'siteConfig', 'inVarH', 'errorHandler');
+    var $varsNotToSerialize = array('dbH', 'dbHL', 'sessionH', 'siteConfig', 'inVarH', 'cacheH', 'errorHandler');
 
     /**
      * SiteManager Object Configure. This should be called once upon the creation
@@ -118,6 +124,7 @@ class SM_object {
         $this->sessionH     =& $SM_siteManager->sessionH;
         $this->siteConfig   =& $SM_siteManager->siteConfig;
         $this->inVarH       =& $SM_siteManager->inVarH;
+        $this->cacheH       =& $SM_siteManager->cacheH;
         $this->errorHandler =& $SM_siteManager->errorHandler;
 
     }
