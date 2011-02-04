@@ -79,7 +79,7 @@ class SM_cacheManager extends SM_object {
     public function set($key, $val, $ttl=-1) {
         if ($ttl < 0)
             $ttl = $this->ttl;
-        return $this->mc->set($key, val, $ttl);
+        return $this->mc->set($key, $val, $ttl);
     }
 
     public function get($key) {
