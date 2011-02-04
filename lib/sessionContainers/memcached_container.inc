@@ -105,14 +105,19 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
         $this->ttl = $this->sessionH->directive['gcMaxLifeTime'];
 
         global $SM_siteID;
-        $this->mc = new Memcached($SM_siteID);
-        if (!$this->mc->addServer($config['host'], $config['port'])) {
-            $this->fatalErrorPage('unable to connect to memcached server at '.$host.':'.$port);
-        }
+        $this->mc = new Memcached($SM_siteID.'_session');
 
-        $this->mc->setOption(Memcached::OPT_NO_BLOCK, true);
-        $this->mc->setOption(Memcached::OPT_TCP_NODELAY, true);
-        //$this->mc->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
+        // only add the servers if there aren't any, since we are using persistent connections
+        if (!count($this->mc->getServerList())) {
+
+            if (!$this->mc->addServer($config['host'], $config['port'])) {
+                $this->fatalErrorPage('unable to connect to memcached server at '.$host.':'.$port);
+            }
+
+            $this->mc->setOption(Memcached::OPT_NO_BLOCK, true);
+            $this->mc->setOption(Memcached::OPT_TCP_NODELAY, true);
+            //$this->mc->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
+        }
 
     }
 
