@@ -34,7 +34,7 @@ function SM_debugLog($msg, $obj=NULL, $verbosity=0, $addBacktrace=false) {
 
     global $SM_debugOutput, $SM_develState, $SM_filePrefixRemove, $SM_siteManager;
 
-    // if not in develState, not debug log
+    // if not in develState, no debug log
     if (!$SM_develState) {
         return;
     }
@@ -122,8 +122,17 @@ function SM_getDebugBackTrace($stripTags = false, $exception=NULL) {
 
     $text .= "</font>";
 
-    if ((PHP_SAPI == 'cli') || ($stripTags))
+    if ((PHP_SAPI == 'cli') || ($stripTags)) {
+        if (PHP_SAPI == 'cli') {
+            // ansi color
+            $text = preg_replace('#<font color="darkred">(.+?)</font>#',"\033[31m\\1\033[0m",$text);
+            $text = preg_replace('#<font color="darkblue">(.+?)</font>#',"\033[34m\\1\033[0m",$text);
+            $text = preg_replace('#<font color="blue">(.+?)</font>#',"\033[34;1m\\1\033[0m",$text);
+            $text = preg_replace('#<font color="brown">(.+?)</font>#',"\033[35m\\1\033[0m",$text);
+            $text = preg_replace('#<font color="darkgreen">(.+?)</font>#',"\033[32m\\1\033[0m",$text);
+        }
         $text = strip_tags($text);
+    }
 
     return $text;
 
@@ -145,6 +154,10 @@ function SM_fatalErrorPage($msg='', $obj=NULL) {
 
     global $SM_outputBuffer, $SM_develState, $SM_shortFatalError, $SM_debugOutput, $SM_noticeLog;
 
+    if (PHP_SAPI == "cli") {
+        $SM_develState = true;
+    }
+
     // SM_shortError means we don't display any notice or previous debugLog
     // we just show the current error and debug trace
     if ($SM_shortFatalError) {
@@ -163,8 +176,11 @@ function SM_fatalErrorPage($msg='', $obj=NULL) {
     // if msg is an array, dump it
     if (is_array($msg))
         var_dump($msg);
-
-    SM_debugLog("<font color=\"red\">$msg</font>",$obj);
+    if (PHP_SAPI == "cli") {
+        SM_debugLog("\033[31;1m{$msg}\033[0m");
+    }
+    else
+        SM_debugLog("<font color=\"red\">$msg</font>",$obj);
 
     if (ob_get_level() > 0) {
         $SM_outputBuffer = ob_get_contents();
