@@ -372,17 +372,18 @@ class Net_SMTP
      *                              socket connection.
      * @param   bool    $persistent Should a persistent socket connection
      *                              be used?
+     * @param   array   $options    Options to pass to socket connect (stream_context_create)
      *
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
      * @access public
      * @since  1.0
      */
-    function connect($timeout = null, $persistent = false)
+    function connect($timeout = null, $persistent = false, $options = null)
     {
         $this->_greeting = null;
         $result = $this->_socket->connect($this->host, $this->port,
-                                          $persistent, $timeout);
+                                          $persistent, $timeout, $options);
         if (PEAR::isError($result)) {
             return PEAR::raiseError('Failed to connect socket: ' .
                                     $result->getMessage());
