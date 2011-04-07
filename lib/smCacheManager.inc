@@ -55,7 +55,8 @@ class SM_cacheManager extends SM_object {
         }
 
         // pull ttl from session config
-        $this->ttl = $this->sessionH->directive['gcMaxLifeTime'];
+        if (isset($this->directive['gcMaxLifeTime']))
+            $this->ttl = $this->directive['gcMaxLifeTime'];
 
         global $SM_siteID;
         $this->mc = new Memcached($SM_siteID);
