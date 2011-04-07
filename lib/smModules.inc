@@ -110,7 +110,9 @@ class SM_module extends SM_object {
         // run postconfig methods
         if ((isset($this->postConfigList))&&(is_array($this->postConfigList))) {
             foreach ($this->postConfigList as $method) {
-                call_user_func(array($this,$method));
+                $cb = array($this,$method);
+                if (is_callable($cb))
+                    call_user_func($cb);
             }
         }
 
