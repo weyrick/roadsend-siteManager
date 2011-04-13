@@ -149,6 +149,9 @@ class SM_smTag_VAR extends SM_smTag {
             case 'title':
                 $op = ucwords(strtolower($op));
                 break;
+            case 'caps':
+                $op = strtoupper($op);
+                break;
             case 'escaped':
                 $op = addslashes($op);
                 break;
