@@ -102,6 +102,11 @@ class SM_session extends SM_object {
     var $urlRewriteRules = NULL;
     
     /**
+     * session has been saved
+     */
+    var $sessionSaved = false;
+    
+    /**
      * constructor. initialize, define persistents
      */
     
@@ -151,7 +156,7 @@ class SM_session extends SM_object {
             if (!empty($sCV)&&(preg_match(SM_SESSION_REGEXP,$sCV))) {
                 $this->hasCookies = true;
                 $this->sessionID = $sCV;
-                $this->debugLog("valid session ID obtained through cookie");
+                $this->debugLog("valid session ID obtained through cookie: ".$this->sessionID);
             }
                 
         }
@@ -854,6 +859,9 @@ class SM_session extends SM_object {
         // a little dump info for debug
         $this->debugLog("created new session (either none passed, or invalid)");
             
+        // notify container of new session
+        $this->sessionContainer->createSession();
+        
         // return for caller to use
         return $this->sessionID;
         
@@ -908,8 +916,10 @@ class SM_session extends SM_object {
      */
     function saveSession() {
 
-        if (php_sapi_name() == 'cli')
+        if ($this->sessionSaved || php_sapi_name() == 'cli')
             return;
+        
+        $this->sessionSaved = true;            
         
         //if we're tracking last page access, set it to now()
         if ($this->directive['trackLastPageAccess']) {

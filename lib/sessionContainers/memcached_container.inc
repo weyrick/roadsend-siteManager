@@ -79,7 +79,7 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
 
     /**
      * @var bool whether we need to update the key list or not. if the session load was already valid,
-     *           there's reason to rewrite it (it must have been there). if we created a new session
+     *           there's no reason to rewrite it (it must have been there). if we created a new session
      *           this page load, we'll need to save it
      */
     protected $needKeyListWrite = false;
@@ -113,6 +113,7 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
             if (!$this->mc->addServer($config['host'], $config['port'])) {
                 $this->fatalErrorPage('unable to connect to memcached server at '.$host.':'.$port);
             }
+            $this->debugLog("added memcached {$config['host']}:{$config['port']}");
 
             $this->mc->setOption(Memcached::OPT_NO_BLOCK, true);
             $this->mc->setOption(Memcached::OPT_TCP_NODELAY, true);
@@ -140,7 +141,8 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
         $container->lastUpdated = $lastUpdated;
 
         $key = $this->getKey($sessionID);
-        $this->mc->set($key, $container, time()+$this->ttl);
+        if ($this->mc->set($key, $container, time()+$this->ttl) == false)
+            $this->fatalErrorPage('unable to set memcached');
 
         // NOTE this is too slow, do it in bulk with setKeyList
         //$this->saveToKeyList($sessionID);
@@ -180,7 +182,8 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
         // last update is always touched
         $this->sContainer->lastUpdated = time();
         $key = $this->getKey();
-        $this->mc->set($key, $this->sContainer, time()+$this->ttl);
+        if (!$this->mc->set($key, $this->sContainer, time()+$this->ttl))
+            $this->fatalErrorPage('unable to set memcached');            
         $this->written = true;
 
         // store this id in our global list, so we can walk sessions later
@@ -191,7 +194,8 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
     // used in import script to set keylist in bulk
     // should be a hash with sKey => true
     public function setKeyList($keyList) {
-        $this->mc->set('SMS_KEYLIST', $keyList, 0);
+        if (!$this->mc->set('SMS_KEYLIST', $keyList, 0))
+            $this->fatalErrorPage('unable to set memcached');            
     }
 
     private function saveToKeyList($sessionID=NULL) {
@@ -205,7 +209,8 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
             $keyList = array('SMS_'.$sessionID => true);
         else
             $keyList['SMS_'.$sessionID] = true;
-        $this->mc->set('SMS_KEYLIST', $keyList, 0);
+        if (!$this->mc->set('SMS_KEYLIST', $keyList, 0))
+            $this->fatalErrorPage('unable to set memcached');            
     }
 
     // key used on memcached server for this session
@@ -223,6 +228,12 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
             return NULL;
     }
 
+    function createSession() {
+        // when we create a new session, need to write the key list
+        $this->needKeyListWrite = true;
+        $this->debugLog('new session, will write full key list');
+    }
+    
    /**
      * load session from database
      */
@@ -231,7 +242,7 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
         $key = $this->getKey();
         $this->sContainer = $this->mc->get($key);
         if (empty($this->sContainer)) {
-            $this->debugLog("no valid session for this session id");
+            $this->debugLog("no valid session for this session id, will create new");
 
             // setup a default, for save
             $this->sContainer = new SM_sessionData();
@@ -261,7 +272,8 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
         $this->mc->delete($key);
         $keyList = $this->mc->get('SMS_KEYLIST');
         unset($keyList[$key]);
-        $this->mc->set('SMS_KEYLIST', $keyList, 0);
+        if (!$this->mc->set('SMS_KEYLIST', $keyList, 0))
+            $this->fatalErrorPage('unable to set memcached');            
         return true;
     }
 
@@ -310,7 +322,8 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
             unset($mainKeyList[$sKey]);
         }
 
-        $this->mc->set('SMS_KEYLIST', $mainKeyList,0);
+        if (!$this->mc->set('SMS_KEYLIST', $mainKeyList,0))
+            $this->fatalErrorPage('unable to set memcached');            
 
     }
 
@@ -319,7 +332,8 @@ class SM_sessionContainer_memcached extends SM_sessionContainer {
         foreach ($keyList as $sKey => $d) {
             $this->mc->delete($sKey);
         }
-        $this->mc->set('SMS_KEYLIST', array(),0);
+        if (!$this->mc->set('SMS_KEYLIST', array(),0))
+            $this->fatalErrorPage('unable to set memcached');            
     }
     
 }

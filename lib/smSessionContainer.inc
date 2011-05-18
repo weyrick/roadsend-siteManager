@@ -100,8 +100,16 @@ class SM_sessionContainer extends SM_object {
      *
      */
     function garbageCollect($maxLifeTime) {
-	// virtual
-	return true;
+        // virtual
+        return true;
+    }
+    
+    /**
+     * initiaite a new session
+     */
+    function createSession() {
+        // virtual
+        return true;
     }
     
 }
