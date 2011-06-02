@@ -355,7 +355,9 @@ class SM_smartForm extends SM_object {
         $newEnt = new SM_formEntity($varName, $title, $type, $req, $this, $tpt, $val, $fieldset);
         if ($prepend) {
             $pre[$varName] = $newEnt;
-            $this->entityList = array_merge($pre,(array)$this->entityList);
+            // NOTE we don't use array_merge here because numeric keys are renumbered, which is
+            // unacceptable since keys here are form field names
+            $this->entityList = $pre + (array)$this->entityList;
         }
         else {
             $this->entityList[$varName] = $newEnt;
