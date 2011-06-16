@@ -7,8 +7,8 @@
  *******************************************************************
  *
  * This source file is subject to version 1.0 of the Roadsend Public
- * License, that is bundled with this package in the file 
- * LICENSE, and is available through the world wide web at 
+ * License, that is bundled with this package in the file
+ * LICENSE, and is available through the world wide web at
  * http://www.roadsend.com/license/rpl1.txt
  *
  *******************************************************************
@@ -27,13 +27,13 @@
 class SM_inVarClient extends SM_object {
 
     /**
-    * a list of inVar's this client is maintaining 
+    * a list of inVar's this client is maintaining
     * @var array
     */
     var $inVarList = array();
 
-    /** 
-    * a reference to the object who owns this client 
+    /**
+    * a reference to the object who owns this client
     * @var SM_inVarClient
     */
     var $parent = NULL;
@@ -76,11 +76,11 @@ class SM_inVarClient extends SM_object {
         return array_keys($this->inVarList);
     }
 
-    /** 
-     * declare that this client will be looking for an inVar 
+    /**
+     * declare that this client will be looking for an inVar
      * @param string $varName the variable name
      * @param mixed $defaultVal default value the variable will get, if it was not passed to the script
-     * @param string $expectType variable type this inVar should be constricted to (ie, 'int', 'array', etc), 
+     * @param string $expectType variable type this inVar should be constricted to (ie, 'int', 'array', etc),
      *                             or array of values it may be
      * @param bool $propagate whether this inVar should propagate or not
      * @param bool $req whether this inVar is considered 'required' or not. if it's required but not
@@ -100,7 +100,7 @@ class SM_inVarClient extends SM_object {
             case 'object':
                 $expectType='object';
                 break;
-            }        
+            }
         }
 
         // inVar types
@@ -109,7 +109,7 @@ class SM_inVarClient extends SM_object {
             case 'bool':
             case 'boolean':
             case 'string':
-            case 'double':            
+            case 'double':
             case 'number':
             case 'int':
             case 'integer':
@@ -117,6 +117,8 @@ class SM_inVarClient extends SM_object {
             case 'object':
             case 'md5':
             case 'hex':
+            case 'time':
+            case 'mysqldate':
             case '':
                 break;
             default:
@@ -132,12 +134,12 @@ class SM_inVarClient extends SM_object {
         }
 
         // propagation?
-        if ($propagate === NULL) {        
+        if ($propagate === NULL) {
             $propagate = $this->directive['propagateInVars'];
         }
 
         if (is_string($propagate)) {
-            if ($propagate == 'true') $propagate = true;     
+            if ($propagate == 'true') $propagate = true;
             if ($propagate == 'false') $propagate = false;
         }
 
@@ -196,7 +198,7 @@ class SM_inVarClient extends SM_object {
 
     }
 
-    // tcobb: added to support settting InVar values 
+    // tcobb: added to support settting InVar values
     /**
      * set the value of a variable declared as an inVar
      * overrides the valued passed in via GET/POST/COOKIE
@@ -276,7 +278,7 @@ class SM_inVarClient extends SM_object {
         if (isset($this->inVarList[$varName]))
             return $this->inVarList[$varName]->varProp;
         else
-            return NULL;        
+            return NULL;
     }
 
 
@@ -285,10 +287,10 @@ class SM_inVarClient extends SM_object {
      * for debugging purposes
      */
    function dumpInVars() {
-   
+
         if (!count($this->inVarList))
             return;
-        
+
         global $_dOp;
 
         $_dOp = 'registered inVar information (inVar => value): <br /><ul>';
@@ -305,7 +307,7 @@ class SM_inVarClient extends SM_object {
 
         $_dOp .= '<br />';
 
-        array_walk($this->inVarList, '_ddPrint');       
+        array_walk($this->inVarList, '_ddPrint');
 
         $_dOp .= '<br />';
 
@@ -313,45 +315,45 @@ class SM_inVarClient extends SM_object {
         $_dOp .= '</ul><br />';
 
         return $_dOp;
-     
+
    }
 
 }
 
 /**
- * a single inVar item, used by the inVarClient 
+ * a single inVar item, used by the inVarClient
  * @author Shannon Weyrick <weyrick@roadsend.com>
  * @package roadsend_siteManager
  * @subpackage siteManager_inVar
  */
 class SM_inVarItem {
 
-    /** 
-    * the inVar varName 
+    /**
+    * the inVar varName
     * @var string
     */
     var $varName = '';
 
-    /** 
-    * the inVar variable type, or array of possible valid values 
-    * @var mixed 
+    /**
+    * the inVar variable type, or array of possible valid values
+    * @var mixed
     */
     var $varType = '';
 
-    /** 
-    * the default value 
+    /**
+    * the default value
     * @var mixed
     */
     var $defaultVal = NULL;
 
-    /** 
-    * the inVar propagation details 
+    /**
+    * the inVar propagation details
     * @var bool
     */
     var $varProp = false;
 
-    /** 
-    * wether this inVar is required for succesfull operation by the parent 
+    /**
+    * wether this inVar is required for succesfull operation by the parent
     * @var bool
     */
     var $varReq = false;

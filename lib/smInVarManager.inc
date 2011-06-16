@@ -301,6 +301,7 @@ class SM_inVarManager extends SM_object {
      * @param string $type valid PHP variable type
      * @param bool $dieOnBadType whether to issue of fatal error, or a warning if bad type
      * @return bool true on success, false on failure. will not return if invalid type and dieOnBadInVarType is true
+     * if using in modules also add to smInVarClient
      */
     function _checkType($var, $val, $type, $dieOnBadType) {
 
@@ -343,6 +344,9 @@ class SM_inVarManager extends SM_object {
                 break;
             case 'time':
                 $vOk = preg_match('/^\d{1,2}[:]\d{2}([:]\d{2})?$/',$val);
+                break;
+            case 'mysqldate':
+                $vOk = preg_match('/^\d{4}[-]\d{2}([-]\d{2})?$/',$val);
                 break;
             case 'string':
                 $vOk = is_string($val);
