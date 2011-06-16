@@ -346,7 +346,7 @@ class SM_inVarManager extends SM_object {
                 $vOk = preg_match('/^\d{1,2}[:]\d{2}([:]\d{2})?$/',$val);
                 break;
             case 'mysqldate':
-                $vOk = preg_match('/^\d{4}[-]\d{2}([-]\d{2})?$/',$val);
+                $vOk = preg_match('/^\d{4}-\d{2}-\d{2}$/',$val);
                 break;
             case 'string':
                 $vOk = is_string($val);
