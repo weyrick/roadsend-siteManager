@@ -52,6 +52,11 @@ class SM_dbWrapper
      * my sitemanager db id
      */
     private $SM_id = 'unknown';
+    
+    /**
+     * connect config
+     */
+    public $config = array();
 
     /**
      * simple counter
@@ -60,6 +65,13 @@ class SM_dbWrapper
     
     function __construct($id, $dsn, $user = NULL, $pass = NULL, $options = NULL) {
         $this->SM_id = $id;
+        $this->config['dsn'] = $dsn;
+        $this->config['userName'] = $user;
+        $this->config['passWord'] = $pass;
+        if (preg_match('/host=([^;]+);*/',$dsn,$m))
+            $this->config['hostName'] = $m[1];
+        if (preg_match('/dbname=([^;]+);*/',$dsn,$m))
+            $this->config['dbName'] = $m[1];
         try {
             $this->dbH = new PDO($dsn,
                                  $user,
