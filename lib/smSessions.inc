@@ -169,6 +169,8 @@ class SM_session extends SM_object {
             // now if it's a valid session, use that
             if (!empty($this->sessionID)&&(preg_match(SM_SESSION_REGEXP,$this->sessionID))) {
                 $this->debugLog("valid session ID obtained through GET/POST");
+                // since we only support loading a session through a cookie, we try to set one then reload
+                $this->reloadPage(NULL,NULL,array($this->directive['sessionIDName']),true);
             }
         }
 
