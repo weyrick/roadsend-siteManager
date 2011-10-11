@@ -264,7 +264,7 @@ class SM_siteManagerRoot extends SM_object {
         }
 
         // add to our list of modules
-        $this->moduleList[] = $newModule;
+        //$this->moduleList[] = $newModule;
 
         return $newModule;
 
@@ -843,6 +843,7 @@ class SM_siteManagerRoot extends SM_object {
             }
 
             // dump modules loaded information
+            /*
             if (is_array($this->moduleList)) {
                 $debugOutput .= "<hr /><b>MODULE INFORMATION</b><hr />\n";
                 foreach ($this->moduleList as $module) {
@@ -852,6 +853,8 @@ class SM_siteManagerRoot extends SM_object {
 
                 }
             }
+             * 
+             */
         }
 
         // stop buffer
