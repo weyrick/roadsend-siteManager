@@ -244,6 +244,13 @@ class SM_siteManagerRoot extends SM_object {
 
         }
 
+        // trivial optimization: if the module is already loaded, instantiate immediately
+        // before trying the file system
+        if (class_exists($moduleName,false)) {
+            $newModule = new $moduleName();
+            return $newModule;
+        }
+
         // include the module file
         if ($this->includeModule($moduleFile, $fatalFNF) === false) {
             $this->debugLog("Unable find module for inclusion: $moduleFile");
