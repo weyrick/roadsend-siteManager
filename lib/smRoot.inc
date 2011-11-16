@@ -663,6 +663,8 @@ class SM_siteManagerRoot extends SM_object {
                                                 $dbSettings['userName'],
                                                 $dbSettings['passWord'],
                                                 array(PDO::ATTR_PERSISTENT => $dbSettings['persistent']));
+            if ($dbSettings['readOnly'])
+                $this->dbHL[$id]->readOnly = true;
         } catch (PDOException $e) {
             if ($dieOnError) {
                 $this->debugLog($e->getMessage()."<br />\n");

@@ -62,7 +62,12 @@ class SM_dbWrapper
      * simple counter
      */
     public $queryCount = 0;
-    
+
+    /**
+     * read only database connection: only allow SELECT
+     */
+    public $readOnly = false;
+
     function __construct($id, $dsn, $user = NULL, $pass = NULL, $options = NULL) {
         $this->SM_id = $id;
         $this->config['dsn'] = $dsn;
@@ -100,16 +105,22 @@ class SM_dbWrapper
 
     function beginTransaction() {
         //SM_debugLog("DB [{$this->SM_id}]: started transaction");
+        if ($this->readOnly)
+            SM_fatalErrorPage('transaction in read only');
         return $this->dbH->beginTransaction();
     }
 
     function commit() {
         //SM_debugLog("DB [{$this->SM_id}]: committed transaction");
+        if ($this->readOnly)
+            SM_fatalErrorPage('transaction in read only');
         return $this->dbH->commit();
     }
     
     function rollBack() {
         SM_debugLog("DB [{$this->SM_id}]: rolled back transaction");
+        if ($this->readOnly)
+            SM_fatalErrorPage('transaction in read only');
         return $this->dbH->rollBack();
     }
 
@@ -167,7 +178,13 @@ class SM_dbWrapper
         $GLOBALS['SM_LAST_DB_ID'] = $this->SM_id;
 
         $this->queryCount++;
-        
+
+        // XXX we're strict here and require the first word to be SELECT.
+        // this is to avoid multiple queries in one string
+        if ($this->readOnly && strtoupper(substr($query,0,6)) != 'SELECT') {
+            SM_fatalErrorPage('ro db violation: '.substr($query,0,3));
+        }
+
         // unless we're benchmarking, just record the last query (for errors) and go to parent
         if (!$this->benchMarking) {
             $this->lastQuery = $query;
