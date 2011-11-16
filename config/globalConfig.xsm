@@ -25,6 +25,7 @@
             <VAR name="defaultLocale"       value = "en_US" desc = "default locale for site" />
             <VAR name="useClientLocale"     value = "true"  desc = "when true, SiteManager will default to the locale requested by the clients browser, if available" />
         </SECTION>
+        <!--
         <SECTION name="db" id="default">
             <VAR name="active"              value = "false" desc = "whether this connection is active or not" />
             <VAR name="defaultConnection"   value = "true"  desc = "set to true to have this connection be the default connection. will be $dbH" />
@@ -32,6 +33,7 @@
             <VAR name="persistent"          value = "true"  desc = "bool to determine whether this is a persistent connection or not" />
             <VAR name="required"            value = "true"  desc = "if this is true, a fatal error will be thrown if the connection fails. if false, it will ignore a bad connection." />
         </SECTION>
+        -->
         <SECTION name="memcached" id="default">
             <VAR name="host"            value = "localhost"  desc = "memcached host" />
             <VAR name="port"            value = "11211"  desc = "memcached port" />

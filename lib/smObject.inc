@@ -594,10 +594,10 @@ class SM_dbHandles implements ArrayAccess {
     // db settings to connect lazily (i.e., on first use)
     public $lazyConnect = array();
 
-    public function offsetGet($i) {
+    public function offsetGet($i,$fatal=true) {
         // if the handle they are looking for isn't defined,
         // see if it's a lazyConnect and if so, make the connection
-            global $SM_siteManager;
+        global $SM_siteManager;
         if (empty($this->data[$i])) {
             if (isset($this->lazyConnect[$i])) {
                 // do lazy connect
@@ -606,14 +606,15 @@ class SM_dbHandles implements ArrayAccess {
             }
             else {
                 // no lazy connect, it really doesn't exist
-                $SM_siteManager->fatalErrorPage('database connection undefined: '.$id);
+                if ($fatal)
+                    $SM_siteManager->fatalErrorPage('database connection undefined: '.$id);
             }
         }
         return $this->data[$i];
     }
 
     public function offsetExists ($i) {
-        $d = $this->offsetGet($i);
+        $d = $this->offsetGet($i,false);
         return !empty($d);
     }
 

@@ -663,8 +663,23 @@ class SM_siteManagerRoot extends SM_object {
                                                 $dbSettings['userName'],
                                                 $dbSettings['passWord'],
                                                 array(PDO::ATTR_PERSISTENT => $dbSettings['persistent']));
+            $this->debugLog("added database connection [$id]");
             if ($dbSettings['readOnly'])
                 $this->dbHL[$id]->readOnly = true;
+            if ($dbSettings['readRedirect']) {
+                if ($this->dbHL[$id]->readOnly)
+                    $this->fatalErrorPage('cannot be readOnly and readRedirect');
+                // this db handle will redirect SELECTs to one or more other handles (which are presumably readOnly)
+                // these must have already been defined
+                $rList = explode(',',$dbSettings['readRedirect']);
+                foreach ($rList as $roid) {
+                    if (!isset($this->dbHL[$roid]))
+                        $this->fatalErrorPage('undefined readRedirect id: '.$roid);
+                    if (!$this->dbHL[$roid]->readOnly)
+                        $this->fatalErrorPage('readRedirect connection is not read only: '.$roid);
+                    $this->dbHL[$id]->roList[] =& $this->dbHL[$roid];
+                }
+            }
         } catch (PDOException $e) {
             if ($dieOnError) {
                 $this->debugLog($e->getMessage()."<br />\n");
@@ -905,7 +920,7 @@ class SM_siteManagerRoot extends SM_object {
         if ($this->siteConfig->getVar('flags','showLoadTime')) {
             if ($GLOBALS['SM_develState']) {
                 $mem = memory_get_peak_usage();
-                echo "\n<!-- $scriptLoadTime secs / $mem bytes / {$this->dbH->queryCount} queries -->\n";
+                echo "\n<!-- $scriptLoadTime secs / $mem bytes / ".SM_dbWrapper::$queryCount." (".SM_dbWrapper::$readCount." read) queries -->\n";
             }
             else {
                 echo "\n<!-- $scriptLoadTime s -->\n";

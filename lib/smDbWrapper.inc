@@ -61,12 +61,24 @@ class SM_dbWrapper
     /**
      * simple counter
      */
-    public $queryCount = 0;
+    static public $queryCount = 0;
+    static public $readCount = 0;
 
     /**
      * read only database connection: only allow SELECT
      */
     public $readOnly = false;
+
+    /**
+     * a list of db handles we redirect SELECT queries to. it will rotate through
+     * the list in round robin fashion
+     */
+    public $roList = NULL;
+
+    /**
+     * last index we sent a query to in roList
+     */
+    public $roI = 0;
 
     function __construct($id, $dsn, $user = NULL, $pass = NULL, $options = NULL) {
         $this->SM_id = $id;
@@ -177,12 +189,25 @@ class SM_dbWrapper
         // so that siteManager knows the last ID in use
         $GLOBALS['SM_LAST_DB_ID'] = $this->SM_id;
 
-        $this->queryCount++;
+        self::$queryCount++;
 
-        // XXX we're strict here and require the first word to be SELECT.
-        // this is to avoid multiple queries in one string
-        if ($this->readOnly && strtoupper(substr($query,0,6)) != 'SELECT') {
-            SM_fatalErrorPage('ro db violation: '.substr($query,0,3));
+        // we're strict here and require the first word to be SELECT (no leading spaces)
+        // this avoids failing ro check on multiple queries in one string
+        if ($this->readOnly || $this->roList) {
+            $isSelect = (($query[0] == 'S' || $query[0] == 's') && ($query[1] == 'E' || $query[1] == 'e'));
+            if ($isSelect)
+                self::$readCount++;
+            // read only check
+            if ($this->readOnly && !$isSelect) {
+                SM_fatalErrorPage('ro db violation: '.substr($query,0,2));
+            }
+            // round robin read only redirects
+            elseif ($this->roList && $isSelect) {
+                $result = $this->roList[$this->roI]->query($query);
+                if (sizeof($this->roList) > 1)
+                    $this->roI = ($this->roI + 1) % sizeof($this->roList);
+                return $result;
+            }
         }
 
         // unless we're benchmarking, just record the last query (for errors) and go to parent
