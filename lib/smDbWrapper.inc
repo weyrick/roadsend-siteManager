@@ -189,14 +189,11 @@ class SM_dbWrapper
         // so that siteManager knows the last ID in use
         $GLOBALS['SM_LAST_DB_ID'] = $this->SM_id;
 
-        self::$queryCount++;
-
         // we're strict here and require the first word to be SELECT (no leading spaces)
         // this avoids failing ro check on multiple queries in one string
+        $isSelect = false;
         if ($this->readOnly || $this->roList) {
             $isSelect = (($query[0] == 'S' || $query[0] == 's') && ($query[1] == 'E' || $query[1] == 'e'));
-            if ($isSelect)
-                self::$readCount++;
             // read only check
             if ($this->readOnly && !$isSelect) {
                 SM_fatalErrorPage('ro db violation: '.substr($query,0,2));
@@ -209,6 +206,10 @@ class SM_dbWrapper
                 return $result;
             }
         }
+
+        self::$queryCount++;
+        if ($isSelect)
+            self::$readCount++;
 
         // unless we're benchmarking, just record the last query (for errors) and go to parent
         if (!$this->benchMarking) {
