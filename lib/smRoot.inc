@@ -663,7 +663,7 @@ class SM_siteManagerRoot extends SM_object {
                                                 $dbSettings['userName'],
                                                 $dbSettings['passWord'],
                                                 array(PDO::ATTR_PERSISTENT => $dbSettings['persistent']));
-            $this->debugLog("added database connection [$id]");
+            $this->debugLog("database connection [$id] established");
             if ($dbSettings['readOnly'])
                 $this->dbHL[$id]->readOnly = true;
             if ($dbSettings['readRedirect']) {
